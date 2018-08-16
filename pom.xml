@@ -104,8 +104,16 @@
             <artifactId>shiro-spring</artifactId>
             <version>${shiro.version}</version>
         </dependency>
-        
-        
+    
+    
+    <!-- springcloud -->    
+	<dependency>
+         <groupId>org.springframework.cloud</groupId>
+         <artifactId>spring-cloud-dependencies</artifactId>
+         <version>Finchley.SR1</version>
+         <type>pom</type>
+         <scope>import</scope>
+     </dependency>
 	
 	<!-- springboot -->
 	<!-- Add typical dependencies for a web application -->
