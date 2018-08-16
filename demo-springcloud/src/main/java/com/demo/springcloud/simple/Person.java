@@ -1,8 +1,5 @@
 package com.demo.springcloud.simple;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 
@@ -29,23 +26,34 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  * 
  * 
- * 测试:
- * http://localhost:8080/hello
- * 
- * 
- * 
- * @author yuezh2   2018年8月16日 下午4:59:56
+ * @author yuezh2   2018年8月16日 下午6:10:49
  *
  */
-@Controller
-public class MyController {
+public class Person {
+	
+	
+	private Integer  id;
+	
+	private String name;
+	
+	
 
-	
-	
-	@ResponseBody
-	@RequestMapping(value="hello")
-	public String hello(){
-		return "hello world";
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
+	
+
 }

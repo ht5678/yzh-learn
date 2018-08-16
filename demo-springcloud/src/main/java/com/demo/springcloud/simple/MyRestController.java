@@ -1,8 +1,11 @@
 package com.demo.springcloud.simple;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 
@@ -29,23 +32,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 
  * 
  * 
- * 测试:
- * http://localhost:8080/hello
- * 
- * 
- * 
- * @author yuezh2   2018年8月16日 下午4:59:56
+ * @author yuezh2   2018年8月16日 下午6:11:31
  *
  */
-@Controller
-public class MyController {
-
+@RestController
+public class MyRestController {
 	
 	
+	
+	@RequestMapping(value="person/{id}",method=RequestMethod.GET)
+			//,produces=MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	@RequestMapping(value="hello")
-	public String hello(){
-		return "hello world";
+	public Person getPerson(@PathVariable Integer id){
+		Person person = new Person();
+		person.setId(id);
+		person.setName("augest");
+		
+		return person;
 	}
 	
+
 }
