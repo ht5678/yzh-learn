@@ -1,3 +1,15 @@
+spring:
+  profiles: linux
+
 test:
  user:
   name1: ymlConfigFile
+  
+---
+
+spring:
+  profiles: windows
+
+test:
+ user:
+  name1: windowsymlConfigFile
