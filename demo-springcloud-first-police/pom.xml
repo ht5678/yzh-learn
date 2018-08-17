@@ -2,26 +2,81 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
+  <!-- <parent>
     <groupId>com.learn.parent</groupId>
     <artifactId>yzh-learn</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+  </parent> -->
+  
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.1.RELEASE</version>
   </parent>
+  
+  
   <groupId>org.demo.springcloud.first.police</groupId>
   <artifactId>demo-springcloud-first-police</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>demo-springcloud-first-police Maven Webapp</name>
   <url>http://maven.apache.org</url>
-  <dependencies>
+  
+  
+  
+    <profiles>
+	  	<profile>
+		    <id>jdk-1.8</id>
+		    <activation>
+		        <activeByDefault>true</activeByDefault>
+		        <jdk>1.8</jdk>
+		    </activation>
+		    <properties>
+		        <maven.compiler.source>1.8</maven.compiler.source>
+		        <maven.compiler.target>1.8</maven.compiler.target>
+		        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+		    </properties>
+		</profile> 
+	  </profiles>
+  
+   
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>Finchley.SR1</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+<dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-config</artifactId>
     </dependency>
-  </dependencies>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+</dependencies>
+  
+  
+  
   <build>
-    <finalName>demo-springcloud-first-police</finalName>
-  </build>
+  	<finalName>demo-springcloud-first-police</finalName>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+  
+  
 </project>
