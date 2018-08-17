@@ -10,6 +10,9 @@
   <modules>
     <module>demo-springcloud</module>
     <module>demo-base</module>
+    <module>demo-springcloud-first-114</module>
+    <module>demo-springcloud-first-police</module>
+    <module>demo-springcloud-first-person</module>
   </modules>
   
   
