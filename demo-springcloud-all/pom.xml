@@ -20,6 +20,7 @@
     <module>first-114</module>
     <module>first-police</module>
     <module>first-person</module>
+    <module>test</module>
   </modules>
   
       <profiles>
