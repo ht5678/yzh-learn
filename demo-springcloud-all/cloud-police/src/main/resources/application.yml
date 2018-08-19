@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: cloud-police
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://slave1:8761/eureka,http://slave2:8762/eureka/
+      
