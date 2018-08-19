@@ -20,7 +20,9 @@
     <module>first-114</module>
     <module>first-police</module>
     <module>first-person</module>
-    <module>test</module>
+    <module>cloud-114</module>
+    <module>cloud-police</module>
+    <module>cloud-person</module>
   </modules>
   
       <profiles>
