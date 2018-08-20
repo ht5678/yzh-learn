@@ -9,6 +9,7 @@ eureka:
     metadata-map: #测试元数据 , 在discovery.getInstance()的时候 , 可以自己加上一下数据 , 用于获取
       company-name: tcc-haha
   client:
+    instanceInfoReplicationIntervalSeconds: 10  #状态检查时间 , 默认30s ,方便测试MyHealthCheckHandler改成10s
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
@@ -16,3 +17,7 @@ eureka:
 logging:
   level:
     com.netflix: DEBUG
+
+#不设置敏感端口 , 可以访问所有端口    
+endpoints:
+  sensitive: false
