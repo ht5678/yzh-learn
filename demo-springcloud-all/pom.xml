@@ -26,6 +26,8 @@
     <module>l03-ek-server</module>
     <module>l03-ek-provider</module>
     <module>l03-ek-invoker</module>
+    <module>l06-ribbon-service</module>
+    <module>l06-ribbon-client</module>
   </modules>
   
       <profiles>
