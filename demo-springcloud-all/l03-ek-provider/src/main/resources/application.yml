@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ek-police
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 5   #心跳配置  
+    lease-expiration-duration-in-seconds: 10 #超时后会变成不存活状态
+    metadata-map: #测试元数据 , 在discovery.getInstance()的时候 , 可以自己加上一下数据 , 用于获取
+      company-name: tcc-haha
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+      
+logging:
+  level:
+    com.netflix: DEBUG

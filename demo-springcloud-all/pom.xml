@@ -23,6 +23,9 @@
     <module>cloud-114</module>
     <module>cloud-police</module>
     <module>cloud-person</module>
+    <module>l03-ek-server</module>
+    <module>l03-ek-provider</module>
+    <module>l03-ek-invoker</module>
   </modules>
   
       <profiles>

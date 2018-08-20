@@ -1,0 +1,12 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: ek-person
+
+eureka:
+  client:
+    registry-fetch-interval-seconds: 30 #默认30s,从server抓取provider的注册信息
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+      
