@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: ek-person
+    
+ek-police: #对应provider的配置文件中的name , 把这个ek-police改成default ， 就会覆盖SpringClientFactory默认的负载类
+  ribbon:
+    NFLoadBalancerRuleClassName: com.demo.springcloud.first.MyRule
 
 eureka:
   client:
