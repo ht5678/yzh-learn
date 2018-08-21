@@ -28,6 +28,8 @@
     <module>l03-ek-invoker</module>
     <module>l06-ribbon-service</module>
     <module>l06-ribbon-client</module>
+    <module>l10-cxf-client</module>
+    <module>l10-feign-client</module>
   </modules>
   
       <profiles>
