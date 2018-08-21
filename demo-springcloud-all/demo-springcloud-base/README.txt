@@ -71,3 +71,13 @@ ribbon简介(用于客户端):
 	-ping
 	-serverList
 	
+
+	
+ribbon的内置负载均衡规则:
+*RoundRobinRule
+*AvailabilityFilteringRule
+*WeightedResponseTimeRule
+*ZoneAvoidanceRule
+*BestAvailableRule
+*RandomRule
+*RetryRule

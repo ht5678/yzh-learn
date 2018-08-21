@@ -48,6 +48,8 @@ public class TestRibbon {
 	    
 	    //硬编码配置
 		ConfigurationManager.getConfigInstance().setProperty("my-client.ribbon.listOfServers", "localhost:8080,localhost:8081");
+		//自定义负载均衡规则
+		ConfigurationManager.getConfigInstance().setProperty("my-client.ribbon.NFLoadBalancerRuleClassName", MyRule.class.getName());
 		RestClient client = (RestClient)ClientFactory.getNamedClient("my-client");
 		HttpRequest request = HttpRequest.newBuilder().uri("/person").build();
 		
