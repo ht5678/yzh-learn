@@ -94,3 +94,10 @@ feign:
 默认使用HttpURLConnection连接HTTP服务
 
 
+spring-feign整合:
+*s2-l03-spring-feign-server启动:输入slave1启动
+*s2-l03-spring-feign-provider启动:输入8080启动
+*s2-l03-spring-feign-invoker启动:启动
+
+测试:
+http://localhost:9000/routerclient

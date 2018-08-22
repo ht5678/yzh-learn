@@ -30,6 +30,9 @@
     <module>l06-ribbon-client</module>
     <module>l10-cxf-client</module>
     <module>l10-feign-client</module>
+    <module>S2-l03-spring-feign-server</module>
+    <module>S2-l03-spring-feign-provider</module>
+    <module>S2-l03-spring-feign-invoker</module>
   </modules>
   
       <profiles>

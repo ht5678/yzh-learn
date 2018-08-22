@@ -1,4 +1,4 @@
-package transaction;
+package transaction.simple;
 
 import java.math.BigDecimal;
 
