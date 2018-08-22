@@ -1,8 +1,8 @@
 package com.demo.springcloud.feign;
 
-import feign.Headers;
-import feign.Param;
-import feign.RequestLine;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -29,40 +29,45 @@ import feign.RequestLine;
  * 
  * 
  * 
- * @author yuezh2   2018年8月21日 下午10:10:32
+ * @author yuezh2   2018年8月22日 上午11:20:23
  *
  */
-public interface HelloService {
+@XmlRootElement
+public class Police {
+	
+	@XmlElement
+	private Integer id;
+	@XmlElement
+	private String name;
+	@XmlElement
+	private String message;
+	
+	
+	
+	@XmlTransient
+	public Integer getId() {
+		return id;
+	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	@RequestLine("GET /hello")
-	public String hello();
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	@XmlTransient
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	@XmlTransient
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 	
-	
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestLine("GET /call/{id}")
-	public Police getPolice(@Param("id")Integer id);
-	
-	
-	/**
-	 * 
-	 * @param p
-	 * @return
-	 */
-	@RequestLine("POST /person/create")
-	@Headers("Content-Type: application/json")
-	public String createPerson(Police p);
-	
-	
-	@RequestLine("POST /person/createXML")
-	@Headers("Content-Type: application/xml")
-	public Result createXMLPerson(Police p);
-	
+
 }

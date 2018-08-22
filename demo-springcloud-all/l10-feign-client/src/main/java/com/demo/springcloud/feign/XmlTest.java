@@ -1,8 +1,10 @@
 package com.demo.springcloud.feign;
 
-import feign.Headers;
-import feign.Param;
-import feign.RequestLine;
+import feign.Feign;
+import feign.gson.GsonEncoder;
+import feign.jaxb.JAXBContextFactory;
+import feign.jaxb.JAXBDecoder;
+import feign.jaxb.JAXBEncoder;
 
 /**
  * 
@@ -29,40 +31,27 @@ import feign.RequestLine;
  * 
  * 
  * 
- * @author yuezh2   2018年8月21日 下午10:10:32
+ * @author yuezh2   2018年8月22日 下午4:03:42
  *
  */
-public interface HelloService {
+public class XmlTest {
+	
+	
+	public static void main(String[] args) {
+		JAXBContextFactory jaxbFactory = new JAXBContextFactory.Builder().build();
+		
+		HelloService service = Feign.builder().encoder(new JAXBEncoder(jaxbFactory))
+				.decoder(new JAXBDecoder(jaxbFactory))
+				.target(HelloService.class ,"http://localhost:8080");
+		
+		Police p = new Police();
+		p.setId(1);
+		p.setName("zhangsan");
+		p.setMessage("xx");
+		
+		Result result = service.createXMLPerson(p);
+		System.out.println(result.getMessage());
+		
+	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	@RequestLine("GET /hello")
-	public String hello();
-	
-	
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestLine("GET /call/{id}")
-	public Police getPolice(@Param("id")Integer id);
-	
-	
-	/**
-	 * 
-	 * @param p
-	 * @return
-	 */
-	@RequestLine("POST /person/create")
-	@Headers("Content-Type: application/json")
-	public String createPerson(Police p);
-	
-	
-	@RequestLine("POST /person/createXML")
-	@Headers("Content-Type: application/xml")
-	public Result createXMLPerson(Police p);
-	
 }

@@ -1,8 +1,7 @@
 package com.demo.springcloud.feign;
 
-import feign.Headers;
-import feign.Param;
-import feign.RequestLine;
+import feign.Feign;
+import feign.gson.GsonEncoder;
 
 /**
  * 
@@ -29,40 +28,21 @@ import feign.RequestLine;
  * 
  * 
  * 
- * @author yuezh2   2018年8月21日 下午10:10:32
+ * @author yuezh2   2018年8月22日 下午2:20:53
  *
  */
-public interface HelloService {
+public class JsonTest {
 
-	/**
-	 * 
-	 * @return
-	 */
-	@RequestLine("GET /hello")
-	public String hello();
 	
-	
-	/**
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestLine("GET /call/{id}")
-	public Police getPolice(@Param("id")Integer id);
-	
-	
-	/**
-	 * 
-	 * @param p
-	 * @return
-	 */
-	@RequestLine("POST /person/create")
-	@Headers("Content-Type: application/json")
-	public String createPerson(Police p);
-	
-	
-	@RequestLine("POST /person/createXML")
-	@Headers("Content-Type: application/xml")
-	public Result createXMLPerson(Police p);
+	public static void main(String[] args) {
+		HelloService service = Feign.builder().encoder(new GsonEncoder()).target(HelloService.class ,"http://localhost:8080");
+		Police p = new Police();
+		p.setMessage("gg");
+		p.setId(1);
+		p.setName("auguest");
+		
+		String result = service.createPerson(p);
+		System.out.println(result);
+	}
 	
 }
