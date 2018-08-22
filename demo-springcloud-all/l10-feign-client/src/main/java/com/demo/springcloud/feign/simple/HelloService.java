@@ -1,4 +1,4 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.simple;
 
 import feign.Headers;
 import feign.Param;

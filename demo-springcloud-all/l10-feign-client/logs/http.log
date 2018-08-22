@@ -1,0 +1,9 @@
+[HelloService#hello] ---> GET http://localhost:8080/hello HTTP/1.1
+[HelloService#hello] ---> END HTTP (0-byte body)
+[HelloService#hello] <--- HTTP/1.1 200 (47ms)
+[HelloService#hello] content-length: 10
+[HelloService#hello] content-type: application/json;charset=UTF-8
+[HelloService#hello] date: Wed, 22 Aug 2018 08:56:39 GMT
+[HelloService#hello] 
+[HelloService#hello] helloworld
+[HelloService#hello] <--- END HTTP (10-byte body)

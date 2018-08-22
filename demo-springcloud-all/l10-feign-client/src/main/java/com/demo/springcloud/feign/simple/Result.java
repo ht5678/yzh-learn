@@ -1,4 +1,4 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.simple;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

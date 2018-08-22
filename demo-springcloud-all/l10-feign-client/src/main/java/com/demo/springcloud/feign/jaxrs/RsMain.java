@@ -1,10 +1,7 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.jaxrs;
 
 import feign.Feign;
-import feign.gson.GsonEncoder;
-import feign.jaxb.JAXBContextFactory;
-import feign.jaxb.JAXBDecoder;
-import feign.jaxb.JAXBEncoder;
+import feign.jaxrs.JAXRSContract;
 
 /**
  * 
@@ -31,27 +28,20 @@ import feign.jaxb.JAXBEncoder;
  * 
  * 
  * 
- * @author yuezh2   2018年8月22日 下午4:03:42
+ * @author yuezh2   2018年8月22日 下午4:29:43
  *
  */
-public class XmlTest {
+public class RsMain {
 	
 	
 	public static void main(String[] args) {
-		JAXBContextFactory jaxbFactory = new JAXBContextFactory.Builder().build();
-		
-		HelloService service = Feign.builder().encoder(new JAXBEncoder(jaxbFactory))
-				.decoder(new JAXBDecoder(jaxbFactory))
-				.target(HelloService.class ,"http://localhost:8080");
-		
-		Police p = new Police();
-		p.setId(1);
-		p.setName("zhangsan");
-		p.setMessage("xx");
-		
-		Result result = service.createXMLPerson(p);
-		System.out.println(result.getMessage());
-		
+		RsClient client = Feign.builder()
+				.contract(new JAXRSContract())
+				.target(RsClient.class , "http://localhost:8080");
+
+		String result = client.hello();
+		System.out.println(result);
 	}
+	
 
 }

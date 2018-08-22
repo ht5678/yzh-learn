@@ -1,8 +1,7 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.simple;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import feign.Feign;
+import feign.gson.GsonEncoder;
 
 /**
  * 
@@ -29,45 +28,21 @@ import javax.xml.bind.annotation.XmlTransient;
  * 
  * 
  * 
- * @author yuezh2   2018年8月22日 上午11:20:23
+ * @author yuezh2   2018年8月22日 下午2:20:53
  *
  */
-@XmlRootElement
-public class Police {
-	
-	@XmlElement
-	private Integer id;
-	@XmlElement
-	private String name;
-	@XmlElement
-	private String message;
-	
-	
-	
-	@XmlTransient
-	public Integer getId() {
-		return id;
-	}
+public class JsonTest {
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-	@XmlTransient
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	@XmlTransient
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	
+	public static void main(String[] args) {
+		HelloService service = Feign.builder().encoder(new GsonEncoder()).target(HelloService.class ,"http://localhost:8080");
+		Police p = new Police();
+		p.setMessage("gg");
+		p.setId(1);
+		p.setName("auguest");
+		
+		String result = service.createPerson(p);
+		System.out.println(result);
 	}
 	
-
 }

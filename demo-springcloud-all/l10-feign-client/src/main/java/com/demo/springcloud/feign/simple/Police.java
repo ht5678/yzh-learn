@@ -1,7 +1,8 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.simple;
 
-import feign.Feign;
-import feign.gson.GsonDecoder;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
@@ -28,28 +29,45 @@ import feign.gson.GsonDecoder;
  * 
  * 
  * 
- * @author yuezh2   2018年8月21日 下午10:11:19
+ * @author yuezh2   2018年8月22日 上午11:20:23
  *
  */
-public class HelloApp {
+@XmlRootElement
+public class Police {
+	
+	@XmlElement
+	private Integer id;
+	@XmlElement
+	private String name;
+	@XmlElement
+	private String message;
 	
 	
-	/**
-	 * 测试的时候需要启动 cloud-police , 用8080端口
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		HelloService service = Feign.builder()
-				.decoder(new GsonDecoder()).target(HelloService.class,"http://localhost:8080");
-		
-		String result = service.hello();
-		System.out.println(result);
-		
-		//
-		Police p = service.getPolice(1);
-		System.out.println(p.getName());
-		System.out.println(p.getMessage());
-		
+	
+	@XmlTransient
+	public Integer getId() {
+		return id;
 	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	@XmlTransient
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	@XmlTransient
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 
 }

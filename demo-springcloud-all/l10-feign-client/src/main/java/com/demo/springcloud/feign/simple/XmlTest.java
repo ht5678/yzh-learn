@@ -1,7 +1,10 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.simple;
 
 import feign.Feign;
 import feign.gson.GsonEncoder;
+import feign.jaxb.JAXBContextFactory;
+import feign.jaxb.JAXBDecoder;
+import feign.jaxb.JAXBEncoder;
 
 /**
  * 
@@ -28,21 +31,27 @@ import feign.gson.GsonEncoder;
  * 
  * 
  * 
- * @author yuezh2   2018年8月22日 下午2:20:53
+ * @author yuezh2   2018年8月22日 下午4:03:42
  *
  */
-public class JsonTest {
-
+public class XmlTest {
+	
 	
 	public static void main(String[] args) {
-		HelloService service = Feign.builder().encoder(new GsonEncoder()).target(HelloService.class ,"http://localhost:8080");
-		Police p = new Police();
-		p.setMessage("gg");
-		p.setId(1);
-		p.setName("auguest");
+		JAXBContextFactory jaxbFactory = new JAXBContextFactory.Builder().build();
 		
-		String result = service.createPerson(p);
-		System.out.println(result);
+		HelloService service = Feign.builder().encoder(new JAXBEncoder(jaxbFactory))
+				.decoder(new JAXBDecoder(jaxbFactory))
+				.target(HelloService.class ,"http://localhost:8080");
+		
+		Police p = new Police();
+		p.setId(1);
+		p.setName("zhangsan");
+		p.setMessage("xx");
+		
+		Result result = service.createXMLPerson(p);
+		System.out.println(result.getMessage());
+		
 	}
-	
+
 }

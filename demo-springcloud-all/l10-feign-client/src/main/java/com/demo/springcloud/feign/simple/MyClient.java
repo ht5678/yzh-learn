@@ -1,4 +1,4 @@
-package com.demo.springcloud.feign;
+package com.demo.springcloud.feign.simple;
 
 import java.io.IOException;
 import java.net.URI;
