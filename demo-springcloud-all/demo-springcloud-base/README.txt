@@ -101,3 +101,15 @@ spring-feign整合:
 
 测试:
 http://localhost:9000/routerclient
+
+
+
+feign压缩配置:
+  feign.compression.request.enabled: 设置为true开启请
+  求压缩。
+  feign.compression.response.enabled:设置为true开户响应压缩。
+  feign.compression.request.mime-types:  数据类型列表，默认值为text/xml, application/xml, application/json。
+  feign.compression.request.min-request-size:  设置请求内容的最小阀值，默认值为2048。
+
+
+

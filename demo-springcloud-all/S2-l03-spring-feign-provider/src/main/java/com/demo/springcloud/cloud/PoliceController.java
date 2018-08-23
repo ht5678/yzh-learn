@@ -84,4 +84,16 @@ public class PoliceController {
 		return "hello"+name;
 	}
 	
+	
+	/**
+	 * 测试myurl
+	 * @param name
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value="myhello",produces=MediaType.APPLICATION_JSON_VALUE)
+	public String myhello( HttpServletRequest request){
+		return "test myurl helloworld";
+	}
+	
 }

@@ -53,4 +53,14 @@ public interface HelloClient {
 	@RequestMapping(method=RequestMethod.GET,value="call/{id}")
 	public Police getPolice(@PathVariable("id")String id);
 	
+	
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(method=RequestMethod.GET,value="myhello")
+	public String myhello();
+	
 }

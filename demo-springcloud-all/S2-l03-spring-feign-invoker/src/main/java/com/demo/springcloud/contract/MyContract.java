@@ -42,9 +42,10 @@ public class MyContract extends SpringMvcContract{
 	
 	@Override
 	protected void processAnnotationOnMethod(MethodMetadata data, Annotation methodAnnotation, Method method) {
-		
+		//其他注解的处理
 		super.processAnnotationOnMethod(data, methodAnnotation, method);
-		
+		System.out.println("自定义注解处理");
+		//自定义注解的处理
 		if(MyUrl.class.isInstance(methodAnnotation)){
 			MyUrl myUrl = method.getAnnotation(MyUrl.class);
 			String url = myUrl.url();

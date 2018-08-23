@@ -39,5 +39,17 @@ public class TestController {
 		return p;
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/myhello",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	public String myhello(){
+		String result = helloClient.myhello();
+		return result;
+	}
+	
+	
 
 }
