@@ -1,7 +1,5 @@
 package com.demo.springcloud.client;
 
-import rx.Observable;
-import rx.Observer;
 
 /**
  * 
@@ -28,47 +26,16 @@ import rx.Observer;
  * 
  * 
  * 
- * @author yuezh2   2018年8月23日 下午8:08:21
+ * @author yuezh2   2018年8月23日 下午10:13:01
  *
  */
-public class NormalMain {
-
+public class TimeoutMain {
 	
-	public static void main(String[] args) throws Exception{
-		HelloCommand command = new HelloCommand("execute");
-		String result = command.execute();
+	
+	public static void main(String[] args) {
+		TimeoutCommand c = new TimeoutCommand();
+		String result = c.execute();
 		System.out.println(result);
-		
-		
-		command = new HelloCommand("observe");
-		Observable<String> ob = command.observe();
-		System.out.println(ob.toString());
-		
-		
-		command = new HelloCommand("toObservable");
-		ob = command.toObservable();
-		ob.subscribe(new Observer() {
-
-			@Override
-			public void onCompleted() {
-				
-			}
-
-			@Override
-			public void onError(Throwable arg0) {
-				
-			}
-
-			@Override
-			public void onNext(Object arg0) {
-				System.out.println("toObservable:"+arg0);
-			}
-		});
-		
-		
-		Thread.sleep(1000);
-		
 	}
-	
-	
+
 }
