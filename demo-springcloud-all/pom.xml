@@ -33,6 +33,8 @@
     <module>S2-l03-spring-feign-server</module>
     <module>S2-l03-spring-feign-provider</module>
     <module>S2-l03-spring-feign-invoker</module>
+    <module>S2-l04-first-hystrix-server</module>
+    <module>S2-l04-first-hystrix-client</module>
   </modules>
   
       <profiles>
