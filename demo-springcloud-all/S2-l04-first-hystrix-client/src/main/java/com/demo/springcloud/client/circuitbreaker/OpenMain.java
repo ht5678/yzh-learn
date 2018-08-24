@@ -1,12 +1,11 @@
-package com.demo.springcloud.client.cb;
+package com.demo.springcloud.client.circuitbreaker;
 
-import com.netflix.hystrix.Hystrix;
+import com.netflix.config.ConfigurationManager;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandProperties;
-import com.netflix.hystrix.HystrixThreadPoolKey;
-import com.netflix.hystrix.HystrixCommand.Setter;
+
+import freemarker.template.Configuration;
 
 /**
  * 
@@ -33,34 +32,44 @@ import com.netflix.hystrix.HystrixCommand.Setter;
  * 
  * 
  * 
- * @author yuezh2   2018年8月24日 下午2:10:01
+ * @author yuezh2   2018年8月24日 下午2:30:34
  *
  */
-public class FallbackMain {
+public class OpenMain {
 	
 	
 	/**
-	 * 打开断路器以后, 总会返回fallback 
+	 * 断路器开启的条件:
+	 *		整个链路达到一定的阈值,默认情况下 , 10s钟内产生超过20次请求,则符合第一个条件
+	 *		满足第一个条件的情况下,如果请求的错误百分比大于阈值,则会打开断路器,默认为50%
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		FallbackCommand c = new FallbackCommand();
-		String result = c.execute();
-		System.out.println(result);
+		ConfigurationManager.getConfigInstance()
+				.setProperty("hystrix.command.default.circuitBreaker.requestVolumeThreshold", 10);
+		
+		//
+		for(int i = 0 ; i < 30 ; i++){
+			ErrorCommand c = new ErrorCommand();
+			c.execute();
+			//判断是否开启断路器
+			System.out.println(c.isCircuitBreakerOpen());
+		}
+		
 	}
 	
 	
 	
-	static class FallbackCommand extends HystrixCommand<String>{
+	static class ErrorCommand extends HystrixCommand<String>{
 
 		/**
 		 * 
 		 */
-		protected FallbackCommand() {
-			super(Setter.withGroupKey(
-					HystrixCommandGroupKey.Factory.asKey("TestGroupKey"))			//组名
-					.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerForceOpen(true))//打开断路器
-					);
+		protected ErrorCommand() {
+			super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ExampleGroup"))
+						.andCommandPropertiesDefaults(
+								HystrixCommandProperties.Setter()
+									.withExecutionTimeoutInMilliseconds(200)));
 		}
 
 		
@@ -69,6 +78,7 @@ public class FallbackMain {
 		 */
 		@Override
 		protected String run() throws Exception {
+			Thread.sleep(300);
 			return "success";
 		}
 
@@ -82,10 +92,7 @@ public class FallbackMain {
 		}
 		
 		
-		
-		
 	}
-	
 	
 
 }
