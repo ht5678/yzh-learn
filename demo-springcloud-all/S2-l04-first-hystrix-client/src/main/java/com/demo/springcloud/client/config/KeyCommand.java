@@ -1,8 +1,10 @@
-package com.demo.springcloud.client;
+package com.demo.springcloud.client.config;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixThreadPoolKey;
+
 
 /**
  * 
@@ -29,19 +31,24 @@ import com.netflix.hystrix.HystrixCommandProperties;
  * 
  * 
  * 
- * @author yuezh2   2018年8月23日 下午10:09:29
+ * @author yuezh2   2018年8月24日 下午2:02:15
  *
  */
-public class TimeoutCommand extends HystrixCommand<String>{
+public class KeyCommand extends HystrixCommand<String> {
 
+	
 	
 	/**
 	 * 
+	 * @param group
 	 */
-	protected TimeoutCommand() {
-		super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("ExampleGroup"))
-						.andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
-								.withExecutionTimeoutInMilliseconds(2000)));
+	protected KeyCommand() {
+		super(Setter.withGroupKey(
+				HystrixCommandGroupKey.Factory.asKey("TestGroupKey"))			//组名
+				.andThreadPoolKey(
+						HystrixThreadPoolKey.Factory.asKey("PoolKey"))					//线程key
+				.andCommandKey(HystrixCommandKey.Factory.asKey("CommandKey"))	//命令名称
+				);
 	}
 
 	
@@ -51,22 +58,7 @@ public class TimeoutCommand extends HystrixCommand<String>{
 	 */
 	@Override
 	protected String run() throws Exception {
-		Thread.sleep(3000);
-		System.out.println("执行命令");
-		return "success";
+		return null;
 	}
 
-
-	
-	/**
-	 * 
-	 */
-	@Override
-	protected String getFallback() {
-		System.out.println("执行回退命令");
-		return "fall back";
-	}
-
-	
-	
 }

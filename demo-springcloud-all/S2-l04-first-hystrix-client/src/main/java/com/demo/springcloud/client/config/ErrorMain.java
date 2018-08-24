@@ -1,10 +1,5 @@
-package com.demo.springcloud.client;
+package com.demo.springcloud.client.config;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 
 /**
  * 
@@ -31,21 +26,16 @@ import org.apache.http.util.EntityUtils;
  * 
  * 
  * 
- * @author yuezh2   2018年8月23日 下午4:41:12
+ * @author yuezh2   2018年8月23日 下午9:06:17
  *
  */
-public class HttpClientMain {
-
+public class ErrorMain {
 	
-	public static void main(String[] args) throws Exception{
-		String url = "http://localhost:8080/normalHello";
-		HttpGet httpget = new HttpGet(url);
-		
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-		HttpResponse response = httpclient.execute(httpget);
-		System.out.println(EntityUtils.toString(response.getEntity()));
-		
+	
+	public static void main(String[] args) {
+		ErrorCommand command = new ErrorCommand();
+		String result = command.execute();
+		System.out.println(result);
 	}
-	
-	
+
 }

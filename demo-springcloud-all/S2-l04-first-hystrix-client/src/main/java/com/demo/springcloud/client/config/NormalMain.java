@@ -1,4 +1,4 @@
-package com.demo.springcloud.client;
+package com.demo.springcloud.client.config;
 
 import rx.Observable;
 import rx.Observer;

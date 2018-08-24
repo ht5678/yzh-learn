@@ -1,4 +1,4 @@
-package com.demo.springcloud.client;
+package com.demo.springcloud.client.config;
 
 
 /**
@@ -26,15 +26,15 @@ package com.demo.springcloud.client;
  * 
  * 
  * 
- * @author yuezh2   2018年8月23日 下午9:06:17
+ * @author yuezh2   2018年8月23日 下午10:13:01
  *
  */
-public class ErrorMain {
+public class TimeoutMain {
 	
 	
 	public static void main(String[] args) {
-		ErrorCommand command = new ErrorCommand();
-		String result = command.execute();
+		TimeoutCommand c = new TimeoutCommand();
+		String result = c.execute();
 		System.out.println(result);
 	}
 
