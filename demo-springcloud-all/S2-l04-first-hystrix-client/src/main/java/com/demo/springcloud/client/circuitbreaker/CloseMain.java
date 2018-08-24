@@ -1,12 +1,10 @@
 package com.demo.springcloud.client.circuitbreaker;
 
-import com.demo.springcloud.client.circuitbreaker.OpenMain.ErrorCommand;
 import com.netflix.config.ConfigurationManager;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
-import com.netflix.hystrix.HystrixCommandProperties;
-import com.netflix.hystrix.HystrixCommand.Setter;
 import com.netflix.hystrix.HystrixCommandMetrics.HealthCounts;
+import com.netflix.hystrix.HystrixCommandProperties;
 
 /**
  * 
