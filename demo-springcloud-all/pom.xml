@@ -35,6 +35,9 @@
     <module>S2-l03-spring-feign-invoker</module>
     <module>S2-l04-first-hystrix-server</module>
     <module>S2-l04-first-hystrix-client</module>
+    <module>S2-l08-spring-hystrix-server</module>
+    <module>S2-l08-spring-hystrix-member</module>
+    <module>S2-l08-spring-hystrix-sale</module>
   </modules>
   
       <profiles>
