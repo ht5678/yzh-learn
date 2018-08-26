@@ -1,5 +1,10 @@
-package com.demo.springcloud.first;
+package com.demo.springcloud.hystrix.simple;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 
@@ -26,33 +31,20 @@ package com.demo.springcloud.first;
  * 
  * 
  * 
- * @author yuezh2   2018年8月17日 下午3:49:23
+ * @author yuezh2   2018年8月25日 下午10:16:54
  *
  */
-public class Member {
-	
-	
-	private Integer id;
-	
-	private String name;
-	
-	
-	
+@RestController
+public class TestController {
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	
+	@Autowired
+	private MemberService memberService;
+	
+	
+	@RequestMapping(value="/router",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	public Member router(){
+		return memberService.getMember(1);
 	}
 	
 	

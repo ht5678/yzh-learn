@@ -1,4 +1,4 @@
-package com.demo.springcloud.first;
+package com.demo.springcloud.hystrix.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;

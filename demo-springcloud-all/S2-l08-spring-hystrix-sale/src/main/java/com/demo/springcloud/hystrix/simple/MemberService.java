@@ -1,4 +1,4 @@
-package com.demo.springcloud.first;
+package com.demo.springcloud.hystrix.simple;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,11 +59,11 @@ public class MemberService {
 			})
 	public Member getMember(Integer id){
 		//模拟超时情况 , 会出异常 , 但是不用管
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		
 		//正常调用 , 如果把member给关掉 , 可以测试fallback方法
 		Member member = restTpl.getForObject("http://hystrix-member/member/{id}", Member.class , id);
