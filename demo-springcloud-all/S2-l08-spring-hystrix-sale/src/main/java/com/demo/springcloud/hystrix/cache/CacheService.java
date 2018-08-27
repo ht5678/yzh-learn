@@ -6,6 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.demo.springcloud.hystrix.simple.Member;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheRemove;
 import com.netflix.hystrix.contrib.javanica.cache.annotation.CacheResult;
 
 /**
@@ -56,6 +57,31 @@ public class CacheService {
 //		Member m = restTpl.getForObject("http://hystrix-member/{id}", Member.class,id);
 //		return m;
 		return null;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@CacheResult
+	@HystrixCommand(commandKey="cacheKey")
+	public String getCache(Integer id){
+		System.out.println("执行getCache方法");
+		return null;
+	}
+	
+	
+	/**
+	 * 需要有和getCache相同的参数和参数值 , 否则会删除缓存失效
+	 * @param id
+	 */
+	@CacheRemove(commandKey="cacheKey")
+	@HystrixCommand
+	public void removeCache(Integer id){
+		System.out.println("执行removeCache方法");
 	}
 
 }

@@ -58,4 +58,18 @@ public class CacheController {
 		return "";
 	}
 	
+	
+	
+	@RequestMapping(value="/rc",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	public String testRemoveKey(){
+		cacheService.getCache(1);
+		cacheService.getCache(1);
+		
+		cacheService.removeCache(1);
+		System.out.println("####### 分割线 #######");
+		cacheService.getCache(1);
+		return null;
+	}
+	
+	
 }
