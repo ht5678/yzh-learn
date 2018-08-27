@@ -38,6 +38,7 @@
     <module>S2-l08-spring-hystrix-server</module>
     <module>S2-l08-spring-hystrix-member</module>
     <module>S2-l08-spring-hystrix-sale</module>
+    <module>S2-l08-spring-hystrix-dashboard</module>
   </modules>
   
       <profiles>

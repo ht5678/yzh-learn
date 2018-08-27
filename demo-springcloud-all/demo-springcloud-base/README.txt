@@ -139,3 +139,17 @@ hystrix命令执行4种模式:
 隔离策略(各有优势):
 *Thread		(线程池默认10个线程)
 *Semaphore	(不支持超时和异步操作的 , 开销小)
+
+
+
+
+#监控
+S2-l08-spring-hystrix-dashboard:
+
+
+ping:
+http://localhost:8081/actuator/hystrix.stream
+
+url(里边的url写ping的url , 然后monitor-name随便写, 一开始是没有监控结果的 , 需要调用一下随便某个接口才会有结果):
+http://localhost:8082/hystrix
+

@@ -7,14 +7,14 @@
     <artifactId>demo-springcloud-all</artifactId>
     <version>2.0.1.RELEASE</version>
   </parent>
+  
   <groupId>com.demo.springcloud.all</groupId>
-  <artifactId>S2-l08-spring-hystrix-sale</artifactId>
+  <artifactId>S2-l08-spring-hystrix-dashboard</artifactId>
   <version>2.0.1.RELEASE</version>
   <packaging>war</packaging>
-  <name>S2-l08-spring-hystrix-sale Maven Webapp</name>
+  <name>S2-l08-spring-hystrix-dashboard Maven Webapp</name>
   <url>http://maven.apache.org</url>
-
-
+  
 <dependencies>
     <dependency>
         <groupId>org.springframework.cloud</groupId>
@@ -44,27 +44,10 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
     </dependency>
-
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-    </dependency>    
-    
-    <dependency>
-        <groupId>commons-logging</groupId>
-        <artifactId>commons-logging</artifactId>
-        <version>1.2</version>
-    </dependency>  
-    
-    <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-    </dependency>            
-    
-</dependencies>
-
-
+  </dependencies>
+  
+  
   <build>
-    <finalName>S2-l08-spring-hystrix-sale</finalName>
+    <finalName>S2-l08-spring-hystrix-dashboard</finalName>
   </build>
 </project>

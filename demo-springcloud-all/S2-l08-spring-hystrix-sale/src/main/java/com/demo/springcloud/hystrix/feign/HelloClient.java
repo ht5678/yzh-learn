@@ -1,10 +1,8 @@
-package com.demo.springcloud.first;
+package com.demo.springcloud.hystrix.feign;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 
@@ -31,50 +29,26 @@ import org.springframework.web.bind.annotation.RestController;
  * 
  * 
  * 
- * @author yuezh2   2018年8月17日 下午3:51:13
+ * @author yuezh2   2018年8月27日 上午11:41:26
  *
  */
-@RestController
-public class MemberController {
+//默认hystrix的groupkey就是hystrix-member
+@FeignClient(name="hystrix-member",fallback=HelloClientFallback.class)
+public interface HelloClient {
 
-	
 	/**
 	 * 
-	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value="member/{id}",produces=MediaType.APPLICATION_JSON_VALUE)
-	public Member call(@PathVariable Integer id){
-		Member p = new Member();
-		p.setId(1);
-		p.setName("zahngsa");
-		return p;
-	}
+	@RequestMapping(method=RequestMethod.GET,value="/hello")
+	public String hello();
 	
 	
 	/**
 	 * 
 	 * @return
 	 */
-	@RequestMapping(value="/hello",method=RequestMethod.GET)
-	public String hello(){
-		return "hello";
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	@RequestMapping(value="/toHello",method=RequestMethod.GET)
-	public String toHello(){
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return "timeout hello";
-	}
+	@RequestMapping(method=RequestMethod.GET,value="/toHello")
+	public String toHello();
 	
 }

@@ -4,8 +4,31 @@ spring:
   application:
     name: hystrix-sale
 
+feign:
+  hystrix:
+    enabled: true
+
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
       
+#断路器开启的条件:
+#*整个链路达到一定的阈值,默认情况下 , 10s钟内产生超过20次请求,则符合第一个条件
+#*满足第一个条件的情况下,如果请求的错误百分比大于阈值,则会打开断路器,默认为50%
+hystrix:
+  command:
+    HelloClient#toHello(): #类名+方法  , 这个是对单个方法的配置 , 如果是对所有方法都生效的话, 可以改成  default:  , 这个也是hystrix的commandkey
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 500 #超时时间
+      circuitBreaker:
+        requestVolumeThreshold: 3 #10s内有3次请求就满足第一个条件
+        
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'        
