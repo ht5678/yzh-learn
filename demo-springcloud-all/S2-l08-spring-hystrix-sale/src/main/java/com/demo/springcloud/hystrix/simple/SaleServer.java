@@ -37,10 +37,10 @@ import org.springframework.web.client.RestTemplate;
  * @author yuezh2   2018年8月17日 下午4:38:14
  *
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.demo.springcloud.hystrix"})
 @EnableEurekaClient//eureka
 @EnableCircuitBreaker//hystrix断路器
-@ServletComponentScan//servlet注解
+@ServletComponentScan(basePackages={"com.demo.springcloud.hystrix"})//servlet注解
 public class SaleServer {
 	
 	
