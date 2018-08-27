@@ -1,0 +1,7 @@
+server:
+  port: 9000
+  
+zuul:
+  routes:
+    source: #这个是跳转规则
+      url: http://localhost:8080

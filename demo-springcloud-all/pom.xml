@@ -39,6 +39,8 @@
     <module>S2-l08-spring-hystrix-member</module>
     <module>S2-l08-spring-hystrix-sale</module>
     <module>S2-l08-spring-hystrix-dashboard</module>
+    <module>S3-l01-zuul-first-server</module>
+    <module>S3-l01-zuul-first-router</module>
   </modules>
   
       <profiles>
