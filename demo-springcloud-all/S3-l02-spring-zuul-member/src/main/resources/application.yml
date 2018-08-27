@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: zuul-member
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://slave1:8761/eureka
+      

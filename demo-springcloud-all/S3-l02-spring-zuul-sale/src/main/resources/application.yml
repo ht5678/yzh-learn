@@ -1,0 +1,11 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: zuul-sale
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://slave1:8761/eureka
+      
