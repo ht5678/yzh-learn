@@ -55,7 +55,7 @@ public class TestController {
 	 * 
 	 * @return
 	 */
-	@GetMapping(value="/sale/{memberId}")
+	@GetMapping(value="/food-sale/{memberId}")
 	@ResponseBody
 	public String router(@PathVariable Integer memberId){
 		Member m = memberClient.getMember(memberId);

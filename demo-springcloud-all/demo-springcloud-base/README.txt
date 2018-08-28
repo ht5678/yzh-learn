@@ -165,3 +165,6 @@ source的请求都会跳转到8080的服务器上
 
 
 
+zuul集群测试:
+测试url:
+http://localhost:9001/sale/food-sale/1
