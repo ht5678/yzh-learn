@@ -210,3 +210,19 @@ zuul:
 路由端点(actuator可以看到路由的映射信息,默认情况下端点设置了认证 , 关掉认证就可以了):
 Actuator依赖:
 management.security.enabled设置为false
+
+
+#需要加上这段配置,不然actuator的很多功能不能生效
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'   
+        
+
+
+
+zuul的filter需要动态加载,不然每次加载都要停掉服务
+动态加载用到groovy
+
+

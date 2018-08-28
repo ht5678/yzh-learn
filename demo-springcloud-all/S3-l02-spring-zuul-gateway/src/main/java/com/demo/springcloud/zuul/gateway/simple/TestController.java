@@ -1,4 +1,4 @@
-package com.demo.springcloud.zuul.gateway;
+package com.demo.springcloud.zuul.gateway.simple;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

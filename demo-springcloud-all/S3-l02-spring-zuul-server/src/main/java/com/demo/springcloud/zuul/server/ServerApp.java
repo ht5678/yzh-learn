@@ -1,6 +1,5 @@
 package com.demo.springcloud.zuul.server;
 
-import org.apache.catalina.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
