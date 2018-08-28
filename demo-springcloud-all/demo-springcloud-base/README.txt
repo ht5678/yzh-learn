@@ -195,5 +195,18 @@ zuul路由规则:
 
 *自定义路由规则:
 *PatternServiceRouteMapper(自定义路由用到的 , 参考S3-l02-spring-zuul-gateway里边的MyConfig)
-*ignoredServices(屏蔽serviceId,不做转发或者跳转)
-*ignoredPatterns(屏蔽url,对某些url不做处理)
+*ignoredServices(屏蔽serviceId,不做转发或者跳转,多个的话用 , 分割)
+*ignoredPatterns(屏蔽url,对某些url不做处理,多个的话用 , 分割)
+
+
+
+请求头配置(会把这两个头信息给屏蔽 , 不会转发给源服务 , 源服务获取不到):
+zuul:
+  sensitiveHeaders: accept-language,cookie
+  ignoredHeaders: accept-language
+  
+  
+
+路由端点(actuator可以看到路由的映射信息,默认情况下端点设置了认证 , 关掉认证就可以了):
+Actuator依赖:
+management.security.enabled设置为false
