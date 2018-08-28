@@ -12,7 +12,17 @@ eureka:
       
 zuul:
   routes:
-    sale:
-      path: /sale/**
+    sale:                         #转发规则的前缀
+      path: /sale/**         
       serviceId: zuul-sale #会使用ribbon进行负载均衡
+    zuul-sale:                  #这段配置规则和上面的配置规则有相同的效果 , 把serviceId当成转发规则的前缀名
+      path: /sale2/**
       
+    routeTest:
+      path: /routeTest/163
+      url: http://www.163.com/  #如果url的格式既不是简单路由(http或https开头),也不是跳转路由(forward开头),那么久默认为serviceId
+    route163:                 #配置的时候可以省略path,然后请求的时候带上route163的名字就可以请求 , http://localhost:9001/route163
+      url: http://www.163.com/
+    testRoute:
+      path: /fo/**
+      url: forward:/source/receive

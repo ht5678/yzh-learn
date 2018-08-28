@@ -168,3 +168,32 @@ source的请求都会跳转到8080的服务器上
 zuul集群测试:
 测试url:
 http://localhost:9001/sale/food-sale/1
+
+测试url:
+http://localhost:9001/routeTest/163
+
+测试url:
+http://localhost:9001/route163
+
+测试跳转路由规则url:
+http://localhost:9001/fo/
+
+
+
+zuul路由规则:
+*简单路由:
+*SimpleHostRoutingFilter(底层会从HttpServletRequest中获取请求信息 , 然后包装成httpclient请求源服务):
+	配置连接池:
+	*zuul.host.maxTotalConnections:目标主机的最大连接数,默认值为200.配置该项,相当于调用了PoolingHttpClientConnectionManager的setMaxTotal方法
+	*zuul.host.maxPerRouteConnections:每个主机的初始连接数,默认为20.配置该项,相当于调用了PoolingHttpClientConnectionManager的setDefaultMaxPerRoute方法
+
+	
+*跳转路由:
+*SendForwardFilter
+
+
+
+*自定义路由规则:
+*PatternServiceRouteMapper(自定义路由用到的 , 参考S3-l02-spring-zuul-gateway里边的MyConfig)
+*ignoredServices(屏蔽serviceId,不做转发或者跳转)
+*ignoredPatterns(屏蔽url,对某些url不做处理)
