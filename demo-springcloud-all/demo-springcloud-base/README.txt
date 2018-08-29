@@ -226,3 +226,7 @@ zuul的filter需要动态加载,不然每次加载都要停掉服务
 动态加载用到groovy
 
 
+
+S3-l02-spring-zuul-gateway:动态添加过滤器
+正式运行的时候，DynamicFilter.groovy 可以添加到 demo-springcloud-all\S3-l02-spring-zuul-gateway\src\main\java\groovy\filters\route 
+过滤器就可以动态生效了,不需要重启服务
