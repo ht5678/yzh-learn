@@ -45,6 +45,7 @@
     <module>S3-l02-spring-zuul-sale</module>
     <module>S3-l02-spring-zuul-member</module>
     <module>S3-l02-spring-zuul-gateway</module>
+    <module>S3-l06-first-rabbitmq</module>
   </modules>
   
       <profiles>
