@@ -46,6 +46,9 @@
     <module>S3-l02-spring-zuul-member</module>
     <module>S3-l02-spring-zuul-gateway</module>
     <module>S3-l06-first-rabbitmq</module>
+    <module>S3-l08-springcloud-stream-server</module>
+    <module>S3-l08-springcloud-stream-producer</module>
+    <module>S3-l08-springcloud-stream-consumer</module>
   </modules>
   
       <profiles>
