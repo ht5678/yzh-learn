@@ -1,10 +1,8 @@
 package com.demo.springcloud.stream.rabbitmq;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.messaging.SubscribableChannel;
+import org.springframework.stereotype.Component;
 
 /**
  * 
@@ -31,18 +29,12 @@ import org.springframework.context.annotation.Configuration;
  * 
  * 
  * 
- * @author yuezh2   2018年9月1日 下午8:09:32
+ * @author yuezh2   2018年9月2日 下午4:16:04
  *
  */
-@SpringBootApplication
-@EnableEurekaClient
-@EnableBinding(SendService.class)
-public class ProducerApp {
+public interface SendService {
 
-	
-	public static void main(String[] args) {
-		SpringApplication.run(ProducerApp.class, args);
-	}
-
+	@Output("myInput")
+	public SubscribableChannel sendOrder();
 	
 }

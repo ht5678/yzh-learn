@@ -1,10 +1,12 @@
 package com.demo.springcloud.stream.rabbitmq;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 
@@ -31,17 +33,25 @@ import org.springframework.context.annotation.Configuration;
  * 
  * 
  * 
- * @author yuezh2   2018年9月1日 下午8:09:32
+ * @author yuezh2   2018年9月2日 下午4:43:15
  *
  */
-@SpringBootApplication
-@EnableEurekaClient
-@EnableBinding(SendService.class)
-public class ProducerApp {
+@RestController
+public class TestController {
 
+	@Autowired
+	private SendService sendService;
 	
-	public static void main(String[] args) {
-		SpringApplication.run(ProducerApp.class, args);
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value="/send",method=RequestMethod.GET)
+	public String send(){
+		Message msg = MessageBuilder.withPayload("Hello World 2".getBytes()).build();
+		sendService.sendOrder().send(msg);
+		return "success";
 	}
 
 	

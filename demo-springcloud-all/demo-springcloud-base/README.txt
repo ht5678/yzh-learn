@@ -230,3 +230,34 @@ zuul的filter需要动态加载,不然每次加载都要停掉服务
 S3-l02-spring-zuul-gateway:动态添加过滤器
 正式运行的时候，DynamicFilter.groovy 可以添加到 demo-springcloud-all\S3-l02-spring-zuul-gateway\src\main\java\groovy\filters\route 
 过滤器就可以动态生效了,不需要重启服务
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+springcloud-stream内置了三个接口:Sink  ,  Source   , Processor
+
+public interface Sink{
+	String INPUT = "input";
+	
+	@Input(Sink.INPUT)
+	SubscribableChannel input();
+}
+
+
+public interface Sink{
+	String OUTPUT = "input";
+	
+	@Input(Sink.OUTPUT)
+	SubscribableChannel output();
+}
+
+
+
+根据上面两个接口得知 , 实际上帮我们内置了 input 和 output 两个通道 , 那么在大多数情况下 , 
+我们就可以不必编写服务接口 , 甚至不必使用@Input和@Output两个注解 , 以消费者为例 , 
+在绑定通道时加入Sink.class
+
+
+Processor接口继承于Sink与Source , 在实际应用中, 可以只考虑使用Processor.
