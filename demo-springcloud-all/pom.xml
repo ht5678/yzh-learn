@@ -50,6 +50,7 @@
     <module>S3-l08-springcloud-stream-producer</module>
     <module>S3-l08-springcloud-stream-consumer</module>
     <module>S4-l01-springcloud-config-bootstrap</module>
+    <module>S4-l02-springcloud-config-server</module>
   </modules>
   
       <profiles>

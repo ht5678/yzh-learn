@@ -288,3 +288,44 @@ Processor接口继承于Sink与Source , 在实际应用中, 可以只考虑使�
 *在主应用上下文初始化之前创建
 *创建时会读取远程配置
 
+
+
+配置SVN仓库:
+*配置profile:
+	*git:默认值,表示去Git仓库读取配置文件
+	*subversion:表示去svn仓库读取配置文件
+	*native:将会去本地的文件系统中读取配置文件
+	*vault:去vault中读取配置文件,vault是一款资源控制工具,可对资源实现安全访问
+	
+
+
+encrypt:
+  keyStore:
+    location: classpath:/myTest.keystore	#keystore的位置
+    password: 	mypassword						#密钥库的密码
+    alias: testKey										#密钥对的别名
+    secret: mysecret								#密钥口令
+    
+spring:
+  profiles:
+    active: subversion
+  cloud:
+    config:
+      server:
+        svn:
+          uri: https://localhost/svn/test-project
+          username: myusername
+          password: mypassword
+        default-label: default-config   #表示uri路径下的default-config目录下
+        health:
+          enabled: false
+          respositories:
+            book-service:
+              label: health-test
+
+
+security:
+  user:
+    name: root
+    password: mypassword
+    

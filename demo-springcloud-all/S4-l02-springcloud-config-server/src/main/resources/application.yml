@@ -1,0 +1,18 @@
+server:
+  port: 8888
+  
+  
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://gitlab.club.lenovo.com.cn/data/lenovo-loganalysis.git
+          username: myusername
+          password: mypassword
+        default-label: default-config   #表示uri路径下的default-config目录下
+        health:
+          enabled: false
+          respositories:
+            book-service:
+              label: health-test
