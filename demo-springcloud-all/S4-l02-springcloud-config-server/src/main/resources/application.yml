@@ -1,19 +1,28 @@
 server:
   port: 8888
-  
+ 
+ 
+management:
+  security:
+    enabled: false
 
-
+#http://localhost:8888/address-dev.properties
+#http://localhost:8888/test-dev.properties  (一定要加上-dev,不然不成功)
   
 spring:
+  application:
+    name: config-server
   cloud:
     config:
+      label: master
       server:
         git:
-          uri: http://gitlab.club.lenovo.com.cn/java/club-confs/
+          uri: http://gitlab.club.lenovo.com.cn/java/club-confs.git
           username: yuezh2@lenovo.com
           password: yuezhihua
-          skip-ssl-validation: true
-        default-label: lenovo-api/resources/properties   #表示uri路径下的default-config目录下
+          #skip-ssl-validation: true
+          search-paths: /lenovo-push/resources
+          #default-label: /lenovo-api/resources/properties   #表示uri路径下的default-config目录下
         health:
           enabled: false
           respositories:
