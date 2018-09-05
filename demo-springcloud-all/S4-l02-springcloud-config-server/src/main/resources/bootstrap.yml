@@ -1,0 +1,3 @@
+#配置中心加密
+encrypt:
+  key: mykey

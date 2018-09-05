@@ -377,3 +377,13 @@ spring.cloud.config.label: xxx
 都会在缓存中进行销毁,当这些bean被再次引用时,就会创建新的实例,以此达到一个'刷新的效果'
 @RefreshScope
 
+
+
+
+
+
+配置中心的加解密都依赖JCE
+记得encrypt.key: mykey 配置一定要放到bootstrap.yml文件里 , 不然会不成功 , 也可能跟版本有关系
+
+配置服务器读取到这里的时候 , 就会自动解密 , 要加上'{cipher}'
+test.user.password: '{cipher}ff477c23e45efd59def381ec2d487e473060e803517153fb5187bfd590f52ebb48144f66b8eca2b58eab3ac9df8a4e66'

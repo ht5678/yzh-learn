@@ -6,6 +6,9 @@ management:
   security:
     enabled: false
 
+
+
+
 #http://localhost:8888/address-dev.properties
 #http://localhost:8888/test-dev.properties  (一定要加上-dev,不然不成功)
   

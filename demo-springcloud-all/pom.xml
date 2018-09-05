@@ -52,6 +52,7 @@
     <module>S4-l01-springcloud-config-bootstrap</module>
     <module>S4-l02-springcloud-config-server</module>
     <module>S4-l02-springcloud-config-client</module>
+    <module>S4-l03-springcloud-config-files</module>
   </modules>
   
       <profiles>
