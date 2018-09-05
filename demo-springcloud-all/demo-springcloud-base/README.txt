@@ -329,3 +329,51 @@ security:
     name: root
     password: mypassword
     
+
+    
+    
+    
+    
+    
+    
+客户端获取配置服务器的配置:
+spring:
+  application:
+    name: config-client
+  cloud:
+    config:
+      url: http://localhost:8888
+      profile: dev         #会在config-server的searchpaths下读取 config-client-dev.yml文件
+      
+    
+    
+      
+---
+    
+    
+      
+spring:
+  cloud:
+    config:
+      url: http://localhost:8888
+      profile: dev         
+      name: config-client2  #会在config-server的searchpaths下读取 config-client2-dev.yml文件
+    
+    
+
+如果既没有cloud.config.name , 也没有application.name , 则读取 application-dev.yml
+
+客户端读取多份配置文件:
+spring.cloud.config.profile: hystrix,zuul
+客户端配置文件目录(会覆盖server的test-label):
+spring.cloud.config.label: xxx
+
+
+
+
+刷新bean:
+在spring的容器中 , 有一个类型为RefreshBean的bean,当'/refresh'端点被访问时,负责处理刷新的   ContextRefresher 类  , 
+会先去远程的配置服务器刷新配置,然后再调用RefreshBean的refreshAll方法处理实例,容器中使用@RefreshBean注解进行修饰的bean,
+都会在缓存中进行销毁,当这些bean被再次引用时,就会创建新的实例,以此达到一个'刷新的效果'
+@RefreshScope
+

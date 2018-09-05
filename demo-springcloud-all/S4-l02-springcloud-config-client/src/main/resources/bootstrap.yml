@@ -1,0 +1,16 @@
+spring:
+  #application:
+  #  name: config-client
+  cloud:
+    config:
+      url: http://localhost:8888
+      profile: dev         #会在config-server的searchpaths下读取 config-client-dev.yml文件
+      name: config-client2
+      
+      
+      
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  
