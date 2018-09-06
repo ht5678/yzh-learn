@@ -1,4 +1,4 @@
-package com.demo.springcloud.config.client;
+package com.demo.springcloud.bus;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -45,7 +45,7 @@ public class TestRefresh {
 	public static void main(String[] args) throws Exception{
 		//端口号是要更新配置的客户端的端口号
 		CloseableHttpClient client = HttpClients.createDefault();
-		HttpPost post = new HttpPost("http://localhost:9000/actuator/refresh");
+		HttpPost post = new HttpPost("http://localhost:10000/actuator/bus-refresh");
 		HttpResponse response = client.execute(post);
 		System.out.println(EntityUtils.toString(response.getEntity()));
 	}

@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: eureka-config-client
+  rabbitmq:
+    host: 10.99.205.17
+    port: 5672
+    username: admin
+    password: p@ssw0rd
   cloud:
     config:
       #配置服务器的用户名密码 , 用于安全

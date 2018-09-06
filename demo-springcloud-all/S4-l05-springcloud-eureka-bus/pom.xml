@@ -7,15 +7,12 @@
     <artifactId>demo-springcloud-all</artifactId>
     <version>2.0.1.RELEASE</version>
   </parent>
-  
-  
   <groupId>com.demo.springcloud.all</groupId>
-  <artifactId>S4-l05-springcloud-eureka-config-client</artifactId>
+  <artifactId>S4-l05-springcloud-eureka-bus</artifactId>
   <version>2.0.1.RELEASE</version>
   <packaging>war</packaging>
-  <name>S4-l05-springcloud-eureka-config-client Maven Webapp</name>
+  <name>S4-l05-springcloud-eureka-bus Maven Webapp</name>
   <url>http://maven.apache.org</url>
-  
   
   
   <dependencies>
@@ -27,19 +24,14 @@
          <groupId>org.springframework.cloud</groupId>
          <artifactId>spring-cloud-starter-config</artifactId>
      </dependency>        
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <!-- 客户端启动用于 错误重试  配置   ,  默认重试6次 -->
-    <dependency>
-         <groupId>org.springframework.retry</groupId>
-         <artifactId>spring-retry</artifactId>
-     </dependency>        
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-aop</artifactId>
-    </dependency> 
+     <dependency>
+         <groupId>org.springframework.cloud</groupId>
+         <artifactId>spring-cloud-config-server</artifactId>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-security</artifactId>
+     </dependency>    
     <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -47,12 +39,7 @@
     <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
-    </dependency>     
-    <!-- httpclient -->
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-    </dependency>
+    </dependency>         
     <dependency>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-bus-amqp</artifactId>
@@ -61,6 +48,6 @@
   
   
   <build>
-    <finalName>S4-l05-springcloud-eureka-config-client</finalName>
+    <finalName>S4-l05-springcloud-eureka-bus</finalName>
   </build>
 </project>
