@@ -1,0 +1,33 @@
+server:
+  port: 8899
+ 
+ 
+management:
+  security:
+    enabled: false
+
+
+#http://localhost:8888/address-dev.properties
+#http://localhost:8888/test-dev.properties  (一定要加上-dev,不然不成功)
+  
+spring:
+  #配置服务器加密
+  security:
+    user:
+      name: root
+      password: 12345
+  application:
+    name: eureka-config-server
+  cloud:
+    config:
+      label: master
+      server:
+        git:
+          uri: https://github.com/ht5678/yzh-learn
+          search-paths: /demo-springcloud-all/S4-l03-springcloud-config-files/eureka
+              
+              
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
