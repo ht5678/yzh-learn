@@ -419,3 +419,6 @@ test.user.password: '{cipher}ff477c23e45efd59def381ec2d487e473060e803517153fb518
 
 
 
+
+
+*****************************config-client必须是bootstrap.yml配置文件 , bootstrap.yml文件的意思是会从远程读取配置来引导初始化项目, application.yml没有这样的效果*****************************
