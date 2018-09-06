@@ -1,3 +1,18 @@
+
+#**********************对称加密
 #配置中心加密
+#encrypt:
+#  key: mykey
+
+
+
+  
+  
+#**********************非对称加密
+#keytool -genkeypair -alias mytestkey -keyalg RSA -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" -keypass changeme -keystore server.jks -storepass letmein  
 encrypt:
-  key: mykey
+  keyStore:
+    location: classpath:/server.jks         #keystore位置
+    password: letmein                    #
+    alias: mytestkey
+    secret: changeme

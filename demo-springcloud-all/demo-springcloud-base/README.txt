@@ -387,3 +387,10 @@ spring.cloud.config.label: xxx
 
 配置服务器读取到这里的时候 , 就会自动解密 , 要加上'{cipher}'
 test.user.password: '{cipher}ff477c23e45efd59def381ec2d487e473060e803517153fb5187bfd590f52ebb48144f66b8eca2b58eab3ac9df8a4e66'
+
+
+
+
+
+
+配置中心的非对称加密:
