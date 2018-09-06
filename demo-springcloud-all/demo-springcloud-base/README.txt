@@ -394,3 +394,28 @@ test.user.password: '{cipher}ff477c23e45efd59def381ec2d487e473060e803517153fb518
 
 
 配置中心的非对称加密:
+
+
+
+
+
+
+客户端连接   配置服务器  的重置配置项:
+*spring.cloud.config.retry.initial-interval: 初始的重试间隔,  默认1000ms
+*spring.cloud.config.retry.max-attempts: 最大重试次数,默认为6
+*spring.cloud.config.retry.max-interval: 最大的重试间隔,默认为2000ms
+*spring.cloud.config.retry.multiplier:      重试间隔的递增系数, 默认为1.1
+
+
+
+
+
+服务器的配置访问规则:
+*/{application}/{profile}[/{label}]
+*/{application}-{profile}.yml
+*/{label}/{application}-{profile}.yml
+*/{application}-{profile}.properties
+*/{label}/{application}-{profile}.properties
+
+
+

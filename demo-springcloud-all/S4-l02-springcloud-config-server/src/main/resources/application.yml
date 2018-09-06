@@ -13,6 +13,12 @@ management:
 #http://localhost:8888/test-dev.properties  (一定要加上-dev,不然不成功)
   
 spring:
+  #配置服务器加密
+  security:
+    user:
+      name: root
+      password: 12345
+      
   application:
     name: config-server
   cloud:
@@ -20,14 +26,22 @@ spring:
       label: master
       server:
         git:
-          uri: http://gitlab.club.lenovo.com.cn/java/club-confs.git
-          username: yuezh2@lenovo.com
-          password: yuezhihua
+        
+        #gitlab
+#          uri: http://gitlab.club.lenovo.com.cn/java/club-confs.git
+#          username: yuezh2@lenovo.com
+#          password: yuezhihua
+#          search-paths: /lenovo-push/resources
+
+         #github
+          uri: https://github.com/ht5678/yzh-learn
           #skip-ssl-validation: true
-          search-paths: /lenovo-push/resources
+          search-paths: /demo-springcloud-all/S4-l03-springcloud-config-files/lenovo-push/resources
           #default-label: /lenovo-api/resources/properties   #表示uri路径下的default-config目录下
         health:
-          enabled: false
           respositories:
-            book-service:
+            test-service:
               label: health-test
+              
+              
+

@@ -29,6 +29,15 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
+    <!-- 客户端启动用于 错误重试  配置   ,  默认重试6次 -->
+    <dependency>
+         <groupId>org.springframework.retry</groupId>
+         <artifactId>spring-retry</artifactId>
+     </dependency>        
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>    
     <!-- httpclient -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
