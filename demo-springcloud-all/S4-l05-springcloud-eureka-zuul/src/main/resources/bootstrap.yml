@@ -1,0 +1,32 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: eureka-config-zuul
+  cloud:
+    config:
+      #配置服务器的用户名密码 , 用于安全
+      username: root
+      password: 12345
+      #用于替换uri , 不用设置ip , 直接使用serviceId
+      discovery: 
+        enabled: true
+        service-id: eureka-config-server
+      profile: dev         #会在config-server的searchpaths下读取 config-client-dev.yml文件
+      name: eureka-config-zuul
+      
+      
+      
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/      
+      
+      
+      
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  
