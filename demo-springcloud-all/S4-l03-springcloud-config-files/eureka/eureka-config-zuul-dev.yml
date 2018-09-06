@@ -4,4 +4,4 @@ zuul:
   routes:
     testRoute:
       path: /routeTest
-      url: http://www.163.com/
+      url: http://www.163.com
