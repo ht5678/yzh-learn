@@ -29,8 +29,8 @@ spring:
         
         #gitlab
 #          uri: http://gitlab.club.lenovo.com.cn/java/club-confs.git
-#          username: yuezh2@lenovo.com
-#          password: yuezhihua
+#          username: changeusername
+#          password: changepassword
 #          search-paths: /lenovo-push/resources
 
          #github
