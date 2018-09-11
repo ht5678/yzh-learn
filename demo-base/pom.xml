@@ -48,8 +48,12 @@
             <artifactId>shiro-spring</artifactId>
         </dependency>
         
-        
-    
+    <!-- fastdfs -->
+    <dependency>
+	    <groupId>org.csource</groupId>
+	    <artifactId>fastdfs-client-java</artifactId>
+	    <version>1.27-SNAPSHOT</version>
+	</dependency>
     
     <!-- mqtt -->
     <dependency>
