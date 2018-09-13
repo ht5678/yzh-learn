@@ -30,13 +30,13 @@
 
 	<bean id="oauthdatasource" parent="oauth_alive_base_config">
 		<property name="jdbcUrl">
-			<value>jdbc:mysql://localhost:3306/?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true</value>
+			<value>jdbc:mysql://lenovodb:3306/?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true</value>
 		</property>
 		<property name="user">
-			<value>root</value>
+			<value>myuser</value>
 		</property>
 		<property name="password">
-			<value>admin</value>
+			<value>mypassword</value>
 		</property>
 	</bean>
 
@@ -58,6 +58,12 @@
 	
 	
 	<bean id="otemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref bean="oauthdatasource" />
+		</property>
+	</bean>
+	
+	<bean id="template" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource">
 			<ref bean="oauthdatasource" />
 		</property>
