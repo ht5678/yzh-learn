@@ -26,7 +26,7 @@ public class TicketDaoImpl implements TicketDao {
 	private static final Logger LOGGER = Logger.getLogger(TicketDaoImpl.class);
 	
 	@Autowired
-	private JdbcTemplate otemplate;
+	private JdbcTemplate template;
 	
 	
 	/**
@@ -58,7 +58,7 @@ public class TicketDaoImpl implements TicketDao {
 	public TicketInfo getTicket(String ticketid){
 		TicketInfo ticket = null;
 		try{
-			ticket = otemplate.query("select * from test.ticket_main where ticketid=?", new Object[]{ticketid} , new ResultSetExtractor<TicketInfo>(){
+			ticket = template.query("select * from test.ticket_main where ticketid=?", new Object[]{ticketid} , new ResultSetExtractor<TicketInfo>(){
 
 				@Override
 				public TicketInfo extractData(ResultSet rs) throws SQLException, DataAccessException {

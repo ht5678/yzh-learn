@@ -29,7 +29,7 @@ public class TicketController {
 	
 	
 	/**
-	 * 
+	 * http://localhost:8080/demo-base/mq/buyTicket
 	 * @param idcard
 	 * @return
 	 */

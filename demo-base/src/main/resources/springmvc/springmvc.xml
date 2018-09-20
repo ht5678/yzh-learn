@@ -28,7 +28,7 @@
 	<context:component-scan base-package="miaosha"/>
 	
 	<context:component-scan base-package="servlet3"/>
-    
+    <import resource="classpath*:springmvc/template.xml"/>
 
 
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
