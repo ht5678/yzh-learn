@@ -19,7 +19,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  *
  */
 @Configuration
-@PropertySource("classpath:datasource.properties")
+@PropertySource("classpath:datasource.properties")//默认是application.properties, 不需要指定
 public class DataSourceConfig {
 	
 	/**
@@ -40,7 +40,7 @@ public class DataSourceConfig {
      */
     @Bean(name = "secondaryDataSource")
     @Qualifier("secondaryDataSource")
-    @Primary
+    @Primary		//主数据源
     @ConfigurationProperties(prefix="spring.datasource.secondary")
     public DataSource secondaryDataSource() {
         return DataSourceBuilder.create().build();

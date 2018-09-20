@@ -20,6 +20,10 @@ public class SimpleController {
 	private SimpleDao simpleDao;
 	
 	
+	/**
+	 * http://localhost:8761/simple
+	 * @return
+	 */
 	@RequestMapping(value="simple")
 	public String testSimple(){
 		simpleDao.testTemplate1();
