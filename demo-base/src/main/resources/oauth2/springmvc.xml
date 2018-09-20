@@ -25,7 +25,7 @@
     <!-- 扫描spring包路径 -->
 	<context:component-scan base-package="oauth2"/>
 	<context:component-scan base-package="sla"/>
-	<context:component-scan base-package="miaosha.mq"/>
+	<context:component-scan base-package="miaosha"/>
 	<context:component-scan base-package="servlet3"/>
 	
 	<import resource="classpath*:oauth2/template.xml"/>

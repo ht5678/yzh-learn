@@ -19,6 +19,7 @@ import miaosha.mq.service.TicketService;
  *
  */
 @Controller
+@RequestMapping("mq")
 public class TicketController {
 
 	
@@ -33,7 +34,7 @@ public class TicketController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping("/mq/buyTicket")
+	@RequestMapping("/buyTicket")
 	public String buyTicket(@RequestParam(required=false)String idcard){
 		TicketInfo ticket = null;
 		try{

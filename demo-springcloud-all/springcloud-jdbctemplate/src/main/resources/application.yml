@@ -1,0 +1,26 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    
+    
+    
+spring:
+  datasource:
+    primary:
+      jdbcUrl: jdbc:mysql://lenovodb:3306/?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true
+      username: myuser
+      password: mypassword
+      driver-class-name: com.mysql.jdbc.Driver
+
+
+spring:
+  datasource:
+    secondary:
+      jdbcUrl: jdbc:mysql://m3103.lenovo.com:3103/?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true
+      username: myuser
+      password: mypassword
+      driver-class-name: com.mysql.jdbc.Driver
