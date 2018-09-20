@@ -20,6 +20,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleDaoImpl implements SimpleDao {
 
+
+	
     @Autowired
     @Qualifier("primaryJdbcTemplate")
     private JdbcTemplate jdbcTemplate1;
