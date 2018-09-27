@@ -30,7 +30,7 @@
 
 	<bean id="datasource" parent="user_alive_base_config">
 		<property name="jdbcUrl">
-			<value>jdbc:mysql://10.250.0.30:13100/?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true</value>
+			<value>jdbc:mysql://10.250.5.13:3306/?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true</value>
 		</property>
 		<property name="user">
 			<value>myuser</value>
