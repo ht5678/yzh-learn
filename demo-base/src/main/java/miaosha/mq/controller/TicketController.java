@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSON;
 
@@ -18,7 +19,8 @@ import miaosha.mq.service.TicketService;
  * @author yuezh2   2018年9月12日 下午5:14:23
  *
  */
-@Controller
+//@Controller
+@RestController
 @RequestMapping("mq")
 public class TicketController {
 
@@ -33,7 +35,7 @@ public class TicketController {
 	 * @param idcard
 	 * @return
 	 */
-	@ResponseBody
+//	@ResponseBody
 	@RequestMapping("/buyTicket")
 	public String buyTicket(@RequestParam(required=false)String idcard){
 		TicketInfo ticket = null;

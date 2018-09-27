@@ -38,6 +38,35 @@
 		<property name="password">
 			<value>mypassword</value>
 		</property>
+		<!-- 用于miaosha包下 , 秒杀测试高并发情况下 , 用rabbitmq进行削弱峰值流量   start -->
+		<property name="minPoolSize">
+			<value>2</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>2</value>
+		</property>
+		<!-- 用于miaosha包下 , 秒杀测试高并发情况下 , 用rabbitmq进行削弱峰值流量   end -->
+		<property name="idleConnectionTestPeriod">
+			<value>25</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>300</value>
+		</property>
+		<property name="breakAfterAcquireFailure">
+			<value>false</value>
+		</property>
+		<property name="checkoutTimeout">
+			<value>6000</value>
+		</property>
+		<property name="acquireRetryAttempts">
+			<value>30</value>
+		</property>
+		<property name="acquireRetryDelay">
+			<value>1000</value>
+		</property>
+		<property name="maxConnectionAge">
+			<value>600</value>
+		</property>
 	</bean>
 
 	
