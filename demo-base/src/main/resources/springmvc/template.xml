@@ -46,7 +46,7 @@
 			<value>2</value>
 		</property>
 		<!-- 用于miaosha包下 , 秒杀测试高并发情况下 , 用rabbitmq进行削弱峰值流量   end -->
-		<property name="idleConnectionTestPeriod">
+		<!-- <property name="idleConnectionTestPeriod">
 			<value>25</value>
 		</property>
 		<property name="maxIdleTime">
@@ -66,7 +66,7 @@
 		</property>
 		<property name="maxConnectionAge">
 			<value>600</value>
-		</property>
+		</property> -->
 	</bean>
 
 	

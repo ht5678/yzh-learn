@@ -2,6 +2,7 @@ package miaosha.mq;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -24,6 +25,8 @@ public class TestRabbitMqMiaosha {
 	CloseableHttpClient client = HttpClients.createDefault();
 	
 	private static final int num = 200;
+	
+	private static int count = 1;
 	
 	private final String url = "http://localhost:8080/demo-base/mq/buyTicket";
 	
@@ -64,7 +67,11 @@ public class TestRabbitMqMiaosha {
 				HttpPost post = new HttpPost(url);
 				HttpResponse response = client.execute(post);
 				
-				System.out.println(EntityUtils.toString(response.getEntity()));
+				String result = EntityUtils.toString(response.getEntity());
+				if(StringUtils.isNotEmpty(result) && result.contains("buytime")){
+					System.out.println(++count);
+				}
+				System.out.println(result);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

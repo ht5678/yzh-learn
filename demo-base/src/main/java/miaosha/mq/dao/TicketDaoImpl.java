@@ -74,6 +74,7 @@ public class TicketDaoImpl implements TicketDao {
 				}
 				
 			});
+			System.out.println("成功查询一次购买信息");
 		}catch(Exception e){
 			LOGGER.error(String.format("the error occured:%s", e.getMessage()), e);
 		}
