@@ -40,6 +40,7 @@ public class TestRabbitMqMiaosha {
 	@Test
 	public void testInvokeRemote()throws InterruptedException{
 		for(int i = 0 ; i < num ; i ++){
+			System.out.println("test"+i);
 			new Thread(new TicketQuest()).start();
 			cdl.countDown();
 		}
