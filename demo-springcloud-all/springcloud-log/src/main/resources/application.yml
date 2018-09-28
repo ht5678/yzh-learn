@@ -1,0 +1,16 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: springcloud-log
+      
+      
+logging:
+  config: classpath:log4j2.xml
+  
+  
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
