@@ -61,7 +61,13 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-		
+	
+	<!-- rabbitmq -->
+	<dependency>
+      <groupId>com.rabbitmq</groupId>
+      <artifactId>amqp-client</artifactId>
+      <version>5.1.2</version>
+    </dependency>
     <!-- fastdfs -->
     <dependency>
 	    <groupId>org.csource</groupId>
@@ -132,7 +138,11 @@
 	    <artifactId>hessian</artifactId>
 	</dependency>
 
-    
+	<!-- springcloud  - 消息队列 -->
+<!--    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+    </dependency> -->
     
     <!-- freemarker -->
     
