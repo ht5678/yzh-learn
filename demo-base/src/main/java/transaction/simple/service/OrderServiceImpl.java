@@ -52,25 +52,33 @@ public class OrderServiceImpl implements OrderService {
 	public void pay(final Order order) {
 		try{
 			//获取分布式锁
-			boolean lockStatus = transactionTemplate.execute(new TransactionCallback<Boolean>() {
+			Integer applyId = transactionTemplate.execute(new TransactionCallback<Integer>() {
 
 				@Override
-				public Boolean doInTransaction(TransactionStatus status) {
+				public Integer doInTransaction(TransactionStatus status) {
 					//基于状态机实现 , update order set status=3 where id=? and status=0
-					int result = orderDao.updateStatusByPrimaryKeyAndStatus(order.getId(), Constant.ORDER_STATUS_DEALING, Constant.ORDER_STATUS_DEFAULT);
+					boolean lockStatus = 1 == orderDao.updateStatusByPrimaryKeyAndStatus(order.getId(), Constant.ORDER_STATUS_DEALING, Constant.ORDER_STATUS_DEFAULT);
 					
-					if(1 == result){
+					if(lockStatus){
 						OrderApply apply = new OrderApply();
-						
+						apply.setOrderId(order.getId());
+						apply.setStatus(1);		//1表示未处理
+						orderApplyDao.insert(apply);
+						//TODO
+//						return apply.getOrderId();
 					}
-					
-					return null;
+					//没有获得锁,返回-1
+					return -1;
 				}
 				
 			});
 			
 			
-			
+			//获得了锁
+			if(applyId>0){
+				Order bankOrder = new Order();
+//				bankOrder.setId(applyId);
+			}
 			
 		}catch(Exception e){
 			e.printStackTrace();

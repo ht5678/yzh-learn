@@ -2,6 +2,8 @@ package transaction.simple.dao;
 
 import org.springframework.stereotype.Component;
 
+import transaction.simple.model.OrderApply;
+
 /**
  * 
  * 
@@ -12,4 +14,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderApplyDaoImpl implements OrderApplyDao {
 
+	
+	/**
+	 * 
+	 * @param apply
+	 * @return
+	 */
+	public int insert(OrderApply apply){
+		System.out.println("执行了方法OrderApplyDaoImpl.insert("+apply+")");
+		return 1;
+	}
+	
+	
 }
