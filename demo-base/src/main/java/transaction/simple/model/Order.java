@@ -1,4 +1,4 @@
-package transaction.simple;
+package transaction.simple.model;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * @author sdwhy
  *
  */
-public class OrderVO {
+public class Order {
 
 	//唯一订单号
 	private String id;
@@ -15,6 +15,11 @@ public class OrderVO {
 	private BigDecimal amount;
 	//其他属性
 	private String name;
+	
+	private int status;
+	
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -33,6 +38,13 @@ public class OrderVO {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
 	
 	
 	@Override

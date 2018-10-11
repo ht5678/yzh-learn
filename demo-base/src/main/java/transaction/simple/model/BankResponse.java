@@ -1,4 +1,4 @@
-package transaction.simple;
+package transaction.simple.model;
 
 
 /**
