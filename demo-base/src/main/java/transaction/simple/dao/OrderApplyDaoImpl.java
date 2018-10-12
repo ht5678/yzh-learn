@@ -24,6 +24,16 @@ public class OrderApplyDaoImpl implements OrderApplyDao {
 		System.out.println("执行了方法OrderApplyDaoImpl.insert("+apply+")");
 		return 1;
 	}
+
+	
+	/**
+	 * 
+	 */
+	@Override
+	public int updateByPrimaryKeySelective(OrderApply apply) {
+		System.out.println("执行了方法OrderApplyDaoImpl.updateByPrimaryKeySelective("+apply+")");
+		return 1;
+	}
 	
 	
 }

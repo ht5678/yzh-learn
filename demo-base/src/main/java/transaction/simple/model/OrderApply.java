@@ -11,17 +11,10 @@ package transaction.simple.model;
  */
 public class OrderApply {
 
-	private String orderId;
+	private Integer orderId;
 	
 	private int status;
 
-	public String getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
 
 	public int getStatus() {
 		return status;
@@ -29,6 +22,14 @@ public class OrderApply {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public Integer getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 	
 	

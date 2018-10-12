@@ -1,6 +1,7 @@
 package transaction.simple.service;
 
-
+import transaction.simple.model.Order;
+import transaction.simple.model.RespEntity;
 
 /**
  * 
@@ -11,4 +12,10 @@ package transaction.simple.service;
  */
 public interface BankService {
 
+	/**
+	 * 
+	 * @return
+	 */
+	public RespEntity<Object> outMoney(Order order);
+	
 }

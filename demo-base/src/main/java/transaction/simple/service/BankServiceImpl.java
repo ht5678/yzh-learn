@@ -2,6 +2,9 @@ package transaction.simple.service;
 
 import org.springframework.stereotype.Component;
 
+import transaction.simple.model.Order;
+import transaction.simple.model.RespEntity;
+
 /**
  * 
  * 
@@ -12,4 +15,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class BankServiceImpl implements BankService {
 
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public RespEntity<Object> outMoney(Order order){
+		System.out.println("执行了方法BankServiceImpl.outMoney("+order+")");
+		return null;
+	}
+	
 }

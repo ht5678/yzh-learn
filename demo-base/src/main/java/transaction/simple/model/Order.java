@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class Order {
 
 	//唯一订单号
-	private String id;
+	private Integer id;
 	//金额
 	private BigDecimal amount;
 	//其他属性
@@ -20,12 +20,6 @@ public class Order {
 	
 	
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -44,6 +38,13 @@ public class Order {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
 	
 	
 	

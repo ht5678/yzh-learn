@@ -1,6 +1,6 @@
 package transaction.simple.dao;
 
-
+import transaction.simple.model.Order;
 
 /**
  * 
@@ -11,10 +11,18 @@ package transaction.simple.dao;
  */
 public interface OrderDao {
 	
+	
 	/**
 	 * 
 	 * @return
 	 */
-	public int updateStatusByPrimaryKeyAndStatus(String orderId , int nextStatus  , int preStatus);
+	public int updateByPrimaryKeySelective(Order order);
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int updateStatusByPrimaryKeyAndStatus(Integer orderId , int nextStatus  , int preStatus);
 
 }

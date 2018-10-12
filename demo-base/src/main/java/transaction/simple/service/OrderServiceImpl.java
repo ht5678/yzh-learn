@@ -13,6 +13,7 @@ import transaction.simple.dao.OrderDao;
 import transaction.simple.model.Constant;
 import transaction.simple.model.Order;
 import transaction.simple.model.OrderApply;
+import transaction.simple.model.RespEntity;
 
 /**
  * 
@@ -52,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 	public void pay(final Order order) {
 		try{
 			//获取分布式锁
-			Integer applyId = transactionTemplate.execute(new TransactionCallback<Integer>() {
+			final Integer applyId = transactionTemplate.execute(new TransactionCallback<Integer>() {
 
 				@Override
 				public Integer doInTransaction(TransactionStatus status) {
@@ -64,9 +65,8 @@ public class OrderServiceImpl implements OrderService {
 						apply.setOrderId(order.getId());
 						apply.setStatus(1);		//1表示未处理
 						orderApplyDao.insert(apply);
-						//TODO
-//						return apply.getOrderId();
-					}
+						return apply.getOrderId();
+					} 
 					//没有获得锁,返回-1
 					return -1;
 				}
@@ -76,8 +76,40 @@ public class OrderServiceImpl implements OrderService {
 			
 			//获得了锁
 			if(applyId>0){
-				Order bankOrder = new Order();
-//				bankOrder.setId(applyId);
+				final Order bankOrder = new Order();
+				bankOrder.setId(applyId);			//扣款申请的流水号
+				//调用远程银行服务(扣款)
+				RespEntity<Object> respEntity = bankService.outMoney(bankOrder);
+				//替代方案
+				if(respEntity!=null){
+					if("0000".equals(respEntity.getKey())){
+						//交易成功
+						order.setStatus(Constant.ORDER_STATUS_SUCCESS);
+					}else{
+						//交易失败
+						order.setStatus(Constant.ORDER_STATUS_FAIL);
+					}
+				}
+				
+				transactionTemplate.execute(new TransactionCallback<Object>() {
+
+					@Override
+					public Object doInTransaction(TransactionStatus status) {
+						//更新状态
+						orderDao.updateByPrimaryKeySelective(bankOrder);
+						
+						OrderApply apply = new OrderApply();
+						apply.setOrderId(applyId);
+						apply.setStatus(order.getStatus());		//跟订单状态一样
+						
+						orderApplyDao.updateByPrimaryKeySelective(apply);
+						return null;
+					}
+					
+				});
+				
+			}else{
+				System.out.println("锁失败了");
 			}
 			
 		}catch(Exception e){

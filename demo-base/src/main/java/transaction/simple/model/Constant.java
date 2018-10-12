@@ -16,4 +16,11 @@ public class Constant {
 	public static final int ORDER_STATUS_DEFAULT = 1;
 	
 	
+	public static final int ORDER_STATUS_SUCCESS = 2;
+	
+	
+	public static final int ORDER_STATUS_FAIL = 4;
+	
+	
+	
 }
