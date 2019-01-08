@@ -16,8 +16,6 @@ class Game:
     def startGame(self):
         print("%s 开始游戏" % self.playerName);
 
-
-
 #查看游戏的帮助信息
 Game.show_help();
 
