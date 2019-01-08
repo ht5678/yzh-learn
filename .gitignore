@@ -24,3 +24,5 @@ buildNumber.properties
 logs/*
 
 
+.idea/
+venv/
