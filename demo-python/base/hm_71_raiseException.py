@@ -10,5 +10,7 @@ def inputPassword():
 
     raise ex;
 
-
-print(inputPassword());
+try:
+    print(inputPassword());
+except Exception as result:
+    print(result);
