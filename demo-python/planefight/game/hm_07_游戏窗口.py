@@ -27,9 +27,40 @@ screen.blit(hero, (200, 500));
 pygame.display.update();
 
 
+#创建时钟对象
+clock = pygame.time.Clock();
+
+#定义rect记录飞机的初始位置
+hero_rect = pygame.Rect(150,300,102,126);
+
+
 while True:
-    ev = pygame.event.poll()
+    #每秒刷新画面60次 , 达到视觉流畅的程度
+    #可以指定循环体内部的代码执行的频率
+    clock.tick(60);
+
+    #修改飞机的位置
+    hero_rect.y = hero_rect.y-1;
+
+    if hero_rect.y<-126 :
+        hero_rect.y=700;
+
+    #调用blit方法绘制图像
+    screen.blit(bg,(0,0));
+    screen.blit(hero , hero_rect);
+
+    #调用update方法更新显示
+    pygame.display.update();
+
+    #eventList = pygame.event.get();
+    #print(eventList);
+
+
+    ev = pygame.event.poll();
+    if len(ev.dict) > 0 :
+        print(ev)
     if ev.type == pygame.QUIT:
         break
-pygame.quit()
-
+pygame.quit();
+#直接终止当前执行的程序
+exit();
