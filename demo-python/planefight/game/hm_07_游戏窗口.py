@@ -1,4 +1,6 @@
 import pygame
+from planefight.game.PlaneSprite import *
+
 
 pygame.init();
 
@@ -34,6 +36,16 @@ clock = pygame.time.Clock();
 hero_rect = pygame.Rect(150,300,102,126);
 
 
+#创建敌机的精灵
+enemy = GameSprite("../images/enemy1.png");
+enemy2 = GameSprite("../images/enemy1.png",2);
+
+#创建敌机精灵组
+enemy_group = pygame.sprite.Group(enemy,enemy2);
+
+
+
+
 while True:
     #每秒刷新画面60次 , 达到视觉流畅的程度
     #可以指定循环体内部的代码执行的频率
@@ -49,6 +61,13 @@ while True:
     screen.blit(bg,(0,0));
     screen.blit(hero , hero_rect);
 
+
+    #让精灵组调用两个方法
+    #update
+    enemy_group.update();
+    #draw
+    enemy_group.draw(screen);
+
     #调用update方法更新显示
     pygame.display.update();
 
@@ -57,8 +76,6 @@ while True:
 
 
     ev = pygame.event.poll();
-    if len(ev.dict) > 0 :
-        print(ev)
     if ev.type == pygame.QUIT:
         break
 pygame.quit();
