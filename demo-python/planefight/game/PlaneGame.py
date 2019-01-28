@@ -3,7 +3,11 @@ from planefight.game.PlaneSprite import *
 
 
 SCREEN_SIZE = pygame.Rect(0,0,480,700);
+#刷新的频率
 FRAME_PER_SEC = 60;
+#创建敌机的定时器常量
+CREATE_ENEMY_EVENT = pygame.USEREVENT;
+
 
 class PlaneGame:
 
@@ -18,12 +22,21 @@ class PlaneGame:
         self.clock = pygame.time.Clock();
         #3.调用私有方法,精灵和精灵组的创建
         self.__create_sprites();
+        #4.创建定时事件 , 创建敌机
+        pygame.time.set_timer(CREATE_ENEMY_EVENT,1000);
+
+
 
 
 
     def __create_sprites(self):
-        pass;
+        #创建背景精灵和精灵组
+        bg1 = Background();
+        bg2 = Background(True);
+        self.back_group = pygame.sprite.Group(bg1,bg2);
 
+        #创建敌机的精灵组
+        self.enemy_group = pygame.sprite.Group();
 
 
 
@@ -54,12 +67,23 @@ class PlaneGame:
         ev = pygame.event.poll();
         if ev.type == pygame.QUIT:
             self.__gameOver();
+        elif ev.type == CREATE_ENEMY_EVENT:
+            print("敌机出场...");
+            #创建敌机精灵
+            enemy = Enemy();
+            #将敌机精灵添加到敌机精灵组
+            self.enemy_group.add(enemy);
 
     def __checkCollide(self):
         pass;
 
     def __updateSprites(self):
-        pass;
+        self.back_group.update();
+        self.back_group.draw(self.screen);
+
+        self.enemy_group.update();
+        self.enemy_group.draw(self.screen);
+
 
     def __gameOver(self):
         print("游戏结束");
