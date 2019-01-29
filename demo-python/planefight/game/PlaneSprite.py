@@ -29,7 +29,7 @@ class Background(GameSprite):
         super().__init__("../images/background.png");
         #2.判断是否为交替图像,如果是 ,需要设置初始位置
         if is_alt:
-            self.rect.y = self.rect.y - self.rect.height;
+            self.rect.y = -self.rect.height;
 
     def update(self):
         #1.调用父类的方法实现
@@ -37,7 +37,7 @@ class Background(GameSprite):
 
         #2.判断是否移出屏幕 , 如果移出屏幕 ,将图像设置到屏幕的上方
         if self.rect.y >= SCREEN_SIZE.height:
-            self.rect.y = self.rect.y - self.rect.height;
+            self.rect.y = -self.rect.height;
         pass;
 
 
@@ -52,6 +52,9 @@ class Enemy(GameSprite):
         self.speed = random.randint(1,3);
 
         #3.指定敌机的初始随即位置
+        self.rect.bottom=0;
+        maxX = SCREEN_SIZE.width - self.rect.width;
+        self.rect.x = random.randint(0,maxX);
 
 
 
@@ -62,3 +65,11 @@ class Enemy(GameSprite):
         #判断是否飞出屏幕 , 如果是 , 需要从精灵组中删除敌机
         if self.rect.y >= SCREEN_SIZE.height:
             print("飞出屏幕 , 需要从精灵组删除 ... ");
+
+            #kill方法会将精灵从精灵组移除 , 精灵就会被自动销毁
+            self.kill();
+
+
+    #内置方法 , 执行kill方法的时候回调用这个方法
+    def __del__(self):
+        print("敌机挂了 %s" % self.rect);
