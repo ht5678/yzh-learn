@@ -7,7 +7,8 @@ SCREEN_SIZE = pygame.Rect(0,0,480,700);
 FRAME_PER_SEC = 60;
 #创建敌机的定时器常量
 CREATE_ENEMY_EVENT = pygame.USEREVENT;
-
+#英雄发射子弹事件
+HERO_FIRE_EVENT = pygame.USEREVENT+1;
 
 class PlaneGame:
 
@@ -24,7 +25,7 @@ class PlaneGame:
         self.__create_sprites();
         #4.创建定时事件 , 创建敌机
         pygame.time.set_timer(CREATE_ENEMY_EVENT,1000);
-
+        pygame.time.set_timer(HERO_FIRE_EVENT, 500);
 
 
 
@@ -41,6 +42,9 @@ class PlaneGame:
         #创建英雄的精灵和精灵组
         self.hero = Hero();
         self.heroGroup = pygame.sprite.Group(self.hero);
+
+
+
 
     def start_game(self):
         print("游戏开始");
@@ -75,6 +79,9 @@ class PlaneGame:
             enemy = Enemy();
             #将敌机精灵添加到敌机精灵组
             self.enemy_group.add(enemy);
+        elif ev.type == HERO_FIRE_EVENT:
+            self.hero.fire();
+
 
         #第一种:事件方式
         #elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_RIGHT:
@@ -107,6 +114,10 @@ class PlaneGame:
 
         self.heroGroup.update();
         self.heroGroup.draw(self.screen);
+
+        self.hero.bullets.update();
+        self.hero.bullets.draw(self.screen);
+
 
 
     def __gameOver(self):

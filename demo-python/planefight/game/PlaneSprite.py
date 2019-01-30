@@ -87,6 +87,9 @@ class Hero(GameSprite):
         self.rect.centerx = SCREEN_SIZE.centerx;
         self.rect.bottom = SCREEN_SIZE.bottom-self.rect.height;
 
+        #3.创建子弹的精灵组
+        self.bullets = pygame.sprite.Group();
+
 
     def update(self):
         #英雄在水平方向移动
@@ -97,4 +100,40 @@ class Hero(GameSprite):
             self.rect.x =0;
         elif self.rect.right > SCREEN_SIZE.right:
             self.rect.right = SCREEN_SIZE.right;
+
+    def fire(self):
+        #1.创建子弹精灵
+        bullet = Bullet();
+        #2.设置精灵位置
+        bullet.rect.bottom = self.rect.y - 20;
+        bullet.rect.centerx = self.rect.centerx;
+        #3.将精灵加到精灵组
+        self.bullets.add(bullet);
+
+
+
+class Bullet(GameSprite):
+    """子弹类"""
+
+
+    def __init__(self):
+        #调用父类方法 , 设置子弹照片 , 设置初始速度
+        super().__init__("../images/bullet1.png",-2);
+
+
+
+
+    def update(self):
+        #调用父类方法 , 让子弹沿垂直方向飞行
+        super().update();
+
+        #判断子弹是否飞出屏幕
+        if self.rect.bottom<0:
+            self.kill();
+
+
+
+    def __del__(self):
+        print("子弹被销毁...");
+
 
