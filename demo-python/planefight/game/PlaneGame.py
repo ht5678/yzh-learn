@@ -38,7 +38,9 @@ class PlaneGame:
         #创建敌机的精灵组
         self.enemy_group = pygame.sprite.Group();
 
-
+        #创建英雄的精灵和精灵组
+        self.hero = Hero();
+        self.heroGroup = pygame.sprite.Group(self.hero);
 
     def start_game(self):
         print("游戏开始");
@@ -68,11 +70,30 @@ class PlaneGame:
         if ev.type == pygame.QUIT:
             self.__gameOver();
         elif ev.type == CREATE_ENEMY_EVENT:
-            print("敌机出场...");
+            #print("敌机出场...");
             #创建敌机精灵
             enemy = Enemy();
             #将敌机精灵添加到敌机精灵组
             self.enemy_group.add(enemy);
+
+        #第一种:事件方式
+        #elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_RIGHT:
+        #    print("向右移动...");
+
+        #第二种:按键方式
+        #使用键盘提供的方法获取键盘按键 - 按键元组
+        keys_pressed = pygame.key.get_pressed();
+
+        #判断元组中对应的按键索引值 , 如果值为1=True , 代表这个按键被按下了
+        if keys_pressed[pygame.K_RIGHT]:
+            self.hero.speed=3;
+        elif keys_pressed[pygame.K_LEFT]:
+            self.hero.speed=-3;
+        else:
+            self.hero.speed = 0;
+
+
+
 
     def __checkCollide(self):
         pass;
@@ -83,6 +104,9 @@ class PlaneGame:
 
         self.enemy_group.update();
         self.enemy_group.draw(self.screen);
+
+        self.heroGroup.update();
+        self.heroGroup.draw(self.screen);
 
 
     def __gameOver(self):
