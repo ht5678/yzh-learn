@@ -102,13 +102,16 @@ class Hero(GameSprite):
             self.rect.right = SCREEN_SIZE.right;
 
     def fire(self):
-        #1.创建子弹精灵
-        bullet = Bullet();
-        #2.设置精灵位置
-        bullet.rect.bottom = self.rect.y - 20;
-        bullet.rect.centerx = self.rect.centerx;
-        #3.将精灵加到精灵组
-        self.bullets.add(bullet);
+        #同时发射多颗子弹
+        for i in (1,2,3):
+            #1.创建子弹精灵
+            bullet = Bullet();
+            #2.设置精灵位置
+            bullet.rect.bottom = self.rect.y - 20;
+            bullet.rect.centerx = self.rect.centerx;
+            #3.将精灵加到精灵组
+            self.bullets.add(bullet);
+
 
 
 
