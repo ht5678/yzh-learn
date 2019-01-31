@@ -107,7 +107,7 @@ class Hero(GameSprite):
             #1.创建子弹精灵
             bullet = Bullet();
             #2.设置精灵位置
-            bullet.rect.bottom = self.rect.y - 20;
+            bullet.rect.bottom = self.rect.y - i * 20;
             bullet.rect.centerx = self.rect.centerx;
             #3.将精灵加到精灵组
             self.bullets.add(bullet);

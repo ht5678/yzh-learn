@@ -57,6 +57,20 @@ class PlaneGame:
             self.__eventHandler();
             #3.碰撞检测
             self.__checkCollide();
+
+            #1.子弹摧毁敌机
+            pygame.sprite.groupcollide(self.hero.bullets,self.enemy_group,True,True);
+            #2,敌机摧毁英雄
+            enemies = pygame.sprite.spritecollide(self.hero,self.enemy_group,True);
+
+            #判断列表是否有内容
+            if len(enemies)>0:
+                #让英雄牺牲
+                self.hero.kill();
+                #结束游戏
+                PlaneGame.__gameOver();
+
+
             #4.更新/绘制精灵组
             self.__updateSprites();
             #5.更新显示
