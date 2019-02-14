@@ -23,8 +23,15 @@ def execute():
             recvData = newClientSocket.recv(1024);
             print("客户端发过来的请求是%s "% recvData.decode("utf-8"));
 
-            #回送一部分数据给客户端
-            newClientSocket.send("hahaha".encode("utf-8"));
+
+            #如果recv堵塞 , 那么有两种方法:
+            #1.客户端发送过来数据
+            #2.客户端调用close导致 , 这里recv解堵塞
+            if recvData:
+                #回送一部分数据给客户端
+                newClientSocket.send("hahaha".encode("utf-8"));
+            else:
+                break;
 
         #关闭套接字
         newClientSocket.close();
