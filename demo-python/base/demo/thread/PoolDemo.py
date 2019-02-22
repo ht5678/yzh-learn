@@ -15,22 +15,22 @@ def worker(msg):
 
 
 
+if __name__ == '__main__':
+    #定义一个进程池 , 最大进程数3
+    po = multiprocessing.Pool(3);
 
-#定义一个进程池 , 最大进程数3
-po = multiprocessing.Pool(3);
+    for i in range(0,10):
+        #pool().apply_async(要调用的目标 , (传递给目标的参数元祖 , ))
+        #每次循环将会用空闲出来的子进程去调用目标
+        po.apply_async(worker , (i,));
 
-for i in range(0,10):
-    #pool().apply_async(要调用的目标 , (传递给目标的参数元祖 , ))
-    #每次循环将会用空闲出来的子进程去调用目标
-    po.apply_async(worker , (i,));
+    print("-----start-----");
+    #关闭进程池 , 关闭后po不再接收新的进程
+    po.close();
 
-print("-----start-----");
-#关闭进程池 , 关闭后po不再接收新的进程
-po.close();
+    #等待po中所有子进程执行完毕,必须放在close语句之后
+    po.join();
 
-#等待po中所有子进程执行完毕,必须放在close语句之后
-po.join();
-
-print("-----end-----");
+    print("-----end-----");
 
 
