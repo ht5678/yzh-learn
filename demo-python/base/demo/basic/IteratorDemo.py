@@ -22,12 +22,18 @@ class ClassIterator(object):
 
     def __init__(self , obj):
         self.obj = obj;
+        self.currentNum=0;
 
     def __iter__(self):
         pass;
 
     def __next__(self):
-        return self.obj.names[0];
+        if self.currentNum < len(self.obj.names):
+            ret = self.obj.names[self.currentNum];
+            self.currentNum+=1;
+            return ret;
+        else:
+            raise StopIteration;
 
 
 
