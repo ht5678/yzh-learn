@@ -5,7 +5,7 @@ import socket;
 def serviceClient(newSocket):
     """为这个客户端返回数据"""
     #1.接收浏览器发送过来的请求,即http请求
-    request = newSocket.recv(1024);
+    request = newSocket.recv(1024).decode("utf-8");
     print(request);
 
     #返回http格式的数据,给浏览器
