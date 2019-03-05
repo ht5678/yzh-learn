@@ -1,20 +1,55 @@
 import socket;
-
+import re;
 
 
 def serviceClient(newSocket):
     """为这个客户端返回数据"""
     #1.接收浏览器发送过来的请求,即http请求
     request = newSocket.recv(1024).decode("utf-8");
-    print(request);
+    #print(request);
+
+    requestLines = request.splitlines();
+    #GET /index.html HTTP/1.1
+    #get post put del
+    fileName = "";
+    ret = re.match("[^/]+(/[^ ]*)" , requestLines[0]);
+    if ret:
+        fileName = ret.group(1);
+        if fileName=="/":
+            fileName="/index.html";
+
 
     #返回http格式的数据,给浏览器
     #2.1 准备发送给浏览器的数据 --- header
-    response = "HTTP/1.1 200 OK\r\n";
-    response += "\r\n";
-    #2.2准备发送给浏览器的数据 --- body
-    response += "hahaha";
-    newSocket.send(response.encode("utf-8"));
+    print("./html"+fileName)
+    try:
+        f = open("./html"+fileName , "rb");
+    except:
+        response = "HTTP/1.1 404 NOT FOUND\r\n";
+        response +="\r\n";
+        response += "------file not found------";
+        newSocket.send(response.encode("utf-8"));
+    else:
+        htmlContent = f.read();
+        f.close();
+        #2.1准备发送给浏览器的数据 --- header
+        response = "HTTP/1.1 200 OK\r\n";
+        response +="\r\n";
+        #2.2准备发送给浏览器的数据 =--- body
+
+        #将response header发送给浏览器
+        newSocket.send(response.encode("utf-8"));
+        #将response body发送给浏览器
+        newSocket.send(htmlContent);
+
+    #关闭套接字
+    newSocket.close();
+
+    # response = "HTTP/1.1 200 OK\r\n";
+    # response += "\r\n";
+    # #2.2准备发送给浏览器的数据 --- body
+    # response += "hahaha";
+    # newSocket.send(response.encode("utf-8"));
 
 
 
