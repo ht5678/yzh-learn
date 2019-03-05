@@ -1,6 +1,6 @@
 import socket;
 import re;
-import multiprocessing;
+import threading;
 
 
 def serviceClient(newSocket):
@@ -70,13 +70,13 @@ def execute():
         newSocket , clientAddr = tcpServerSocket.accept();
 
         #5.为这个客户端服务
-        p = multiprocessing.Process(target=serviceClient , args=(newSocket,));
+        p = threading.Thread(target=serviceClient , args=(newSocket,));
         p.start();
 
         #为什么要关闭 , 因为子进程会拷贝newSocket的指向 , 这样主进程和子进程就有两个引用 ,
         #如果不把主进程的newSocket关闭 , 只关闭子进程的newSocket的话 , 就会导致浏览器一直转圈
         #所以newSocket要关闭两次
-        newSocket.close();
+        #newSocket.close();
 
 
         # serviceClient(newSocket);
