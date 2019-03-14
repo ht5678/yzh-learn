@@ -4,6 +4,7 @@ import select;
 import multiprocessing;
 
 
+"""报错是因为 windows下不支持epoll函数 , 是系统原因"""
 def serviceClient(newSocket , request):
     """为这个客户端返回数据"""
 
