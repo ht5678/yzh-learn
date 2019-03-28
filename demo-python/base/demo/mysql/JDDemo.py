@@ -33,6 +33,19 @@ class JD:
         self.executeSql(sql);
 
 
+    def addBrands(self):
+        itemName = input("输入新商品分类的名称:");
+        sql = """insert into goods_type(name) values ("%s")""" % itemName;
+        self.cursor.execute(sql);
+        self.conn.commit();
+
+
+    def getInfoByName(self):
+        findName = input("请输入要查询商品的名字:");
+        sql = "select * from goods where brand_name=%s";
+        self.cursor.execute(sql,findName);
+        print(self.cursor.fetchall());
+
 
 
     @staticmethod
@@ -41,6 +54,8 @@ class JD:
         print("1.所有的商品");
         print("2.所有的商品分类");
         print("3.所有的商品品牌分类");
+        print("4.添加商品品牌分类");
+        print("5,根据名字查询商品 , 防止sql注入");
         return input("请输入功能对应的序号:");
 
 
@@ -56,6 +71,12 @@ class JD:
             elif num =="3":
                 #查询品牌分类
                 pass;
+            elif num =="4":
+                #查询品牌分类
+                self.addBrands();
+            elif num == "5":
+                # 查询品牌分类
+                self.getInfoByName();
             else:
                 print("输入错误,重新输入. .. ");
 

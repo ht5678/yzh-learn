@@ -36,3 +36,10 @@ insert into goods values(0, 'x3250 m4机架式服务器', '服务器/工作站',
 insert into goods values(0, '商务双肩背包', '笔记本配件' , '索尼', '99', default , default);
 
 
+
+
+CREATE TABLE `goods_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
