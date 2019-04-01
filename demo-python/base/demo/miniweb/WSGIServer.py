@@ -1,11 +1,17 @@
 import socket;
 import re;
 import multiprocessing;
-
+import time;
+import miniFrame;
 
 
 class WSGIServer:
+    """
+        测试url:
+            http://localhost:7890
+            http://localhost:7890/login.py
 
+    """
 
     def __init__(self):
         """用来完成整体的控制"""
@@ -38,27 +44,50 @@ class WSGIServer:
 
 
         #返回http格式的数据,给浏览器
-        #2.1 准备发送给浏览器的数据 --- header
+        #2.1 准备发送给浏览器的数据 --- header 如果请求的资源不是py结尾的,那么久默认为静态资源(html/css/js/png , jpg等)
         print("./html"+fileName)
-        try:
-            f = open("./html"+fileName , "rb");
-        except:
-            response = "HTTP/1.1 404 NOT FOUND\r\n";
-            response +="\r\n";
-            response += "------file not found------";
-            newSocket.send(response.encode("utf-8"));
-        else:
-            htmlContent = f.read();
-            f.close();
-            #2.1准备发送给浏览器的数据 --- header
-            response = "HTTP/1.1 200 OK\r\n";
-            response +="\r\n";
-            #2.2准备发送给浏览器的数据 =--- body
+        if not fileName.endswith(".py"):
+            try:
+                f = open("./html"+fileName , "rb");
+            except:
+                response = "HTTP/1.1 404 NOT FOUND\r\n";
+                response +="\r\n";
+                response += "------file not found------";
+                newSocket.send(response.encode("utf-8"));
+            else:
+                htmlContent = f.read();
+                f.close();
+                #2.1准备发送给浏览器的数据 --- header
+                response = "HTTP/1.1 200 OK\r\n";
+                response +="\r\n";
+                #2.2准备发送给浏览器的数据 =--- body
 
-            #将response header发送给浏览器
+                #将response header发送给浏览器
+                newSocket.send(response.encode("utf-8"));
+                #将response body发送给浏览器
+                newSocket.send(htmlContent);
+        else:
+            #2.2如果是以py结尾的,认为是动态资源的请求
+
+
+            #body = "hahaha %s" % time.ctime();
+            #body = miniFrame.login();
+            #body = miniFrame.application(fileName);
+
+            env = dict();
+            body = miniFrame.application(env,self.setResponseHeader);
+
+            header = "HTTP/1.1 %s\r\n" % self.status;
+
+            for temp in self.headers:
+                header += "%s:%s\r\n" % (temp[0]  , temp[1]);
+
+            header += "\r\n";
+
+
+            response = header+body;
+            #发送response给浏览器
             newSocket.send(response.encode("utf-8"));
-            #将response body发送给浏览器
-            newSocket.send(htmlContent);
 
         #关闭套接字
         newSocket.close();
@@ -68,6 +97,12 @@ class WSGIServer:
         # #2.2准备发送给浏览器的数据 --- body
         # response += "hahaha";
         # newSocket.send(response.encode("utf-8"));
+
+
+    def setResponseHeader(self , status , headers):
+        self.status = status;
+        self.headers = headers;
+
 
 
 
