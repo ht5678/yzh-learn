@@ -75,6 +75,7 @@ class WSGIServer:
             #body = miniFrame.application(fileName);
 
             env = dict();
+            env['PATH_INFO'] = fileName;
             body = miniFrame.application(env,self.setResponseHeader);
 
             header = "HTTP/1.1 %s\r\n" % self.status;
