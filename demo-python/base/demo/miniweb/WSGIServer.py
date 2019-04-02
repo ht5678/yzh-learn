@@ -2,7 +2,8 @@ import socket;
 import re;
 import multiprocessing;
 import time;
-import miniFrame;
+import sys;
+import dynamic.miniFrame
 
 
 class WSGIServer:
@@ -13,17 +14,20 @@ class WSGIServer:
 
     """
 
-    def __init__(self):
+    def __init__(self , port , app ,staticPath):
         """用来完成整体的控制"""
         #1.创建套接字
         self.tcpServerSocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM);
         #设置当服务器先close , 即服务器4次挥手之后资源立即释放,这样就保证了,下次运行程序,可以立即接收请求
         self.tcpServerSocket.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);
         #2.绑定
-        self.tcpServerSocket.bind(("",7890));
+        self.tcpServerSocket.bind(("",port));
         #3.变为监听套接字
         self.tcpServerSocket.listen(128);
-        
+        #app函数
+        self.application= app;
+        #资源文件路径
+        self.staticPath = staticPath;
 
 
     def serviceClient(self,newSocket):
@@ -33,6 +37,7 @@ class WSGIServer:
         #print(request);
 
         requestLines = request.splitlines();
+        print(requestLines);
         #GET /index.html HTTP/1.1
         #get post put del
         fileName = "";
@@ -45,10 +50,10 @@ class WSGIServer:
 
         #返回http格式的数据,给浏览器
         #2.1 准备发送给浏览器的数据 --- header 如果请求的资源不是py结尾的,那么久默认为静态资源(html/css/js/png , jpg等)
-        print("./html"+fileName)
+        print("html/static"+fileName)
         if not fileName.endswith(".py"):
             try:
-                f = open("./html"+fileName , "rb");
+                f = open(self.staticPath+fileName , "rb");
             except:
                 response = "HTTP/1.1 404 NOT FOUND\r\n";
                 response +="\r\n";
@@ -76,7 +81,7 @@ class WSGIServer:
 
             env = dict();
             env['PATH_INFO'] = fileName;
-            body = miniFrame.application(env,self.setResponseHeader);
+            body = self.application(env,self.setResponseHeader);
 
             header = "HTTP/1.1 %s\r\n" % self.status;
 
@@ -128,6 +133,50 @@ class WSGIServer:
         self.tcpServerSocket.close();
 
 
-if __name__ == '__main__':
-    server = WSGIServer();
+
+def main():
+    """控制整体,创建一个web服务器对象,然后调用这个对象的run_forever方法运行"""
+    if len(sys.argv) == 3:
+        try:
+            port = int(sys.argv[1]);    #7890
+            frameAppName = sys.argv[2]; #miniFrame:application
+        except Exception as ret:
+            print("端口输入错误......");
+            return;
+    else:
+        print("请按照以下方法运行:");
+        print("python xxxx.py 7890 miniFame:application");
+        return;
+
+
+    #miniFrame:application
+    ret = re.match(r"([^:]+):(.*)" , frameAppName);
+    if ret:
+        frameName = ret.group(1);   #miniFrame
+        appName =  ret.group(2);    #application
+    else:
+        print("请按照以下方式运行:");
+        print("python3 xxx.py 7890 miniFame:application");
+        return;
+
+    #sys.path.append("./dynamic");
+
+    with open("./conf/server.conf") as f:
+        confInfo = eval(f.read());
+
+    sys.path.append(confInfo['dynamicPath']);
+
+    #imort frameName   ---> 找frame.py
+    frame = __import__(frameName);  #返回值标记导入的模板
+    app = getattr(frame,appName);   #此时app就指向了dynamic/miniFrame中的这个函数
+
+    #print(app)
+
+
+    server = WSGIServer(port  , app , confInfo['staticPath']);
     server.execute();
+
+
+
+if __name__ == '__main__':
+    main();

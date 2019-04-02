@@ -27,7 +27,9 @@ def application(fileName):
 
 
 def index():
-    return "这是主页";
+    with open("html/index.html") as f:
+        content = f.read();
+    return content;
 
 def login():
     return "这是登录页面";
