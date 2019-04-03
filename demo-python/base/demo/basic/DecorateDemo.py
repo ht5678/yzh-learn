@@ -26,3 +26,35 @@ test(100,200);
 
 ret  = test(100,200,300 , mm =100);
 print(ret);
+
+
+
+
+
+print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+######################07-装饰器-7-多个装饰器对同一个函数装饰#########################
+
+def addQx(func):
+    print("开始进行装饰权限1的功能");
+    def callFunc(*args,**kwargs):
+        print("这是权限验证1");
+        return func(*args, **kwargs);
+    return callFunc;
+
+
+def addXx(func):
+    print("开始进行装饰xxx的功能");
+    def callFunc(*args , **kwargs):
+        print("这是xxx的功能");
+        return func(*args , **kwargs);
+    return callFunc;
+
+
+@addQx      #相当于test1 = addQx(test1);
+@addXx      #等价于test1 = addXx(test1);
+def test22():
+    print("-----test22-----");
+
+
+test22();
