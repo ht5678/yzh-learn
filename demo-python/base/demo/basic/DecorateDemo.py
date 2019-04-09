@@ -58,3 +58,28 @@ def test22():
 
 
 test22();
+
+
+
+
+
+print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+
+######################09-装饰器-9-（了解）用类对函数进行装饰#########################
+
+
+class Demo:
+    def __init__(self , func):
+        self.func = func;
+
+    def __call__(self, *args, **kwargs):
+        print("这里是装饰器添加的功能 ...... ")
+        return self.func();
+
+
+
+@Demo   #相当于getStr = Test(getStr)
+def getStr():
+    return "haha";
+
+print(getStr());
