@@ -25,6 +25,9 @@ def application(fileName):
 
 """
 
+from pymysql import  *;
+import re;
+
 
 URL_FUNC_DICT={
 
@@ -43,8 +46,38 @@ def route(url):
 #伪静态
 @route("/index.html")
 def index():
-    with open("html/index.html") as f:
+    with open("html/index.html" , 'r', encoding='UTF-8') as f:
         content = f.read();
+
+    #创建连接
+    conn = connect(host="lenovodb",port=3306,user='myuser',password='mypassword',database='test',charset='utf8');
+    #获得cursor对象
+    cs = conn.cursor();
+    cs.execute("select * from goods");
+    stockInfos = cs.fetchall();
+
+    cs.close();
+    conn.close();
+
+
+
+    trTemplate = """<tr>
+        <td>%s</td>
+        <td>%s</td>
+        <td>%s</td>
+        <td>%s</td>
+        <td>%s</td>
+        <td><button name="add" onclick='alert(hah)' type='button'>添加</button></td>
+        </tr>
+    """;
+
+    html="";
+    for lineInfo in stockInfos:
+        html += trTemplate % (lineInfo[0],lineInfo[1],lineInfo[2],lineInfo[3],lineInfo[4]);
+
+
+    content = re.sub(r"\{%content%\}" , html , content);
+
     return content;
 
 #伪静态
