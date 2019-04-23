@@ -40,15 +40,15 @@ def route(url):
         return callFunc;
     return setFunc;
 
-
-@route("/index.py")
+#伪静态
+@route("/index.html")
 def index():
     with open("html/index.html") as f:
         content = f.read();
     return content;
 
-
-@route("/login.py")
+#伪静态
+@route("/login.html")
 def login():
     return "这是登录页面";
 

@@ -11,7 +11,11 @@ class WSGIServer:
         测试url:
             http://localhost:7890
             http://localhost:7890/login.py
+            #伪静态
+            http://localhost:7890/login.html
 
+        启动:
+            python WSGIServer.py 7890 miniFrame:application
     """
 
     def __init__(self , port , app ,staticPath):
@@ -51,7 +55,7 @@ class WSGIServer:
         #返回http格式的数据,给浏览器
         #2.1 准备发送给浏览器的数据 --- header 如果请求的资源不是py结尾的,那么久默认为静态资源(html/css/js/png , jpg等)
         print("html/static"+fileName)
-        if not fileName.endswith(".py"):
+        if not fileName.endswith(".html"):
             try:
                 f = open(self.staticPath+fileName , "rb");
             except:
