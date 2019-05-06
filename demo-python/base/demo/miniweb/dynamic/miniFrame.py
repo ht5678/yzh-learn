@@ -87,6 +87,15 @@ def login():
 
 
 
+#给路由器添加正则表达式的原因:在实际开发中,url往往会带很多参数,例如/add/000007.html中的000007就是参数
+#如果没有正则的话,那么就需要编写n次@route来进行添加,url对应的函数到字典中,此时字典中的键值对有n个,浪费空间
+#而采用了正则的话,那么只要编写一次@route就可以完成多个url例如/add/000007.html等对应一个函数,此时字典中的
+#键值对会少很多
+@route(r"/add/(\d+)\.html")
+def addFocus():
+    return "add ok...";
+
+
 
 
 #wsgi协议支持
@@ -103,7 +112,19 @@ def application(environ , startResponse):
             return "Hello World!";
     """
     try:
-        func = URL_FUNC_DICT[fileName];
-        return func();
+        #func = URL_FUNC_DICT[fileName];
+        #return func();
+
+        for url,func in URL_FUNC_DICT:
+            #{
+            #   r"/index.html":index,
+            #   r"/center.html":center,
+            #   r"add/\d+\.html":addFocus
+            #}
+            ret = re.match(url,fileName);
+            if ret:
+                return func();
+            else:
+                return "请求的url(%s)没有对应的函数......" % fileName;
     except Exception as ret:
         return "产生异常:%s" % str(ret);
