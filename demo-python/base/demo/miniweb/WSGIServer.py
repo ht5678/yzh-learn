@@ -37,14 +37,24 @@ class WSGIServer:
     def serviceClient(self,newSocket):
         """为这个客户端返回数据"""
         #1.接收浏览器发送过来的请求,即http请求
+        #print(newSocket.recv(1024).decode("utf-8"));
         request = newSocket.recv(1024).decode("utf-8");
         #print(request);
 
         requestLines = request.splitlines();
-        print(requestLines);
+        #print(requestLines);
         #GET /index.html HTTP/1.1
         #get post put del
         fileName = "";
+        print("==========================");
+        print(request);
+        print(len(requestLines));
+        print("==========================");
+
+        if len(requestLines) ==0 :
+            newSocket.close();
+            return;
+
         ret = re.match("[^/]+(/[^ ]*)" , requestLines[0]);
         if ret:
             fileName = ret.group(1);
