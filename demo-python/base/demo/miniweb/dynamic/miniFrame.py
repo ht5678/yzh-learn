@@ -44,7 +44,7 @@ def route(url):
     return setFunc;
 
 #伪静态
-@route("/index.html")
+@route(r"/index.html")
 def index():
     with open("html/index.html" , 'r', encoding='UTF-8') as f:
         content = f.read();
@@ -93,7 +93,8 @@ def login():
 #键值对会少很多
 @route(r"/add/(\d+)\.html")
 def addFocus():
-    return "add ok...";
+    stockCode = ret.group(1);
+    return "add (%s) ok..." % stockCode;
 
 
 
@@ -115,7 +116,7 @@ def application(environ , startResponse):
         #func = URL_FUNC_DICT[fileName];
         #return func();
 
-        for url,func in URL_FUNC_DICT:
+        for url,func in URL_FUNC_DICT.items():
             #{
             #   r"/index.html":index,
             #   r"/center.html":center,
