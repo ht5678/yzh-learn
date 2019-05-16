@@ -45,7 +45,7 @@ def route(url):
 
 #伪静态
 @route(r"/index.html")
-def index():
+def index(ret):
     with open("html/index.html" , 'r', encoding='UTF-8') as f:
         content = f.read();
 
@@ -82,7 +82,7 @@ def index():
 
 #伪静态
 @route("/login.html")
-def login():
+def login(ret):
     return "这是登录页面";
 
 
@@ -92,7 +92,7 @@ def login():
 #而采用了正则的话,那么只要编写一次@route就可以完成多个url例如/add/000007.html等对应一个函数,此时字典中的
 #键值对会少很多
 @route(r"/add/(\d+)\.html")
-def addFocus():
+def addFocus(ret):
     stockCode = ret.group(1);
     return "add (%s) ok..." % stockCode;
 
@@ -124,7 +124,7 @@ def application(environ , startResponse):
             #}
             ret = re.match(url,fileName);
             if ret:
-                return func();
+                return func(ret);
             else:
                 return "请求的url(%s)没有对应的函数......" % fileName;
     except Exception as ret:
