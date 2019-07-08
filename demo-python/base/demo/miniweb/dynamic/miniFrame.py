@@ -67,7 +67,7 @@ def index(ret):
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
-        <td><button name="add" onclick='alert(hah)' type='button'>添加</button></td>
+        <td><button name="add" onclick='alert("hah")' type='button'>添加</button></td>
         </tr>
     """;
 
@@ -93,7 +93,43 @@ def login(ret):
 #键值对会少很多
 @route(r"/add/(\d+)\.html")
 def addFocus(ret):
+    #获取股票代码
     stockCode = ret.group(1);
+
+    #创建连接
+    conn = connect(host="lenovodb",port=3306,user='myuser',password='mypassword',database='test',charset='utf8');
+    #获得cursor对象
+    cs = conn.cursor();
+
+    try:
+
+        #判断是否有这个股票代码
+        cs.execute("select * from goods where id=%s" , (stockCode ,));
+        #如果没有这个股票代码 , 认为是非法的请求
+        if not cs.fetchone():
+            cs.close();
+            conn.close();
+            return "没有这个股票代码";
+
+        #判断是否已经被关注过
+        cs.execute("select * from goods_user where goods_id=%s" , (stockCode,));
+        #如果查出来了 , 表示已经关注过了
+        if cs.fetchone():
+            cs.close();
+            conn.close();
+            return "已经关注过了 ... ";
+
+        #执行sql
+        cs.execute("insert into goods_user(goods_id , user_id) values (%s,%s) ", (stockCode , '12345'));
+        #提交到数据库执行
+        conn.commit();
+    except:
+        #发生错误回滚
+        conn.rollback();
+
+    cs.close();
+    conn.close();
+
     return "add (%s) ok..." % stockCode;
 
 
@@ -125,7 +161,7 @@ def application(environ , startResponse):
             ret = re.match(url,fileName);
             if ret:
                 return func(ret);
-            else:
+        else:
                 return "请求的url(%s)没有对应的函数......" % fileName;
     except Exception as ret:
         return "产生异常:%s" % str(ret);

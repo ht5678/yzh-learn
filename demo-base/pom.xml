@@ -68,12 +68,7 @@
       <artifactId>amqp-client</artifactId>
       <version>5.1.2</version>
     </dependency>
-    <!-- fastdfs -->
-    <dependency>
-	    <groupId>org.csource</groupId>
-	    <artifactId>fastdfs-client-java</artifactId>
-	    <version>1.27-SNAPSHOT</version>
-	</dependency>
+    
     
     <!-- mqtt -->
     <dependency>
