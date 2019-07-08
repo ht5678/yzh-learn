@@ -67,13 +67,13 @@ def index(ret):
         <td>%s</td>
         <td>%s</td>
         <td>%s</td>
-        <td><button name="add" onclick='alert("hah")' type='button'>添加</button></td>
+        <td><button name="add" href='/add/%s.html' type='button'>添加</button></td>
         </tr>
     """;
 
     html="";
     for lineInfo in stockInfos:
-        html += trTemplate % (lineInfo[0],lineInfo[1],lineInfo[2],lineInfo[3],lineInfo[4]);
+        html += trTemplate % (lineInfo[0],lineInfo[1],lineInfo[2],lineInfo[3],lineInfo[4],lineInfo[0]);
 
 
     content = re.sub(r"\{%content%\}" , html , content);
@@ -131,6 +131,53 @@ def addFocus(ret):
     conn.close();
 
     return "add (%s) ok..." % stockCode;
+
+
+
+
+
+@route(r"/del/(\d+)\.html")
+def delFocus(ret):
+    #获取股票代码
+    stockCode = ret.group(1);
+
+    #创建连接
+    conn = connect(host="lenovodb",port=3306,user='myuser',password='mypassword',database='test',charset='utf8');
+    #获得cursor对象
+    cs = conn.cursor();
+
+    try:
+
+        #判断是否有这个股票代码
+        cs.execute("select * from goods where id=%s" , (stockCode ,));
+        #如果没有这个股票代码 , 认为是非法的请求
+        if not cs.fetchone():
+            cs.close();
+            conn.close();
+            return "没有这个股票代码";
+
+        #判断是否已经被关注过
+        cs.execute("select * from goods_user where goods_id=%s" , (stockCode,));
+        #如果查出来了 , 表示已经关注过了
+        if not cs.fetchone():
+            cs.close();
+            conn.close();
+            return "未关注 ... ";
+
+        #执行sql
+        cs.execute("delete from goods_user where goods_id=%s", (stockCode,));
+        #提交到数据库执行
+        conn.commit();
+    except:
+        #发生错误回滚
+        conn.rollback();
+
+    cs.close();
+    conn.close();
+
+    return "delete (%s) ok..." % stockCode;
+
+
 
 
 
