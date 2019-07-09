@@ -27,6 +27,9 @@ def application(fileName):
 
 from pymysql import  *;
 import re;
+import logging;
+
+
 
 
 URL_FUNC_DICT={
@@ -198,6 +201,15 @@ def application(environ , startResponse):
     try:
         #func = URL_FUNC_DICT[fileName];
         #return func();
+
+
+        logging.basicConfig(level=logging.INFO ,
+                            filename='./log.txt',
+                            filemode='a',
+                            format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s : %(message)s');
+
+        logging.info('访问的是 ， %s' % fileName);
+
 
         for url,func in URL_FUNC_DICT.items():
             #{
