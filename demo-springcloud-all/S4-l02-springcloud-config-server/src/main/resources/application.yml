@@ -31,13 +31,13 @@ spring:
 #          uri: http://gitlab.club.test.com.cn/java/club-confs.git
 #          username: changeusername
 #          password: changepassword
-#          search-paths: /lenovo-push/resources
+#          search-paths: /service-push/resources
 
          #github
           uri: https://github.com/ht5678/yzh-learn
           #skip-ssl-validation: true
-          search-paths: /demo-springcloud-all/S4-l03-springcloud-config-files/lenovo-push/resources
-          #default-label: /lenovo-api/resources/properties   #表示uri路径下的default-config目录下
+          search-paths: /demo-springcloud-all/S4-l03-springcloud-config-files/service-push/resources
+          #default-label: /service-api/resources/properties   #表示uri路径下的default-config目录下
         health:
           respositories:
             test-service:
