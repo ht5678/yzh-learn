@@ -32,7 +32,7 @@ public class SendMail {
         MimeMessageHelper messageHelper = new MimeMessageHelper(mailMessage);  
   
         // 设置收件人，寄件人  
-        messageHelper.setTo("yuezh2@lenovo.com");  
+        messageHelper.setTo("1743323262@qq.com");  
         messageHelper.setFrom("1040475249@qq.com");  
         messageHelper.setSubject("联想社区APP统计报告");  
         // true 表示启动HTML格式的邮件  
