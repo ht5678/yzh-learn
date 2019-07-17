@@ -5,7 +5,7 @@ class ModelMetaclass(type):
         for k,v in attrs.items():
             #判断是否是指定的StringField或者IntegerField的实例对象
             if isinstance(v , tuple):
-                print("Found mappings :%s => %s" % (k,v));
+                #print("Found mappings :%s => %s" % (k,v));
                 mappings[k] = v;
 
         #删除这些已经在字典中存储的属性
@@ -49,7 +49,16 @@ class User(metaclass=ModelMetaclass):
             fields.append(v[0]);
             args.append(getattr(self , k , None));
 
-        sql = "insert into %s (%s) values (%s)" % (self.__table__ ,','.join(fields) , ','.join([str(i) for i in args]));
+        #sql = "insert into %s (%s) values (%s)" % (self.__table__ ,','.join(fields) , ','.join([str(i) for i in args]));
+
+        args_temp = list();
+        for temp in args:
+            #判断是否是数字类型
+            if isinstance(temp , int):
+                args_temp.append(str(temp));
+            elif isinstance(temp , str):
+                args_temp.append("""'%s'""" % temp);
+        sql = "insert into %s (%s) values (%s)" % (self.__table__ ,','.join(fields) , ','.join([str(i) for i in args_temp]));
 
         print(sql);
 
