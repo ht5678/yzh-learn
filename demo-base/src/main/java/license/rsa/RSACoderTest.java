@@ -2,6 +2,7 @@ package license.rsa;
 
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,14 +31,17 @@ public class RSACoderTest {
 	@Test
 	public void testPub2Pri()throws Exception{
 		System.err.println("公钥加密----私钥解密");
-		String inputStr = "abc";
+		String inputStr = "'content=这是一个测试帖子&pic_urls=pic1,pic2";
 		byte[] data = inputStr.getBytes();
 		
 		byte[] encodedData  = RSACoder.encryptByPublicKey(data, publicKey);
 		
+		String str = Base64.encodeBase64String(encodedData);
+		System.out.println(str);
 		System.out.println(new String(encodedData));
 		
-		byte[] decodedData = RSACoder.decryptByPrivateKey(encodedData, privateKey);
+		byte[] decodedData = RSACoder.decryptByPrivateKey(Base64.decodeBase64(str), privateKey);
+		
 		
 		String outputStr = new String(decodedData);
 		System.err.println("加密前："+inputStr +"\n\r"+"解密后"+outputStr);
