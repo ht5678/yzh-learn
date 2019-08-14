@@ -1,23 +1,21 @@
 package license.aes;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Scanner;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
+
 /**
- * aes
- * @author yuezhihua
+ * 
+ * @author yuezh2
+ *
+ * @date 2019年8月13日 下午4:12:28  
  *
  */
 public class AESEncrypter {
@@ -29,6 +27,12 @@ public class AESEncrypter {
 	public static byte[] key1 = new byte[] { -42, 35, 67, -86, 19, 29, -11, 84,
 			94, 111, 75, -104, 71, 46, 86, -21, -119, 110, -11, -32, -28, 91,
 			-33, -46, 99, 49, 2, 66, -101, -11, -8, 56 };
+	
+	
+	private static Cipher ecipher = null;
+	
+	private static Cipher dcipher = null;
+	
 
 	private AESEncrypter() {
 
@@ -37,6 +41,22 @@ public class AESEncrypter {
 	public static synchronized AESEncrypter getInstance() {
 		if (aes == null) {
 			aes = new AESEncrypter();
+			
+			try {
+				KeyGenerator kgen = KeyGenerator.getInstance("AES");
+				kgen.init(128, new SecureRandom(key1));
+				AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
+				SecretKey key = kgen.generateKey();
+				ecipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+				ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+				
+				dcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+				dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 		return aes;
 	}
@@ -45,24 +65,10 @@ public class AESEncrypter {
 
 		String str = "";
 		try {
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			kgen.init(128, new SecureRandom(key1));
-			AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
-			SecretKey key = kgen.generateKey();
-			Cipher ecipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
 			str = asHex(ecipher.doFinal(msg.getBytes()));
 		} catch (BadPaddingException e) {
 			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return str;
@@ -70,24 +76,8 @@ public class AESEncrypter {
 
 	public String decrypt(String value) {
 		try {
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			kgen.init(128, new SecureRandom(key1));
-			AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
-			SecretKey key = kgen.generateKey();
-			Cipher dcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
 			return new String(dcipher.doFinal(asBin(value)));
-		} catch (BadPaddingException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e) {
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
