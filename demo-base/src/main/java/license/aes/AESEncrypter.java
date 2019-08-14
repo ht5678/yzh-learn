@@ -29,9 +29,9 @@ public class AESEncrypter {
 			-33, -46, 99, 49, 2, 66, -101, -11, -8, 56 };
 	
 	
-	private static Cipher ecipher = null;
+	private static AlgorithmParameterSpec  paramSpec = null;
 	
-	private static Cipher dcipher = null;
+	private static SecretKey key =  null;
 	
 
 	private AESEncrypter() {
@@ -48,14 +48,8 @@ public class AESEncrypter {
 			    
 				KeyGenerator kgen = KeyGenerator.getInstance("AES");
 				kgen.init(128, random);
-				AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
-				SecretKey key = kgen.generateKey();
-				ecipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
-				
-				dcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-				dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-				
+				paramSpec = new IvParameterSpec(iv);
+				key = kgen.generateKey();
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -68,6 +62,9 @@ public class AESEncrypter {
 
 		String str = "";
 		try {
+			
+			Cipher ecipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
 			str = asHex(ecipher.doFinal(msg.getBytes()));
 		} catch (BadPaddingException e) {
 			e.printStackTrace();
@@ -79,6 +76,9 @@ public class AESEncrypter {
 
 	public String decrypt(String value) {
 		try {
+			
+			Cipher dcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
 			return new String(dcipher.doFinal(asBin(value)));
 		} catch (Exception e) {
 			e.printStackTrace();
