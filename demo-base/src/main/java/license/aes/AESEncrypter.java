@@ -43,8 +43,11 @@ public class AESEncrypter {
 			aes = new AESEncrypter();
 			
 			try {
+				SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+			    random.setSeed(key1);
+			    
 				KeyGenerator kgen = KeyGenerator.getInstance("AES");
-				kgen.init(128, new SecureRandom(key1));
+				kgen.init(128, random);
 				AlgorithmParameterSpec paramSpec = new IvParameterSpec(iv);
 				SecretKey key = kgen.generateKey();
 				ecipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
