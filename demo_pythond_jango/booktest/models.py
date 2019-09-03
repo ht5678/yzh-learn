@@ -10,6 +10,8 @@ class BookInfo(models.Model):
     #出版日期,DateField说明是一个日期类
     bpub_date=models.DateField();
 
+    def __str__(self):
+        return self.btitle
 
 
 #多类
@@ -59,6 +61,7 @@ class HeroInfo(models.Model):
 
 #查询
 #b = BookInfo.objects.get(id=2)
+#b = BookInfo.objects.get(btitle='天龙八部')
 #修改
 #b.bpub_date=date(1989,10,21);
 #b.save();#才会更新表格中的数据
