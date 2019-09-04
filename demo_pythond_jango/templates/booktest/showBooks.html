@@ -13,7 +13,7 @@
 图书信息如下:
 <ul>
     {% for book in books %}
-        <li><a href="/book/{{ book.id }}">{{ book.btitle }}</a></li>
+        <li><a href="/book/{{ book.id }}">{{ book.btitle }}     --      <a href="/delete/{{ book.id }}">删除</a></a></li>
     {% endfor %}
 </ul>
 </body>

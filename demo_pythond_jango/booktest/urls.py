@@ -15,5 +15,7 @@ urlpatterns=[
 
     url(r'^create',views.create),
 
+    url(r'^delete/(\d+)',views.delete),
+
 
 ]

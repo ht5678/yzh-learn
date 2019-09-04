@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseRedirect
 from django.template import loader,RequestContext
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from booktest.models import BookInfo
 from datetime import date
 
@@ -67,4 +67,17 @@ def create(request):
     #保存进数据库
     b.save();
     #返回应答,让浏览器再访问/index
+    return HttpResponseRedirect('/books');
+    #简写
+    #return redirect('/books')
+
+
+
+def delete(request,bid):
+    '''删除点击的图书'''
+    #1.通过bid获取图书对象
+    book = BookInfo.objects.get(id=bid);
+    #2.删除
+    book.delete();
+    #3.重定向. 让浏览器访问/books
     return HttpResponseRedirect('/books');
