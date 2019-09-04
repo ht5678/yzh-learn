@@ -43,3 +43,35 @@ urlpatterns的列表中,每一个配置项都调用url函数
 
 
 
+---------------------------------------------------------------------------------------------------------------
+
+
+模板:
+模板文件的使用
+1.创建模板文件夹 , templates
+2.配置模板目录
+demo_python_jango/settings.xml  文件中有配置项:
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR,'templates')], #设置模板文件目录
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+3.使用模板文件
+    a.加载模板文件
+        去模板目录下获取html文件内容,得到一个模板对象
+    b.定义模板上下文
+        向模板传递数据
+    c.模板渲染
+        得到一个标准的html内容
