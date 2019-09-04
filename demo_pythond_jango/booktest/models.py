@@ -8,7 +8,7 @@ class BookInfo(models.Model):
     #CharField表示一个字符串,max_length表示字符串的最大长度 , 带索引 , blank是用于后台管理添加修改时候的
     btitle = models.CharField(max_length=20,unique=True,db_index=True,db_column='btitle',null=False,blank=False);
     #价格
-    bprice = models.DecimalField(max_digits=10,decimal_places=2);
+    bprice = models.DecimalField(max_digits=10,decimal_places=2,default=0);
     #出版日期,DateField说明是一个日期类
     bpub_date=models.DateField();
     #阅读量
@@ -97,6 +97,17 @@ class EmployeeDetailInfo(models.Model):
     #教育经历
     #关系属性,代表员工基本信息
     employee_basic = models.OneToOneField("EmployeeBasicInfo");
+
+
+
+
+#自关联 , 比如  地区  省市
+class AreaInfo(models.Model):
+    '''地区模型类'''
+    #地区名称
+    atitle = models.CharField(max_length=20);
+    #关系属性,代表当前地区的父及地区
+    aParent = models.ForeignKey('self',null=True,blank=True);
 
 
 
