@@ -79,8 +79,12 @@ WSGI_APPLICATION = 'demo_pythond_jango.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test',   #使用数据库的名字
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': '10.250.5.13',
+        'PORT': '3306',
     }
 }
 

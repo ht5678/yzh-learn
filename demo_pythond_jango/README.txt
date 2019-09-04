@@ -75,3 +75,30 @@ TEMPLATES = [
         向模板传递数据
     c.模板渲染
         得到一个标准的html内容
+
+
+
+---------------------------------------------------------------------------------------------------------------
+
+django   ORM  切换不同数据库
+
+settings.py
+
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mydatabase',
+        'USER': 'mydatabaseuser',
+        'PASSWORD': 'mypassword',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+
+
+
+需要安装mysql模块 ; pip install pymysql
+
+然后在demo_python_jango/__init__.py里导入模块
