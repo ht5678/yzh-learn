@@ -55,6 +55,53 @@ class HeroInfo(models.Model):
 
 
 
+#多对多
+#新闻类型类
+class NewsType(models.Model):
+    #类型名
+    typeName = models.CharField(max_length=20);
+    #关系属性,代表类型下面的信息
+    #typeNews = models.ManyToManyField('NewsInfo');
+
+
+#新闻类
+class NewsInfo(models.Model):
+    #新闻标题
+    title = models.CharField(max_length=128);
+    #发布时间
+    pubDate = models.DateTimeField(auto_now_add=True);
+    #信息内容
+    content = models.TextField();
+
+    #关系属性,代表信息所属的类型
+    news_type = models.ManyToManyField('NewsType');
+
+
+
+#一对一
+#员工基本信息类
+class EmployeeBasicInfo(models.Model):
+    #姓名
+    name = models.CharField(max_length=20);
+    #性别
+    gender = models.BooleanField(default=False);
+    #年龄
+    age = models.IntegerField();
+
+
+
+#员工详细信息表
+class EmployeeDetailInfo(models.Model):
+    #联系地址
+    addr = models.CharField(max_length=256);
+    #教育经历
+    #关系属性,代表员工基本信息
+    employee_basic = models.OneToOneField("EmployeeBasicInfo");
+
+
+
+
+
 #shell命令测试
 # >>> from booktest.models import BookInfo,HeroInfo
 # >>> b = BookInfo()
@@ -84,3 +131,10 @@ class HeroInfo(models.Model):
 #查询图书表里面的所有内容
 #BookInfo.objects.all();
 #HeroInfo.objects.all();
+
+#如果不存在,会IndexError异常
+#books[0]
+#如果不存在,会DoesNotExist异常
+#books3[0:1].get()
+
+#exists:判断一个查询集中是否有数据 , True , False
