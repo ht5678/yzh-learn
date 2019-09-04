@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader,RequestContext
 from django.shortcuts import render
-
+from booktest.models import BookInfo
 
 
 def myRender(request,templatePath , contextDict={}):
@@ -37,3 +37,21 @@ def index(request):
                   {'content':'hello world' , 'list':list(range(1,9))});
 
 
+
+
+def showBooks(request):
+    '''显示图书信息'''
+    #通过model查找图书表中的数据
+    books = BookInfo.objects.all();
+    #使用模板
+    return render(request,'booktest/showBooks.html',{'books':books});
+
+
+
+def detail(request,bid):
+    '''查询图书关联英雄信息'''
+    #根据bid查询图书信息
+    book = BookInfo.objects.get(id=bid);
+    #查询和book关联的英雄信息
+    heros = book.heroinfo_set.all();
+    return render(request,'booktest/detail.html',{'book':book,'heros':heros});
