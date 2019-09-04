@@ -5,8 +5,10 @@ from django.db import models
 #图书类
 class BookInfo(models.Model):
     '''图书模型类'''
-    #CharField表示一个字符串,max_length表示字符串的最大长度
-    btitle = models.CharField(max_length=20);
+    #CharField表示一个字符串,max_length表示字符串的最大长度 , 带索引 , blank是用于后台管理添加修改时候的
+    btitle = models.CharField(max_length=20,unique=True,db_index=True,db_column='btitle',null=False,blank=False);
+    #价格
+    bprice = models.DecimalField(max_digits=10,decimal_places=2);
     #出版日期,DateField说明是一个日期类
     bpub_date=models.DateField();
     #阅读量
