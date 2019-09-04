@@ -115,3 +115,26 @@ DATABASES = {
 3.一对一关系
     员工基本信息类 - 员工详细信息类 . 员工工号
     models.OneToOneField定义在哪个类中都可以
+
+
+关联查询:
+1.查询id为1的图书关联的英雄的信息
+    b = BookInfo.objects.get(id=1);
+    b.heroinfo_set.all()
+
+通过模型类查询:
+    HeroInfo.objects.filter(hbook_id=1);
+
+2.查询id为1的英雄所属图书信息
+    hero = HeroInfo.objects.get(id=1);
+    hero.hbook
+
+通过模型类查询
+    BookInfo.objects.filter(heroinfo__id=1);
+
+
+
+通过模型类实现关联查询:
+1.查询图书信息,要求图书关联的英雄描述包含'八'
+BookInfo.objects.filter(heroinfo__hcomment__contains='八');
+2.
