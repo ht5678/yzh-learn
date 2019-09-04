@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.template import loader,RequestContext
 from django.shortcuts import render
 from booktest.models import BookInfo
+from datetime import date
 
 
 def myRender(request,templatePath , contextDict={}):
@@ -55,3 +56,15 @@ def detail(request,bid):
     #查询和book关联的英雄信息
     heros = book.heroinfo_set.all();
     return render(request,'booktest/detail.html',{'book':book,'heros':heros});
+
+
+def create(request):
+    '''新增一本图书'''
+    #创建BookInfo对象
+    b = BookInfo();
+    b.btitle = '流星蝴蝶剑';
+    b.bpub_date=date(1990,1,1);
+    #保存进数据库
+    b.save();
+    #返回应答,让浏览器再访问/index
+    return HttpResponseRedirect('/books');

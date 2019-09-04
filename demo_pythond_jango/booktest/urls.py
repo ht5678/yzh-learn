@@ -13,4 +13,7 @@ urlpatterns=[
     #正则加一个 () . 表示一个组 , 会在调用detail函数的时候 , 作为参数传递
     url(r'^book/(\d+)',views.detail),     #显示英雄信息
 
+    url(r'^create',views.create),
+
+
 ]
