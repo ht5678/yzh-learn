@@ -138,3 +138,28 @@ DATABASES = {
 1.查询图书信息,要求图书关联的英雄描述包含'八'
 BookInfo.objects.filter(heroinfo__hcomment__contains='八');
 2.
+
+
+---------------------------------------------------------------------------------------------------------------
+
+
+管理器:
+BookInfo.objects.all() -> objects是一个什么东西呢?
+objects是django帮我自动生成的管理器对象,通过这个管理器可以实现对数据的查询.
+
+objects是models.Manager类的一个对象.自定义管理器之后Django不再帮我们生成默认的objects管理器
+
+1.自定义一个管理器类,这个类继承models.Manager类
+2.再在具体的模型类中定义一个自定义管理器类的对象.
+
+class BookInfo(models.Model):
+    ##自定义一个Manger类对象 . 自定义以后 , 再使用 BookInfo.objects 就会报错 . 就要用BookInfo.book.all()来查
+    book = models.Manager();
+
+
+自定义管理器类的引用场景:
+1.改变查询的结果集
+    比如调用BookInfo.books.all()返回的是没有删除的图书的数据
+2.添加额外的方法
+    管理器类中定义一个方法帮我们操作模型类对应的数据表
+    使用self.model()就可以创建一个跟自定义管理器对应的模型类对象

@@ -2,6 +2,36 @@ from django.db import models
 
 # Create your models here.
 
+
+class BookInfoManager(models.Manager):
+    '''图书类型管理器类'''
+    #1.改变查询的结果集
+    def all(self):
+        #1.调用父类的all,获取所有数据
+        books = super().all();  #QuerySet
+        #2.对数据进行过滤
+        books = books.filter(isDelete=False);
+        #3.返回books
+        return books;
+
+    #2.封装函数:操作模型类对应的数据表(增删改查)
+    #BookInfo.objects.createBook(xx,xx,xx)
+    def createBook(self , btitle, bpub_date):
+        #1.创建一个图书对象
+        #每次修改BookInfo , 比如改成了BookInfo1,就会要改
+        #book = BookInfo();
+        #获取self所在的模型类
+        self.model;
+        book.btitle = btitle;
+        book.bpub_date=bpub_date;
+        #2.保存进数据库
+        book.save();
+        #3.返回book
+        return book;
+
+
+
+
 #图书类
 class BookInfo(models.Model):
     '''图书模型类'''
@@ -17,6 +47,26 @@ class BookInfo(models.Model):
     bcomment = models.IntegerField(default=0);
     #删除标记
     isDelete = models.BooleanField(default=False);
+
+    ##
+    ##自定义一个Manger类对象 . 自定义以后 , 再使用 BookInfo.objects 就会报错 . 就要用BookInfo.book.all()来查
+    #book = models.Manager();
+
+    #自定义一个BookInfoManager类的对象 , type(BookInfo.objects) 就改变了
+    objects = BookInfoManager()
+
+
+    @classmethod
+    def createBook(cls ,btitle ,bpub_date):
+        #1.创建一个图书对象
+        obj = cls();
+        obj.btitle = btitle;
+        obj.bpub_date = bpub_date;
+        #2.保存进数据库
+        obj.save();
+        #返回对象
+        return obj;
+
 
 
     def __str__(self):
