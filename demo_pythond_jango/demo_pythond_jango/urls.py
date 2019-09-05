@@ -20,5 +20,6 @@ from django.contrib import admin
 #项目的urls文件
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),          #一个配置项
+    url(r'^login/', include("logindemo.urls")),               #包含booktest应用中的urls文件
     url(r'^', include("booktest.urls")),               #包含booktest应用中的urls文件
 ]
