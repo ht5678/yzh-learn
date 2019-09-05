@@ -21,7 +21,7 @@ class BookInfoManager(models.Manager):
         #每次修改BookInfo , 比如改成了BookInfo1,就会要改
         #book = BookInfo();
         #获取self所在的模型类
-        self.model;
+        book = self.model();
         book.btitle = btitle;
         book.bpub_date=bpub_date;
         #2.保存进数据库
