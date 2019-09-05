@@ -25,9 +25,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'iu$4irzk9f0@sz=cg612mn7ufg(b+-m8x3!!ccbgjc9sr2g_uc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True
+#关闭调试模式 , 错误页面不回显示url , 在templates加一个404.html页面
+DEBUG = False
 
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
