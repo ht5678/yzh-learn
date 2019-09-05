@@ -68,6 +68,10 @@ class BookInfo(models.Model):
         return obj;
 
 
+    class Meta:
+        db_table = 'booktest';  #指定模型类对应的表名
+
+
 
     def __str__(self):
         return self.btitle
