@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'booktest',
     'logindemo',
+    'cookiedemo'
 )
 
 MIDDLEWARE_CLASSES = (
