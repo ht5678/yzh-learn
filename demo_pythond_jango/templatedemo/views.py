@@ -31,3 +31,20 @@ def temp_var(request):
     #定义模板上下文
     context = {'my_dict':my_dict,'my_list':my_list,'book':book};
     return render(request,'templatedemo/temp_var.html',context);
+
+
+
+def temp_vars(request):
+    '''模板标签'''
+    #查找所有图书信息
+    books = BookInfo.objects.all();
+    return render(request,'templatedemo/temp_tags.html',{'books':books});
+
+
+
+
+def temp_filter(request):
+    '''模板标签'''
+    #查找所有图书信息
+    books = BookInfo.objects.all();
+    return render(request,'templatedemo/temp_filter.html',{'books':books});

@@ -10,6 +10,8 @@ urlpatterns=[
 
     url(r'^temp_var$',views.temp_var),
 
+    url(r'^temp_tags$',views.temp_vars),
 
+    url(r'^temp_filter$',views.temp_filter),
 
 ]
