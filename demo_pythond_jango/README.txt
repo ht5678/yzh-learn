@@ -197,3 +197,10 @@ url(r'^book/(?P<num>\d+)',views.detail),
 ---------------------------------------------------------------------------------------------------------------
 
 表单post提交 , 如果出现403 , 要在settings.py文件中注释csrf
+
+ajax实现登录刷新页面.
+需要引入js ,css文件 , 在demo_python_jango的settings.py文件中,最后一行.
+
+
+#设置静态文件的保存目录
+STATICFILES_DIRS=[os.path.join(BASE_DIR,'static')]

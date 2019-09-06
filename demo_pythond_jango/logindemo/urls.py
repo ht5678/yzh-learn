@@ -12,6 +12,9 @@ urlpatterns=[
 
     url(r'^login',views.login),  #跳转到登录页面
 
+    url(r'^testAjax',views.testAjax),
+
+    url(r'^ajax_handle',views.ajax_handle),
 
 
 
