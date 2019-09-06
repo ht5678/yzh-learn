@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+
+{% load filters %}
 <head>
     <meta charset="UTF-8">
     <title>模板变量</title>
@@ -30,6 +32,8 @@
         <li class="green">{{ forloop.counter }}--{{ book.btitle }}</li>
     {% endif %}
 {% endfor %}
+
+
 
 </body>
 </html>
