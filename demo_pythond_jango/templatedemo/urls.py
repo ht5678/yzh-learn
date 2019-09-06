@@ -6,7 +6,9 @@ from templatedemo import views
 #1.严格匹配开头和结尾
 urlpatterns=[
 
-    url(r'^index$',views.index)
+    url(r'^index$',views.index),
+
+    url(r'^temp_var$',views.temp_var),
 
 
 

@@ -219,3 +219,17 @@ session: 涉及到安全性较高的数据,银行卡账户,密码
 模板文件的加载顺序:
 1.先去配置的模板目录下找模板文件
 2.去settings.py的INSTALLED_APPS下面的每个应用去找模板文件,前提是应用中必须有templates文件夹.
+
+
+
+模板变量的解析顺序:
+例如 :  {{book.btitle}}
+1.首先把book当成一个字典,把btitle当成键名,进行取值book['btitle']
+2.把book当成一个对象,把btitle当成属性,进行取值book.btitle
+3.把book当成一个对象,把btitle当成对象的方法,进行取值book.btitle
+
+例如:  {{book.0}}
+1.首先把book当成一个字典,把0当成键名,进行取值book['0']
+2.把book当成一个列表,把0当成下标,进行取值book[0]
+
+如果解析失败,产生内容时用空字符串填充模板变量.
