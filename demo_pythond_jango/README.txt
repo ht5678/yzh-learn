@@ -285,3 +285,7 @@ default:设置模板变量的默认值
 在页面中引入 , {% load filters %}
 
 页面代码注释 :  {#  ... #}
+多行注释:
+{% comment %}
+    注释内容
+{% endcomment %}
