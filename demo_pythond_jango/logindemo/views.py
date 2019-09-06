@@ -13,6 +13,12 @@ def index(request):
 def login(request):
     '''显示登录页面'''
     print(request.path);
+
+    #判断用户是否已经登录
+    if request.session.has_key('isLogin'):
+        #用户已经登录,跳转到首页
+        return redirect('/login/index');
+
     #获取cookies , username
     if 'username' in request.COOKIES:
         #获取记住的用户名
@@ -42,6 +48,11 @@ def login_check(request):
         if remember == 'on':
             #设置cookie , username,过期时间为一周
             response.set_cookie('username',username ,max_age=7*24*3600);
+
+        #记住用户登录状态
+        #只有session中有isLogin,就认为用户已登录
+        request.session['isLogin'] = True;
+
         return response;
     else:
         #用户名密码错误 , 跳转到登录页面
