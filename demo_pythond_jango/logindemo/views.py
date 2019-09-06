@@ -4,7 +4,7 @@ import logging
 # Create your views here.
 
 
-
+#http://localhost:8000/login/index
 def index(request):
     return render(request, 'logindemo/index.html')
 
@@ -37,10 +37,34 @@ def login_check(request):
     #3.返回应答
 
 
-
+#http://localhost:8000/login/testAjax
 def testAjax(request):
-    return render(request,'logindemo/login_ajax.html');
+    return render(request,'logindemo/test_ajax.html');
 
 
 def ajax_handle(request):
     return JsonResponse({'res':1});
+
+
+#http://localhost:8000/login/login_ajax
+def login_ajax(request):
+    '''显示ajax登录页面'''
+    return render(request,'logindemo/login_ajax.html');
+
+
+
+
+def login_ajax_check(request):
+    '''ajax登录校验'''
+    #获取用户名密码
+    username = request.POST.get('username');
+    password = request.POST.get('password');
+
+
+    #进行校验,返回json数据
+    if username == 'smart' and password=='123':
+        #校验成功
+        return JsonResponse({'res':1});
+    else:
+        # 校验失败
+        return JsonResponse({'res': 0});

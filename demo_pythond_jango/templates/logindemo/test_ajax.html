@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <script src="/static/js/jquery-1.11.3.min.js"></script>
+    <script>
+        $(function () {
+            //绑定btnAjax的click事件
+            $('#btnAjax').click(function () {
+                $.ajax({
+                    'url':'/login/ajax_handle',
+                    'dataType':'json'
+                }).success(function (data) {
+                    //进行处理
+                    if(data.res ==1){
+                        $('#message').show().html('提示信息');
+                    }
+                });
+            });
+
+        })();
+
+    </script>
+
+    <style>
+        #message{
+            display: none;
+            color: red;
+        }
+    </style>
+
+</head>
+<body>
+<input type="button" id="btnAjax" value="ajax请求"/>
+<div id="message"></div>
+</body>
+</html>
