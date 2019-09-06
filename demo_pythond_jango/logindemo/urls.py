@@ -8,9 +8,11 @@ urlpatterns=[
 
     url(r'^index',views.index),
 
+    url(r'^login_check',views.login_check),     #用户登录校验
+
     url(r'^login',views.login),  #跳转到登录页面
 
-    url(r'^login_check',views.login_check),     #用户登录校验
+
 
 
 
