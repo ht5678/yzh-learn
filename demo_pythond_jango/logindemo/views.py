@@ -13,7 +13,13 @@ def index(request):
 def login(request):
     '''显示登录页面'''
     print(request.path);
-    return render(request,'logindemo/login.html')
+    #获取cookies , username
+    if 'username' in request.COOKIES:
+        #获取记住的用户名
+        username = request.COOKIES['username'];
+    else:
+        username='';
+    return render(request,'logindemo/login.html' , {'username':username})
 
 
 def login_check(request):
@@ -24,13 +30,19 @@ def login_check(request):
 
     username = request.POST.get('username');
     password = request.POST.get('password');
+    remember = request.POST.get('remember');
 
     #2.进行登录的校验
     #实际开发,根据用户名和密码查找数据库
     #模拟:
     if username=='smart' and password=='123':
         #用户名密码正确 , 跳转到首页
-        return redirect('/login/index');
+        response = redirect('/login/index');
+        #判断是否需要记住用户名
+        if remember == 'on':
+            #设置cookie , username,过期时间为一周
+            response.set_cookie('username',username ,max_age=7*24*3600);
+        return response;
     else:
         #用户名密码错误 , 跳转到登录页面
         return redirect('/login/login');
