@@ -10,5 +10,9 @@ urlpatterns=[
 
     url(r'^getCookie$',views.getCookie),
 
+    url(r'^setSession$', views.setSession),
+
+    url(r'^getSession$', views.getSession),
+
 
 ]
