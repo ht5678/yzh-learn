@@ -280,9 +280,9 @@ default:设置模板变量的默认值
 
 
 自定义过滤器:
-在模块下面新建一个python package, 模块名固定为 templatetags , 新建filters.py文件 , 这个文件名不是必须固定的.
+1.在模块下面新建一个python package, 模块名固定为 templatetags , 新建filters.py文件 , 这个文件名不是必须固定的.
 
-在页面中引入 , {% load filters %}
+2.在页面中引入 , {% load filters %}
 
 页面代码注释 :  {#  ... #}
 多行注释:

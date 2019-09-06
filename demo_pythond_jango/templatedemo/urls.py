@@ -14,4 +14,6 @@ urlpatterns=[
 
     url(r'^temp_filter$',views.temp_filter),
 
+    url(r'^temp_inherit$',views.temp_inherit),
+
 ]

@@ -48,3 +48,9 @@ def temp_filter(request):
     #查找所有图书信息
     books = BookInfo.objects.all();
     return render(request,'templatedemo/temp_filter.html',{'books':books});
+
+
+
+def temp_inherit(request):
+    '''模板继承'''
+    return render(request,'templatedemo/child.html')
