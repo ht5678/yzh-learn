@@ -16,4 +16,6 @@ urlpatterns=[
 
     url(r'^temp_inherit$',views.temp_inherit),
 
+    url(r'^html_escape$',views.html_escape),
+
 ]

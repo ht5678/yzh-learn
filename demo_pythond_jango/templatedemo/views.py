@@ -54,3 +54,9 @@ def temp_filter(request):
 def temp_inherit(request):
     '''模板继承'''
     return render(request,'templatedemo/child.html')
+
+
+
+def html_escape(request):
+    '''html转义'''
+    return render(request,'templatedemo/html_scape.html',{'content':'<h1>hello</h1>'})
