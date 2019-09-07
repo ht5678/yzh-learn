@@ -18,4 +18,12 @@ urlpatterns=[
 
     url(r'^html_escape$',views.html_escape),
 
+    url(r'^change_pwd$',views.change_pwd),
+
+    url(r'^change_pwd_action$',views.change_pwd_action),
+
+    url(r'^login$', views.login),
+
+    url(r'^login_check$', views.login_check),
+
 ]
