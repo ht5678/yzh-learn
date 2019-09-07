@@ -8,5 +8,6 @@ urlpatterns=[
 
     url(r'^static_test$',views.static_test),
 
+    url(r'^index$', views.index),
 
 ]

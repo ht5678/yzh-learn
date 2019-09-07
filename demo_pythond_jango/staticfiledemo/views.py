@@ -12,3 +12,23 @@ def static_test(request):
     #('django.contrib.staticfiles.finders.FileSystemFinder', 'django.contrib.staticfiles.finders.AppDirectoriesFinder')
 
     return render(request,'staticfiledemo/static_test.html')
+
+
+EXCLUDE_IPS=['127.0.0.2']
+def blocked_ips(view_func):
+    def wrapper(request,*view_args,**view_kwargs):
+        # 获取浏览器的ip地址
+        user_ip = request.META['REMOTE_ADDR'];
+        print(user_ip)
+        if user_ip in EXCLUDE_IPS:
+            return HttpResponse('<h1>FORBIDDEN</h1>');
+        else:
+            return view_func(request,*view_args,**view_kwargs);
+    return wrapper;
+
+
+
+#@blocked_ips
+def index(request):
+    '''首页'''
+    return render(request,'staticfiledemo/index.html')

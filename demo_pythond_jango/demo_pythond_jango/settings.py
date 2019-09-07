@@ -57,6 +57,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'staticfiledemo.middleware.BlockedIPSMiddleware',   #注册中间件类
+
 )
 
 ROOT_URLCONF = 'demo_pythond_jango.urls'
