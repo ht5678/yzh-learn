@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>url反向解析</title>
+</head>
+<body>
+index链接:
+<a href="/template/index">首页</a><br/>
+
+url反向解析生成index连接:<br/>
+<a href="{% url 'template:index' %}">首页</a>
+
+
+/show_args/1/2 : <br/>
+<a href="/template/show_args/1/2">/show_args/1/2</a>
+动态生成/show_args/1/2:<br/>
+<a href="{% url 'template:show_args' 1 2 %}">/show_args/1/2</a>
+
+
+/show_kwargs/3/4 : <br/>
+<a href="/template/show_kwargs/3/4">/show_kwargs/3/4</a>
+动态生成/show_args/1/2:<br/>
+<a href="{% url 'template:show_kwargs' c=3 d=4 %}">/show_kwargs/3/4</a>
+
+
+</body>
+</html>

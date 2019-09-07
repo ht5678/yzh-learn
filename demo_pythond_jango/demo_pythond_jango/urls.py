@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),          #一个配置项
     url(r'^login/', include("logindemo.urls")),               #包含booktest应用中的urls文件
     url(r'^cookie/', include("cookiedemo.urls")),
-    url(r'^template/', include("templatedemo.urls")),
+    url(r'^template/', include("templatedemo.urls",namespace='template') ),
     url(r'^', include("booktest.urls")),               #包含booktest应用中的urls文件
 ]

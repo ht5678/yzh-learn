@@ -198,3 +198,33 @@ def verify_code(request):
     im.save(buf, 'png')
     #将内存中的图片数据返回给客户端，MIME类型为图片png
     return HttpResponse(buf.getvalue(), 'image/png')
+
+
+
+
+def url_reverse(request):
+    '''url反向解析'''
+    return render(request,'templatedemo/url_reverse.html');
+
+
+def show_args(request , a , b):
+    ''''''
+    return HttpResponse(a+":"+b);
+
+
+
+def show_kwargs(request , c , d):
+    ''''''
+    return HttpResponse(c+":"+d);
+
+
+#报错但是可以用
+from django.core.urlresolvers import reverse
+
+def test_redirect(request):
+    #重定向到/index
+    #url = reverse('template:show_args',args=(1,2))
+    #url = reverse('template:index')
+    url = reverse('template:show_kwargs', kwargs={'c':3 ,'d':4})
+
+    return redirect(url)
