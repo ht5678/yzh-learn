@@ -1,5 +1,7 @@
 这个是基于python虚拟环境django==1.8.2的练习
 
+启动之前必须  workon  test , 虚拟环境, 虚拟环境必须要有django==1.8.2
+
 
 后台管理(admin.py):
 1.本地化

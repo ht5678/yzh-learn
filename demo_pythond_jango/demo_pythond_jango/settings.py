@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'booktest',
     'logindemo',
     'cookiedemo',
-    'templatedemo'
+    'templatedemo',
+    'staticfiledemo'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -113,6 +114,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+
+#设置访问静态文件对应的url地址 , 对应着templates/templatedemo/static_test.html中的<image>标签 /static/images/mm.png
+#中的 /static , 如果设置改了 , 那么html中的路径也要修改
 STATIC_URL = '/static/'
 #设置静态文件的保存目录
 STATICFILES_DIRS=[os.path.join(BASE_DIR,'static')]
