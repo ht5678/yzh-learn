@@ -9,6 +9,7 @@
     {% csrf_token %}
     用户名:<input type="text" name="username" value="{{ username }}"/><br/>
     密码:<input type="text" name="password"/><br/>
+    <image src="/template/verify_code"/><input type="text" name="vcode"/><br/>
     <input type="checkbox" name="remember" />记住用户名<br/>
     <input type="submit" value="登录">
 </form>

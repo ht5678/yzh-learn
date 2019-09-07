@@ -26,4 +26,6 @@ urlpatterns=[
 
     url(r'^login_check$', views.login_check),
 
+    url(r'^verify_code$', views.verify_code),
+
 ]
