@@ -31,4 +31,9 @@ def blocked_ips(view_func):
 #@blocked_ips
 def index(request):
     '''首页'''
+    print('-----index-----')
+
+    #用于测试middleware的exception
+    #num = 'a'+1;
+
     return render(request,'staticfiledemo/index.html')

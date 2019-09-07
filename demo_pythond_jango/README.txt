@@ -330,8 +330,9 @@ __init__:服务器响应第一个请求时候调用
 process_request:是在产生request对象,进行url匹配之前调用
 process_view:是url匹配之后,调用视图之前
 process_response:视图调用函数之后,内容返回给浏览器之前
-process_exception:视图函数出现异常,会调用这个函数
 
-如果注册的多个中间件类中包括proces_exception函数的时候,调用的顺序和注册的顺序是相反的
+
+process_exception:视图函数出现异常,会调用这个函数 , 如果注册的多个中间件类中包括proces_exception函数的时候,
+调用的顺序和注册的顺序是相反的 , 上面的都是按照顺序来的.
 
 3.在settings.py文件中注册中间件类

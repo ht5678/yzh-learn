@@ -57,7 +57,13 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
+
     'staticfiledemo.middleware.BlockedIPSMiddleware',   #注册中间件类
+    'staticfiledemo.middleware.TestMiddleware',  # 注册中间件类
+
+    'staticfiledemo.middleware.ExceptionTest1Middleware',  # 注册中间件类
+    'staticfiledemo.middleware.ExceptionTest2Middleware',  # 注册中间件类
 
 )
 

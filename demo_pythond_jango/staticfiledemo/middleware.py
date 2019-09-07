@@ -10,3 +10,44 @@ class BlockedIPSMiddleware(object):
         user_ip=request.META['REMOTE_ADDR'];
         if user_ip in BlockedIPSMiddleware.EXCLUDE_IPS:
             return HttpResponse('<h1>FORBIDDEN</h1>');
+
+
+
+class TestMiddleware(object):
+    '''中间件类'''
+    def __init__(self):
+        '''服务器重启之后,接收第一个请求时调用'''
+        print('-----init-----')
+
+    def process_request(self,request):
+        '''产生request对象之后,url匹配之前调用'''
+        print('-----process_request-----')
+        #直接返回 , 不执行下面操作
+        #return HttpResponse('process_request')
+
+    def process_view(self, request,view_func,*view_args,**kwargs):
+        '''url匹配之后,视图函数调用之前调用'''
+        print('------process_view-----')
+        # 直接返回 , 不执行下面操作
+        # return HttpResponse('process_view')
+
+    def process_response(self , request , response):
+        '''视图函数调用之后,内容返回浏览器之前'''
+        print('-----process_response-----')
+        return response;
+
+
+
+class ExceptionTest1Middleware(object):
+    def process_exception(self , request , exception):
+        '''视图函数发生异常时调用'''
+        print('-----process_exception1-----')
+        print(exception)
+
+
+
+class ExceptionTest2Middleware(object):
+    def process_exception(self , request , exception):
+        '''视图函数发生异常时调用'''
+        print('-----process_exception2-----')
+
