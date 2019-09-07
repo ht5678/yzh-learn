@@ -10,4 +10,6 @@ urlpatterns=[
 
     url(r'^index$', views.index),
 
+    #url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
+
 ]

@@ -336,3 +336,22 @@ process_exception:视图函数出现异常,会调用这个函数 , 如果注册�
 调用的顺序和注册的顺序是相反的 , 上面的都是按照顺序来的.
 
 3.在settings.py文件中注册中间件类
+
+
+---------------------------------------------------------------------------------------------------------------
+
+上传图片:
+1.新建上传文件保存目录
+    static新建media目录
+    配置settings.py , MEDIA_ROOT=os.path.join(BASE_DIR,'static/media')  #设置上传文件存放目录
+2.后台管理页面上传图片
+    创建类PicTest
+    迁移生成表格
+    admin.py中注册模型类
+
+3.用户自定义上传图片
+
+
+
+migrate数据迁移的时候,如果报错  django.db.utils.InternalError: (1050, "Table 'staticfiledemo_pictest' already exists") ,
+直接在数据文件中删除create部分.

@@ -29,6 +29,14 @@ class AreaInfo(models.Model):
 
     title.short_description='地区名称'
 
-    class Meta:
-        db_table = 'booktest_areainfo';  #指定模型类对应的表名
+    # class Meta:
+    #     db_table = 'booktest_areainfo';  #指定模型类对应的表名
+
+
+
+
+class PicTest(models.Model):
+    '''上传图片'''
+    #商品图片,upload_to指定上传目录 , 是指在static/media下的某个目录
+    goods_pic = models.ImageField(upload_to='staticfiledemo');
 
