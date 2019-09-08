@@ -350,6 +350,16 @@ process_exception:视图函数出现异常,会调用这个函数 , 如果注册�
     admin.py中注册模型类
 
 3.用户自定义上传图片
+    1.定义用户上传图片的页面并显示,是一个自定义的表单
+    2.  定义接收上传文件的视图函数
+    request对象有一个FILES的属性,类似于字典,通过request.FILES可以获取上传文件的处理对象.
+
+    FILE_UPLOAD_HANDLERS = (
+        "django.core.files.uploadhandler.MemoryFileUploadHandler",
+        "django.core.files.uploadhandler.TemporaryFileUploadHandler"
+    )
+
+    上传文件如果不大于2.5M , 会放到内存中 . 否则写到临时文件中
 
 
 

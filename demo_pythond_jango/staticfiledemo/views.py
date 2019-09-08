@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.template import loader,RequestContext
 from django.http import HttpResponse
 from django.conf import settings
+from staticfiledemo.models import PicTest
 
 # Create your views here.
 
@@ -37,3 +38,31 @@ def index(request):
     #num = 'a'+1;
 
     return render(request,'staticfiledemo/index.html')
+
+
+
+def show_upload(request):
+    '''显示上传图片'''
+    return render(request,'staticfiledemo/upload_pic.html');
+
+
+def upload_handle(request):
+    '''上传图片处理'''
+    #1.获取上传文件的处理对象
+    pic = request.FILES["pic"];
+    print(pic)
+    print(type(pic));
+
+    #2.创建一个文件
+    save_path = "%s/staticfiledemo/%s"%(settings.MEDIA_ROOT,pic.name)
+    print(save_path);
+    with open(save_path,'wb') as f:
+        #3.获取上传文件的内容并写到创建的文件中
+        for content in pic.chunks():
+            f.write(content)
+
+    #4.在数据库中保存上传记录
+    PicTest.objects.create(goods_pic='staticfiledemo/%s'%pic.name);
+
+    #5.返回
+    return HttpResponse('ok');
