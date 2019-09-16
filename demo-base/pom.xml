@@ -419,6 +419,11 @@
 		</dependency>
 		
 		<dependency>
+		  <groupId>fakepath</groupId>
+		  <artifactId>fastdfs-client-java</artifactId>
+		</dependency>		
+		
+		<dependency>
 			<groupId>jaxen</groupId>
 			<artifactId>jaxen</artifactId>
 		</dependency>
