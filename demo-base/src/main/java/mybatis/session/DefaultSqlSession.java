@@ -16,6 +16,10 @@ public class DefaultSqlSession implements SqlSession{
 	private Executor executor;
 
 	
+	public DefaultSqlSession(Configuration configuration , Executor executor) {
+		this.configuration = configuration;
+		this.executor = executor;
+	}
 	
 	
 	@Override
