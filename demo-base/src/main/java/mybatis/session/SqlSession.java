@@ -1,5 +1,6 @@
 package mybatis.session;
 
+import mybatis.binding.MapperMethod;
 
 /**
  * 
@@ -11,7 +12,7 @@ package mybatis.session;
 public interface SqlSession {
 
 
-	public <T> T selectOne(String statement);
+	public <T> T selectOne(MapperMethod mapperMethod ,Object statement);
 	
 	
 	

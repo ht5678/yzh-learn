@@ -1,5 +1,9 @@
 package mybatis.session;
 
+import java.lang.reflect.Proxy;
+
+import mybatis.binding.MapperMethod;
+import mybatis.binding.MapperProxy;
 import mybatis.executor.Executor;
 
 /**
@@ -22,12 +26,24 @@ public class DefaultSqlSession implements SqlSession{
 	}
 	
 	
-	@Override
-	public <T> T selectOne(String statement) {
-		
-		return null;
+	
+	public <T> T getMapper(Class<T> type) {
+		return (T)Proxy.newProxyInstance(type.getClassLoader(), new Class[] {type}, new MapperProxy<>(this , type) );
 	}
 	
+	
+	
+	@Override
+	public <T> T selectOne(MapperMethod mapperMethod , Object statement) {
+		
+		return executor.query();
+	}
+
+
+
+	public Configuration getConfiguration() {
+		return configuration;
+	}
 	
 	
 

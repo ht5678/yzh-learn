@@ -20,5 +20,10 @@ public class MapperRegistry {
 		this.knownMappers = knownMappers;
 	}
 
+	public Map<String, MapperMethod> getKnownMappers() {
+		return knownMappers;
+	}
+
+	
 
 }
