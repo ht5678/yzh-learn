@@ -86,7 +86,13 @@
 		<version>0.0.2</version>
 	</dependency>
     
-    
+    <!-- mybatis -->
+  	<dependency>
+	 <groupId>org.mybatis</groupId>
+	 <artifactId>mybatis</artifactId>
+	 <version>3.4.6</version>
+    </dependency>
+           
     <!-- shiro -->
       <dependency>
             <groupId>org.apache.shiro</groupId>
