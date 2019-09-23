@@ -1,8 +1,8 @@
 package mybatis.executor;
 
-import java.util.List;
-
+import mybatis.binding.MapperMethod;
 import mybatis.session.Configuration;
+import mybatis.statement.StatementHandler;
 
 /**
  */
@@ -17,8 +17,9 @@ public class SimpleExecutor implements Executor {
 	
 	
 	@Override
-	public <T> T query() {
-		return null;
+	public <T> T query(MapperMethod method , Object parameter) throws Exception {
+		StatementHandler statementHandler = new StatementHandler(configuration);
+		return statementHandler.query(method,parameter);
 	}
 
 

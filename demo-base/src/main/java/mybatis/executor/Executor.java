@@ -1,6 +1,6 @@
 package mybatis.executor;
 
-import java.util.List;
+import mybatis.binding.MapperMethod;
 
 /**
  * 
@@ -12,6 +12,6 @@ import java.util.List;
 public interface Executor {
 
 	
-	<T> T query();
+	<T> T query(MapperMethod method , Object parameter)throws Exception;
 	
 }

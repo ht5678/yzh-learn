@@ -1,10 +1,12 @@
 package mybatis.session;
 
 import java.lang.reflect.Proxy;
+import java.sql.SQLException;
 
 import mybatis.binding.MapperMethod;
 import mybatis.binding.MapperProxy;
 import mybatis.executor.Executor;
+import mybatis.statement.StatementHandler;
 
 /**
  * 
@@ -34,9 +36,8 @@ public class DefaultSqlSession implements SqlSession{
 	
 	
 	@Override
-	public <T> T selectOne(MapperMethod mapperMethod , Object statement) {
-		
-		return executor.query();
+	public <T> T selectOne(MapperMethod mapperMethod , Object statement) throws Exception {
+		return executor.query(mapperMethod, statement);
 	}
 
 

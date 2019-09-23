@@ -12,7 +12,7 @@ import mybatis.binding.MapperMethod;
 public interface SqlSession {
 
 
-	public <T> T selectOne(MapperMethod mapperMethod ,Object statement);
+	public <T> T selectOne(MapperMethod mapperMethod ,Object statement)throws Exception;
 	
 	
 	
