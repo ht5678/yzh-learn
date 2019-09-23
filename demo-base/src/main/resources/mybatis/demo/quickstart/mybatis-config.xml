@@ -14,7 +14,7 @@
         </environment>
     </environments>
     <mappers>
-        <mapper class="mybatis.mapper.UserMapper"/>
-        <!-- <mapper resource="mybatis/UserMapper.xml"/> -->
+        <!--        <mapper class="com.xm.mapper.UserMapper"/>-->
+        <mapper resource="mybatis/UserMapper.xml"/>
     </mappers>
 </inputStream>
