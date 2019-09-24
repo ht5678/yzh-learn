@@ -4,6 +4,6 @@
     <!-- select 查询 -->
     <select id="getUser" resultType="mybatis.pojo.User">
         select *
-        from USER where id=%d
+        from test.USER where id=%s
     </select>
 </mapper>

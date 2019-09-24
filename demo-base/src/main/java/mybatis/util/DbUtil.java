@@ -23,9 +23,9 @@ public class DbUtil {
 
     static {
       driver="com.mysql.jdbc.Driver";//需要的数据库驱动
-      url="jdbc:mysql://localhost:3306/tl-vip";//数据库名路径
-      username="root";
-      password="root";
+      url="jdbc:mysql://lenovodb:3306/";//数据库名路径
+      username="myuser";
+      password="mypassword";
     }
     public static Connection open()
     {

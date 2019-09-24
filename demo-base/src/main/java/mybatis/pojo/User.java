@@ -62,6 +62,13 @@ public class User {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
+
+	
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", age=" + age + ", phone=" + phone + ", desc=" + desc
+				+ "]";
+	}
 	
 	
 	
