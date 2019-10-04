@@ -128,6 +128,9 @@ public class ReadCommittedExample {
 				try {
 					Thread.sleep(500);
 					Connection conn = openConnection();
+					//##:这里一定要设置事务不要自动提交, 正常来说,查询是不需要事务的 , 
+					//##  但是如果这里不设置为false , 两个查询的事务是独立的,就会无法达到效果.
+					conn.setAutoCommit(false);
 					//将参数升级成Connection.TRANSACTION_READ_COMMITTED 即可解决脏读的问题
 					conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
 					//第一次读取不到
