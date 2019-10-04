@@ -11,7 +11,11 @@ import java.sql.SQLException;
  * Connection.TRANSACTION_READ_UNCOMMITTED
  * 允许读取未提交事务
  * 
+ * account:
  * id , accountName , user , money
+ * 
+ * user:
+ * id , name , createTime
  * 
  * @author yuezh2   2019年10月3日 下午10:19:41
  *
