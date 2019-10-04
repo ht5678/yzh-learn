@@ -6,18 +6,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 /**
- * Connection.TRANSACTION_READ_UNCOMMITTED
- * 允许读取未提交事务
  * 
- * id , accountName , user , money
+ * Connection.TRANSACTION_REPEATABLE_READ
+ * 可重复读,在一个事务中同一sql语句,无论执行多少次都会得到相同的结果
  * 
- * @author yuezh2   2019年10月3日 下午10:19:41
+ * 
+ * @author yuezh2   2019年10月4日 下午9:47:45
  *
  */
-public class ReadUncommittedExample {
-
+public class ReadRepeatableExample {
+	
 	static{
 		try {
 			openConnection();
@@ -30,7 +29,10 @@ public class ReadUncommittedExample {
 		}
 	}
 	
-
+	
+	
+	static Object lock = new Object();
+	
 	
 	public static Connection openConnection() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
@@ -40,31 +42,19 @@ public class ReadUncommittedExample {
 	
 	
 	
-	public static void insert(String accountName , String name , int money){
-		Connection conn;
-		try {
-			conn = openConnection();
-			conn.setAutoCommit(false);
-			PreparedStatement prepare = conn.prepareStatement("insert into account(accountName,user,money) values (?,?,?)");
-			prepare.setString(1, accountName);
-			prepare.setString(2, name);
-			prepare.setInt(3, money);
+	public static void update(String user){
+		try{
+			Connection conn = openConnection();
+			PreparedStatement prepare = conn.prepareStatement("update account set money = money+1 where user=?");
+			prepare.setString(1, user);
 			prepare.executeUpdate();
-			System.out.println("执行插入");
-			Thread.sleep(3000);
 			conn.close();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			System.out.println("执行修改成功");
+		}catch(Exception e){
 			e.printStackTrace();
 		}
-		
 	}
+
 	
 	
 	
@@ -90,6 +80,7 @@ public class ReadUncommittedExample {
 	
 
 	
+	
 	public static Thread run(Runnable runnable){
 		Thread thread1 = new Thread(runnable);
 		thread1.start();
@@ -98,13 +89,26 @@ public class ReadUncommittedExample {
 	
 	
 	
+	
+	
+
 	public static void main(String[] args) {
 		//启动插入线程
 		Thread t1 = run(new Runnable() {
 			
 			@Override
 			public void run() {
-				insert("1111", "zhangsan", 10000);
+				
+				synchronized (lock) {
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				update("zhangsan");
 			}
 		});
 		
@@ -118,8 +122,23 @@ public class ReadUncommittedExample {
 					Thread.sleep(500);
 					Connection conn = openConnection();
 					//将参数升级成Connection.TRANSACTION_READ_COMMITTED 即可解决脏读的问题
-					conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+					conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
+					//第一次读取不到
 					select("zhangsan", conn);
+					
+					//释放锁
+					synchronized (lock) {
+						lock.notify();
+					}
+					
+					//第二次读取到(数据不一致)
+					Thread.sleep(500);
+					
+					
+					select("zhangsan", conn);
+					conn.close();
+					
+					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
@@ -133,6 +152,7 @@ public class ReadUncommittedExample {
 		
 		try {
 			t1.join();
+			t2.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

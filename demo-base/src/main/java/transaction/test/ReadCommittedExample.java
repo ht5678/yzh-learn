@@ -6,17 +6,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-
 /**
- * Connection.TRANSACTION_READ_UNCOMMITTED
- * 允许读取未提交事务
+ * Connection.TRANSACTION_READ_COMMITED
+ * 允许读取已提交事务
  * 
- * id , accountName , user , money
  * 
- * @author yuezh2   2019年10月3日 下午10:19:41
+ * @author yuezh2   2019年10月4日 下午9:42:11
  *
  */
-public class ReadUncommittedExample {
+public class ReadCommittedExample {
 
 	static{
 		try {
@@ -30,7 +28,10 @@ public class ReadUncommittedExample {
 		}
 	}
 	
-
+	
+	
+	static Object lock = new Object();
+	
 	
 	public static Connection openConnection() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
@@ -104,6 +105,16 @@ public class ReadUncommittedExample {
 			
 			@Override
 			public void run() {
+				
+				synchronized (lock) {
+					try {
+						lock.wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
 				insert("1111", "zhangsan", 10000);
 			}
 		});
@@ -119,7 +130,22 @@ public class ReadUncommittedExample {
 					Connection conn = openConnection();
 					//将参数升级成Connection.TRANSACTION_READ_COMMITTED 即可解决脏读的问题
 					conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+					//第一次读取不到
 					select("zhangsan", conn);
+					
+					//释放锁
+					synchronized (lock) {
+						lock.notify();
+					}
+					
+					//第二次读取到(数据不一致)
+					Thread.sleep(500);
+					
+					
+					select("zhangsan", conn);
+					conn.close();
+					
+					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
@@ -133,6 +159,7 @@ public class ReadUncommittedExample {
 		
 		try {
 			t1.join();
+			t2.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
