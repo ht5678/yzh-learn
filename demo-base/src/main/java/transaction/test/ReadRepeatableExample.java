@@ -12,6 +12,26 @@ import java.sql.SQLException;
  * 可重复读,在一个事务中同一sql语句,无论执行多少次都会得到相同的结果
  * 
  * 
+ * 在执行之前,需要插入一条数据:
+ * INSERT INTO `account` VALUES (11, '11', 'zhangsan', 10000);
+ * 
+ * 
+ * TRANSACTION_READ_COMMITTED结果:
+ * 	执行查询
+ *	11,11,zhangsan,10000,
+ *	执行修改成功
+ *	执行查询
+ *	11,11,zhangsan,10001,
+ *
+ *
+ * TRANSACTION_REPEATABLE_READ结果(更高的级别):
+ * 	执行查询
+ *		11,11,zhangsan,10004,
+ *		执行修改成功
+ *		执行查询
+ *		11,11,zhangsan,10004,
+ *
+ * 
  * @author yuezh2   2019年10月4日 下午9:47:45
  *
  */
@@ -36,7 +56,7 @@ public class ReadRepeatableExample {
 	
 	public static Connection openConnection() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql:/localhost:3306/haha","root","123456");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://10.250.5.13:3306/test","root","12345");
 		return conn;
 	}
 	
@@ -66,8 +86,8 @@ public class ReadRepeatableExample {
 			ResultSet resultSet = prepare.executeQuery();
 			System.out.println("执行查询");
 			while(resultSet.next()){
-				for(int i = 0 ; i <= 4 ; i++){
-					System.out.println(resultSet.getString(i)+",");
+				for(int i = 1 ; i <= 4 ; i++){
+					System.out.print(resultSet.getString(i)+",");
 				}
 				System.out.println();
 			}
@@ -121,6 +141,7 @@ public class ReadRepeatableExample {
 				try {
 					Thread.sleep(500);
 					Connection conn = openConnection();
+					conn.setAutoCommit(false);
 					//将参数升级成Connection.TRANSACTION_READ_COMMITTED 即可解决脏读的问题
 					conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 					//第一次读取不到
