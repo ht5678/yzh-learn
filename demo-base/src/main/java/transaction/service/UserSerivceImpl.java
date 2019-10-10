@@ -28,7 +28,7 @@ public class UserSerivceImpl  implements UserSerivce {
     @Transactional(propagation = Propagation.REQUIRED)
     public void createUser(String name) {
         // 插入user 记录
-        jdbcTemplate.update("INSERT INTO `user` (name) VALUES(?)", name);
+        jdbcTemplate.update("INSERT INTO `user2` (name) VALUES(?)", name);
         // 调用 accountService 添加帐户
         accountService.addAccount(name, 10000);
         // 人为报错

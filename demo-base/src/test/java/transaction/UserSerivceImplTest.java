@@ -17,9 +17,9 @@ public class UserSerivceImplTest {
 	@Test
     public void createUser() throws Exception {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("spring-tx.xml");
+                new ClassPathXmlApplicationContext("transaction/spring-tx.xml");
         UserSerivce service = context.getBean(UserSerivce.class);
-        service.createUser("luban");
+        service.createUser("wangwu");
     }
 
 }

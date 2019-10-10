@@ -36,6 +36,11 @@
 		<groupId>com.lenovo</groupId>
 		<artifactId>open-gateway-java-sdk</artifactId>
 	</dependency>
+	
+	<dependency>
+	    <groupId>org.aspectj</groupId>
+	    <artifactId>aspectjweaver</artifactId>
+	</dependency>	
     
     
     <!-- shiro -->

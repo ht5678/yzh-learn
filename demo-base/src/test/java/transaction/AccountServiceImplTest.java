@@ -16,8 +16,8 @@ public class AccountServiceImplTest {
 	@org.junit.Test
     public void addAccount() throws Exception {
         ClassPathXmlApplicationContext context =
-                new ClassPathXmlApplicationContext("spring-tx.xml");
+                new ClassPathXmlApplicationContext("transaction/spring-tx.xml");
         AccountService service = context.getBean(AccountService.class);
-        service.addAccount("luban", 10000);
+        service.addAccount("lisi", 10000);
     }
 }
