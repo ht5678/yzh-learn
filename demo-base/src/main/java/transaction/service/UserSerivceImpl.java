@@ -33,6 +33,7 @@ public class UserSerivceImpl  implements UserSerivce {
         jdbcTemplate.update("INSERT INTO `user2` (name) VALUES(?)", name);
         
 //       ##伪代码:针对方法内部调用代理失效问题 , this.addAccount()会导致代理失效 
+        	//需要配置文件中添加:   <aop:aspectj-autoproxy expose-proxy="true"></aop:aspectj-autoproxy>
 //        (UserSerivce)(AopContext.currentProxy()).addAccount(name, 10000);
         
         // 调用 accountService 添加帐户
