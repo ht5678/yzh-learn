@@ -29,9 +29,9 @@
         </bean>
         
         <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        	<constructor-arg name="url" value="jdbc:mysql://lenovodb:3306/test"/>
-        	<constructor-arg name="username" value="myuser"/>
-        	<constructor-arg name="password" value="mypassword"/>
+        	<constructor-arg name="url" value="jdbc:mysql://10.250.5.13:3306/test"/>
+        	<constructor-arg name="username" value="root"/>
+        	<constructor-arg name="password" value="12345"/>
         </bean>
         
         
