@@ -10,6 +10,12 @@ import java.sql.SQLException;
  * Connection.TRANSACTION_READ_COMMITED
  * 允许读取已提交事务
  * 
+ * 结果:
+ * 		执行查询
+ *		执行插入
+ *		执行查询
+ *
+ *和uncommitted作对比,没有查询到结果,数据库也没有数据
  * 
  * @author yuezh2   2019年10月4日 下午9:42:11
  *
@@ -35,7 +41,7 @@ public class ReadCommittedExample {
 	
 	public static Connection openConnection() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql:/localhost:3306/haha","root","123456");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://10.250.5.13:3306/test","root","12345");
 		return conn;
 	}
 	
@@ -77,8 +83,8 @@ public class ReadCommittedExample {
 			ResultSet resultSet = prepare.executeQuery();
 			System.out.println("执行查询");
 			while(resultSet.next()){
-				for(int i = 0 ; i <= 4 ; i++){
-					System.out.println(resultSet.getString(i)+",");
+				for(int i = 1 ; i <= 4 ; i++){
+					System.out.print(resultSet.getString(i)+",");
 				}
 				System.out.println();
 			}
@@ -132,7 +138,7 @@ public class ReadCommittedExample {
 					//##  但是如果这里不设置为false , 两个查询的事务是独立的,就会无法达到效果.
 					conn.setAutoCommit(false);
 					//将参数升级成Connection.TRANSACTION_READ_COMMITTED 即可解决脏读的问题
-					conn.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+					conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 					//第一次读取不到
 					select("zhangsan", conn);
 					
