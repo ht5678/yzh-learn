@@ -17,6 +17,15 @@ import java.sql.SQLException;
  * user:
  * id , name , createTime
  * 
+ * 
+ * 结果:
+ * 	 	执行插入
+ *		执行查询
+ *	 	8,1111,zhangsan,10000,
+ * 
+ * 查询出来结果,但是数据库表中并没有数据,因为autocommit为false
+ * 
+ * 
  * @author yuezh2   2019年10月3日 下午10:19:41
  *
  */
@@ -38,7 +47,7 @@ public class ReadUncommittedExample {
 	
 	public static Connection openConnection() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql:/localhost:3306/haha","root","123456");
+		Connection conn = DriverManager.getConnection("jdbc:mysql://10.250.5.13:3306/test","root","12345");
 		return conn;
 	}
 	
@@ -80,8 +89,8 @@ public class ReadUncommittedExample {
 			ResultSet resultSet = prepare.executeQuery();
 			System.out.println("执行查询");
 			while(resultSet.next()){
-				for(int i = 0 ; i <= 4 ; i++){
-					System.out.println(resultSet.getString(i)+",");
+				for(int i = 1 ; i <= 4 ; i++){
+					System.out.print(resultSet.getString(i)+",");
 				}
 				System.out.println();
 			}
