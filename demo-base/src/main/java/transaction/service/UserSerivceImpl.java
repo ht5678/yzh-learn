@@ -1,5 +1,7 @@
 package transaction.service;
 
+import org.springframework.aop.framework.AopContext;
+import org.springframework.aop.framework.AopProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,10 @@ public class UserSerivceImpl  implements UserSerivce {
     public void createUser(String name) {
         // 插入user 记录
         jdbcTemplate.update("INSERT INTO `user2` (name) VALUES(?)", name);
+        
+//       ##伪代码:针对方法内部调用代理失效问题 , this.addAccount()会导致代理失效 
+//        (UserSerivce)(AopContext.currentProxy()).addAccount(name, 10000);
+        
         // 调用 accountService 添加帐户
         accountService.addAccount(name, 10000);
         // 人为报错
