@@ -17,14 +17,16 @@ import org.springframework.transaction.support.TransactionTemplate;
  * spring编程事务示例
  * 
  * 
+ * savepoint练习
+ * 
  * @author yuezh2   2019年10月4日 下午10:48:32
  *
  */
 public class SpringTransactionExample {
 	
-	private static String url = "jdbc:mysql://192.168.0.147:3306/test";
+	private static String url = "jdbc:mysql://10.250.5.13:3306/test";
 	private static String user = "root";
-	private static String password = "123456";
+	private static String password = "12345";
 	
 	
 	
@@ -77,6 +79,7 @@ public class SpringTransactionExample {
 						PreparedStatement prepare = conn.prepareStatement("update account set money=money+1 where user=?");
 						prepare.setString(1, "asdfkjaf");
 						
+						//故意制造异常
 						int i = 1/0;
 					}
 //					conn.commit();
