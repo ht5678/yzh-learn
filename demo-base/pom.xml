@@ -151,10 +151,15 @@
     
     <!-- freemarker -->
     
-    <dependency>
+<!--     <dependency>
          <groupId>org.freemarker</groupId>
          <artifactId>freemarker-gae</artifactId>
-     </dependency>
+     </dependency> -->
+  
+     <dependency>
+         <groupId>org.freemarker</groupId>
+         <artifactId>freemarker</artifactId>
+     </dependency>       
      
      
      <!-- openfire  -  smack -->
