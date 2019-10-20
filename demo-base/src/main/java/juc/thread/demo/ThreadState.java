@@ -4,7 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 
- * 
+ * jps
+ * jstack
+ * 查看死锁
  * 
  * @author yuezh2   2019年10月20日 下午11:41:47
  *
