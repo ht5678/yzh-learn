@@ -1,4 +1,4 @@
-package thread.demo;
+package juc.thread.demo;
 
 
 /**

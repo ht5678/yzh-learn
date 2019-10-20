@@ -1,4 +1,4 @@
-package thread.isolation;
+package juc.thread.isolation;
 
 import java.util.HashMap;
 import java.util.Map;
