@@ -1,4 +1,4 @@
-package juc.thread.lock.simple;
+package juc.thread.lock.reentrant;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -6,35 +6,33 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * 
  * 
- * @author yuezh2   2019年10月23日 下午11:29:11
+ * @author yuezh2   2019年10月23日 下午11:27:36
  *
  */
-public class ReentrantLock02 {
+public class ReentrantLock01 {
   private static final ReentrantLock reentrantLock=new ReentrantLock();
    static int i=0;
 
   public static void main(String[] args) throws InterruptedException {
-    final ReentrantLock02 reentrantLock01 = new ReentrantLock02();
-    Thread thread = new Thread(new Runnable() {
+    final ReentrantLock01 reentrantLock01 = new ReentrantLock01();
+    new Thread(new Runnable() {
 		
 		@Override
 		public void run() {
 			reentrantLock01.add();
 		}
-	});
-    thread.start();
-
+	}).start();
     Thread.sleep(1000);//主要目的是让两个线程把事情干完
-    Thread thread2 = new Thread(new Runnable() {
+    
+    
+    new Thread(new Runnable() {
 		
 		@Override
 		public void run() {
 			reentrantLock01.add();
 		}
-	});
-    thread2.start();
+	}).start();
     Thread.sleep(1000);//主要目的是让两个线程把事情干完
-    thread2.interrupt();//增加这段代码================
     System.out.println(i);
 
   }
@@ -44,13 +42,8 @@ public class ReentrantLock02 {
    */
   public  void add(){
     try {
-     // reentrantLock.reentrantLock();
-      try {
-        reentrantLock.lockInterruptibly();
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      for (;;) {
+      reentrantLock.lock();
+      for (int j = 0; j < 10000; j++) {
         i++;
       }
     } finally {
