@@ -17,7 +17,7 @@ public class MemCachedClient {
 	
 	static{
 		try {
-			cache = new SpyMemCacheClient("lenovodb:11211");
+			cache = new SpyMemCacheClient("cacheurl:11211");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
