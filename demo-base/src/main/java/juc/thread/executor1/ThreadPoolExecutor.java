@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author yuezh2   2019年11月1日 下午10:43:08
  *
  */
-public class ThreadPoolExecutor implements Executor{
+public class ThreadPoolExecutor extends AbstractExecutorService{
 	
 	private volatile int corePoolSize;
 	private volatile int maximumPoolSize;
