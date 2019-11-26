@@ -3,8 +3,6 @@ package mongo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.HdrHistogram.WriterReaderPhaser;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -14,6 +12,15 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.WriteResult;
 
+
+
+/**
+ * 
+ * @author yuezh2
+ *
+ * @date 2019年11月26日 下午12:39:21  
+ *
+ */
 public class TestMongoDBShards {
 
     public static void main(String[] args) {
