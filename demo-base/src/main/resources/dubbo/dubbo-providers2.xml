@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+        ">
+        
+        <bean name="demo2DubboServiceImpl" class="dubbo.Demo2DubboServiceImpl"></bean>
+        
+    <!--  dubb配置注册信息分割线  -->
+    <dubbo:application name="dispatcher-soa2"  />
+    <dubbo:registry protocol="zookeeper" address="test:2181"  group="/buy/nec"/>
+    <!-- <dubbo:protocol  port="-1" httpport="false"/> -->
+    <!-- 声明需要暴露的服务接口 -->
+    <dubbo:service id="dispatcherService" interface="dubbo.Demo2DubboService"  ref="demo2DubboServiceImpl"  timeout="100000" />
+
+
+
+</beans>
