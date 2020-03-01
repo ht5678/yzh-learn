@@ -14,7 +14,7 @@ import java.util.UUID;
  */
 public class OOMTest {
 	// JVM设置    
-	// -Xms10M -Xmx10M -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\jvm.dump 
+	// -Xms10M -Xmx10M -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=D:\jvm.dump  //-XX:+UseG1GC
 	public static void main(String[] args) {
 		List<Object> list = new ArrayList<>();
 		int i = 0;
