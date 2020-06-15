@@ -9,7 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 /**
- * 
+ * http://localhost:8080/ws/WebsocketDanmu.html#
  * @author yuezh2
  *
  * @date 2020年6月15日 下午2:41:33  
