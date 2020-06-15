@@ -17,9 +17,9 @@ package utils;
 public class SnowflakeIdWorker {
 
     // ==============================Fields===========================================
-    /** 开始时间截 (2015-01-01) */
-    private final long twepoch = 1420041600000L;
-
+    /** 开始时间截 (2020/4/1 0:0:0) */
+    private final long twepoch = 1585670400000L;
+    										  
     /** 机器id所占的位数 */
     private final long workerIdBits = 5L;
 
@@ -138,7 +138,7 @@ public class SnowflakeIdWorker {
     //==============================Test=============================================
     /** 测试 */
     public static void main(String[] args) {
-        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(0, 0);
+        SnowflakeIdWorker idWorker = new SnowflakeIdWorker(2, 1);
         for (int i = 0; i < 1000; i++) {
             long id = idWorker.nextId();
             System.out.println(Long.toBinaryString(id));
