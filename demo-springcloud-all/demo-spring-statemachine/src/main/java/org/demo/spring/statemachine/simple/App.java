@@ -1,4 +1,4 @@
-package org.demo.spring.statemachine;
+package org.demo.spring.statemachine.simple;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
