@@ -171,7 +171,39 @@
 		<groupId>c3p0</groupId>
 		<artifactId>c3p0</artifactId>
 	</dependency>
+	
+	
+	<!-- shardingsphere-jdbc -->
+	<dependency>
+	    <groupId>org.apache.shardingsphere</groupId>
+	    <artifactId>shardingsphere-jdbc-core</artifactId>
+	</dependency>			
     
+	<dependency>
+	    <groupId>org.apache.shardingsphere</groupId>
+	    <artifactId>shardingsphere-sql-parser-engine</artifactId>
+	</dependency>    
+    
+	<dependency>
+	    <groupId>org.apache.shardingsphere</groupId>
+	    <artifactId>shardingsphere-sql-parser-mysql</artifactId>
+	    <scope>test</scope>
+	</dependency>    
+	
+	<dependency>
+	    <groupId>org.apache.shardingsphere</groupId>
+	    <artifactId>shardingsphere-sql-parser-spi</artifactId>
+	</dependency>
+	
+	<dependency>
+	    <groupId>org.apache.shardingsphere</groupId>
+	    <artifactId>shardingsphere-spi</artifactId>
+	</dependency>  
+	
+	<dependency>
+	    <groupId>io.shardingsphere</groupId>
+	    <artifactId>sharding-core</artifactId>
+	</dependency>	  
     
     <!-- hystrix -->
     <dependency>
