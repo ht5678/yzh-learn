@@ -59,6 +59,7 @@
     <module>S4-l05-springcloud-eureka-zuul</module>
     <module>S4-l05-springcloud-eureka-bus</module>
     <module>springcloud-log</module>
+    <module>demo-spring-statemachine</module>
   </modules>
   
       <profiles>
