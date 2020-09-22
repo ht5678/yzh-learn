@@ -1,2 +1,4 @@
+#文件名必须是包的完整路径名
+#每个实现类里必须要有一个无参的构造方法
 spidemo.spiA.DivisionOperationImpl
 spidemo.spiB.PlusOperationImpl
