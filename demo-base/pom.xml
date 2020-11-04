@@ -167,10 +167,6 @@
 	</dependency>
 	
 	
-	<dependency>
-		<groupId>c3p0</groupId>
-		<artifactId>c3p0</artifactId>
-	</dependency>
 	
 	
 	<!-- shardingsphere-jdbc -->
@@ -588,6 +584,19 @@
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
 		</dependency>
+		
+		<!-- dbcp2 -->
+       <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        
 		
 		<!-- guava -->
 		<dependency>
