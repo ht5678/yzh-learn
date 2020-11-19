@@ -47,15 +47,13 @@ public class ReverseLinkedList {
 	
 	
 	public static Node reverse(Node head) {
-		if(head ==null || head.next !=null) {
+		if(head ==null || head.next ==null) {
 			return head;
 		}
 		
-		Node next = head.next;
-		
-		Node newHead = reverse(next);
-		next.next = head;
-		head.next = null;
+		Node newHead = reverse(head.next);
+		head.getNext().setNext(head);
+		head.setNext(null);
 		return newHead;
 		
 	}
@@ -79,7 +77,7 @@ public class ReverseLinkedList {
 		Node head = reverse(node1);
 		
 		while(head!=null) {
-			System.out.println(head.getData());
+			System.out.print(head.getData()+"     ");
 			head = head.next;
 		}
 		
