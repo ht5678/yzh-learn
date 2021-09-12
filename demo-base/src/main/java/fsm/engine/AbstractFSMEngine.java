@@ -3,8 +3,6 @@ package fsm.engine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.lenovo.ofp.order.common.exception.BizException;
-
 /**
  * 
  * 类StatusMachine.java的实现描述：状态机 TODO 类实现描述：状态机 
@@ -48,7 +46,7 @@ public abstract class AbstractFSMEngine<S,E> {
 		// 其他
 		else {
 			LOGGER.error("staus engine cannot process next status , preStatus : {} , event : {} " , preStatus , event);
-			throw new BizException("staus engine cannot process next status , preStatus【"+preStatus+"】,event【"+event+"】");
+			throw new RuntimeException("staus engine cannot process next status , preStatus【"+preStatus+"】,event【"+event+"】");
 		}
 	}
 	
@@ -69,7 +67,7 @@ public abstract class AbstractFSMEngine<S,E> {
 			return nextStatus;
 		}catch(Exception e) {
 			LOGGER.error(String.format("stats machine error : %s", e.getMessage()) ,e);
-			throw new BizException("staus engine cannot process next status , preStatus【"+preStatus+"】,event【"+event+"】");
+			throw new RuntimeException("staus engine cannot process next status , preStatus【"+preStatus+"】,event【"+event+"】");
 		}
 	}
 	

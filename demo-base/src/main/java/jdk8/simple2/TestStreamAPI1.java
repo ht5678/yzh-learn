@@ -1,4 +1,4 @@
-package com.atguigu.java8;
+package jdk8.simple2;
 
 import java.util.ArrayList;
 import java.util.Arrays;

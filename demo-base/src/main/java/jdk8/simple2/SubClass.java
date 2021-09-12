@@ -1,4 +1,4 @@
-package com.atguigu.java8;
+package jdk8.simple2;
 
 public class SubClass /*extends MyClass*/ implements MyFun, MyInterface{
 

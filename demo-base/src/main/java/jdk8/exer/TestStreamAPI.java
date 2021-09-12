@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.junit.Test;
 
 import jdk8.simple.Employee;
-import jdk8.simple2.Employee.Status;
+import jdk8.simple.Employee.Status;
 
 
 public class TestStreamAPI {

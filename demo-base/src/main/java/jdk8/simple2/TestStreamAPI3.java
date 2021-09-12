@@ -1,4 +1,4 @@
-package com.atguigu.java8;
+package jdk8.simple2;
 
 import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.junit.Test;
 
-import com.atguigu.java8.Employee.Status;
+import jdk8.simple2.Employee.Status;
 
 public class TestStreamAPI3 {
 	
