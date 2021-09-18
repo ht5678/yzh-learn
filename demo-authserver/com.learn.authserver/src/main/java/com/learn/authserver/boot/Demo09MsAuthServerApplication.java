@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
-public class Tulingvip09MsAuthServerApplication {
+public class Demo09MsAuthServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Tulingvip09MsAuthServerApplication.class, args);
+		SpringApplication.run(Demo09MsAuthServerApplication.class, args);
 	}
 
 }
