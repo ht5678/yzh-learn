@@ -16,7 +16,7 @@
   
   
   <modules>
-  	<module>com.learn.authserver</module>
+  	<module>authserver</module>
   </modules>
   
 
