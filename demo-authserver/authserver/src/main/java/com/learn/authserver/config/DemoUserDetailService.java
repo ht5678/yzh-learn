@@ -32,7 +32,7 @@ public class DemoUserDetailService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		LOGGER.info("当前的登录用户名为 : {}" , username);
 		
-		return User.builder().username(username)
+		return User.builder().username("zhangsan")
 										.password(passwordEncoder.encode("123456"))
 										.authorities("ROLE_ADMIN")
 										.build();
