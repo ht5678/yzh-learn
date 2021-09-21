@@ -1,5 +1,7 @@
 package com.learn.authserver.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -18,8 +18,11 @@ import lombok.extern.slf4j.Slf4j;
  *	@date 2021年9月17日下午8:55:40
  */
 @Component("userDetailsService")
-@Slf4j
 public class DemoUserDetailService implements UserDetailsService{
+	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DemoUserDetailService.class);
+	
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -27,7 +30,7 @@ public class DemoUserDetailService implements UserDetailsService{
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		log.info("当前的登录用户名为 : {}" , username);
+		LOGGER.info("当前的登录用户名为 : {}" , username);
 		
 		return User.builder().username(username)
 										.password(passwordEncoder.encode("123456"))

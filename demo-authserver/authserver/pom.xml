@@ -10,7 +10,7 @@
   
   
   <groupId>com.learn.authserver</groupId>
-  <artifactId>com.learn.authserver</artifactId>
+  <artifactId>authserver</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>com.learn.authserver Maven Webapp</name>
