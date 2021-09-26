@@ -26,7 +26,7 @@ import com.alibaba.druid.pool.DruidDataSource;
  */
 @EnableConfigurationProperties(value=DruidDataSourceProperties.class)
 @Configuration
-@MapperScan(basePackages="com.simple.base.dao")
+@MapperScan(basePackages="org.simple.base.dao")
 public class SpringDruidConfig {
 
 	@Autowired

@@ -3,7 +3,7 @@ spring:
       druid:
         username: root
         password: p@ssw0rd
-        jdbcUrl: jdbc:mysql://localhost:3306/tuling-ms-alibaba?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+        jdbcUrl: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
         driverClassName: com.mysql.jdbc.Driver
         initialSize: 5
         minIdle: 5
