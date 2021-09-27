@@ -22,8 +22,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
  * @author yue
  *
  */
-//@SpringBootApplication
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })// or   @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication
 public class Demo09MsAuthServerApplication {
 
 	public static void main(String[] args) {

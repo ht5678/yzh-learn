@@ -13,6 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableDiscoveryClient
 @ComponentScan(basePackages="org.simple")
+//@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })// or   @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 public class ResourceServerOrderApplication {
 
 	
