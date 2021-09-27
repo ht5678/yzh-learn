@@ -3,7 +3,8 @@
 <mapper namespace="org.simple.base.dao.mapper.OrderInfoMapper" >
 
     <select id="selectOrderInfoByIdAndUserName" resultType="org.simple.base.dao.entity.OrderInfo" parameterType="map">
-      select * from order_info where order_no=#{orderNo} and user_name=#{userName}
+      <!-- select * from order_info where order_no=#{orderNo} and user_name=#{userName} -->
+      select * from order_info where order_no=#{orderNo} 
     </select>
 
     <insert id="insertOrder" parameterType="org.simple.base.dao.entity.OrderInfo" useGeneratedKeys="true" keyProperty="orderNo">
