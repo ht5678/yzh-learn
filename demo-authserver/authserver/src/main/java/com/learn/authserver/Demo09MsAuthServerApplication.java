@@ -2,6 +2,7 @@ package com.learn.authserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 
 /**
@@ -21,7 +22,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author yue
  *
  */
-@SpringBootApplication
+//@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class })// or   @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 public class Demo09MsAuthServerApplication {
 
 	public static void main(String[] args) {
