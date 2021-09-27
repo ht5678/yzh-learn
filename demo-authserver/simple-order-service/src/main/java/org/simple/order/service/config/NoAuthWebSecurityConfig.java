@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
  * @author yuezh2@lenovo.com
  *	@date 2021年9月27日下午5:37:05
  */
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class NoAuthWebSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	
