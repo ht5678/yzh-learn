@@ -3,6 +3,8 @@ spring:
       druid:
         username: root
         password: p@ssw0rd
+        #username: myuser
+        #password: mypassword
         jdbcUrl: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
         driverClassName: com.mysql.jdbc.Driver
         initialSize: 5

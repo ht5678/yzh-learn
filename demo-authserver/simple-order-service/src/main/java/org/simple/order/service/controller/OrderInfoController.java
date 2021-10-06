@@ -29,6 +29,13 @@ public class OrderInfoController {
 	private OrderInfoMapper orderInfoMapper;
 	
 	
+	/**
+	 * http://localhost:8080/order/selectOrderInfoById
+	 * 
+	 * @param orderNo
+	 * @param userName
+	 * @return
+	 */
 	@RequestMapping("/selectOrderInfoById/{orderNo}")
 	public Object selectOrderInfoById(@PathVariable("orderNo") String orderNo ,  String userName){
 		LOGGER.info("username : {}" , userName);
