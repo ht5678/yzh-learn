@@ -37,9 +37,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Bean
 	public ResourceServerTokenServices resourceServerTokenServices(){
 		RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
+		//
+//		remoteTokenServices.setClientId("order_app");
+//		remoteTokenServices.setClientSecret("zhangsan");
+		
+		//
 		remoteTokenServices.setClientId("order_app");
-		remoteTokenServices.setClientSecret("zhangsan");
+		remoteTokenServices.setClientSecret("order_app");		
+		
 		remoteTokenServices.setCheckTokenEndpointUrl("http://auth-server/oauth/check_token");
+		
+		//java.lang.IllegalStateException: No instances available for localhost
+//		remoteTokenServices.setCheckTokenEndpointUrl("http://localhost:9999/oauth/check_token");
+		
 		remoteTokenServices.setRestTemplate(restTemplate);
 		//校验令牌只会拿到用户名 , 但我需要获取到整个的用户信息 , 就需要这个转换器
 //		remoteTokenServices.setAccessTokenConverter(accessTokenConverter());

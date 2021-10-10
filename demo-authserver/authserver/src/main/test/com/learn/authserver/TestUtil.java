@@ -17,6 +17,51 @@ public class TestUtil {
 	public static final ApacheHttpClient HTTPCLIENT = new ApacheHttpClient(10, 5000, 30000, 5 * 1024 * 1024 * 1024, 16, 16);
 	
 	
+	/**
+	 * 授权码模式
+	 * 
+	 * 不需要校验
+	 * 
+	 */
+	@Test
+	public void test5(){
+		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("Content-Type", "application/json");
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+		//token
+		headers.put("Authorization", "beare 9a4c188b-b5f9-4976-b046-734b4db08377");	// token
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		
+		String response = HTTPCLIENT.post("http://localhost:9998/xixi", params, headers, "UTF8");
+		System.out.println(response);
+	}
+	
+	
+	
+	/**
+	 * 授权码模式
+	 * 
+	 * 1.http://localhost:9999/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://www.baidu.com&state=abc
+	 * 2.用code换token
+	 * 3.请求资源服务器
+	 * 
+	 */
+	@Test
+	public void test4(){
+		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("Content-Type", "application/json");
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+		//token
+		headers.put("Authorization", "bearer e78376e7-ba3a-4a55-9711-36c8ceea2063");	// token
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		
+		String response = HTTPCLIENT.post("http://localhost:9998/order/selectOrderInfoById/222333", params, headers, "UTF8");
+		System.out.println(response);
+	}
+	
+	
 	
 	/**
 	 * 授权码模式
@@ -45,8 +90,8 @@ public class TestUtil {
 	/**
 	 * 授权码模式
 	 * 
-	 * 1.http://localhost:9999/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://www.baidu.com&state=abc
-	 * 2.用code换token
+	 * 1.  http://localhost:9999/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://www.baidu.com&state=abc
+	 * 2.  用code换token
 	 * 
 	 */
 	@Test
@@ -55,12 +100,16 @@ public class TestUtil {
 //		headers.put("Content-Type", "application/json");
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		//portal_app:portal_app
-		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    appid:appsecret   然后base64编码
+//		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    appid:appsecret   然后base64编码
+		
+		//order_app:order_app  // 只支持password授权模式
+		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("code", "Q6nMD4");
+		params.put("code", "u80ymc");
 		params.put("grant_type", "authorization_code");
 		params.put("redirect_uri", "http://www.baidu.com");
+		
 		
 		String response = HTTPCLIENT.post("http://localhost:9999/oauth/token", params, headers, "UTF8");
 		System.out.println(response);
@@ -81,7 +130,10 @@ public class TestUtil {
 //		headers.put("Content-Type", "application/json");
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		//portal_app:portal_app
-		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    client_id:password   然后base64编码
+//		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    client_id:password   然后base64编码
+		
+		//order_app:order_app  ,  返回结果response为空的场景 , 需要换一个base64编码器
+		headers.put("Authorization", "Basic b3JkZXJfYXBwOm9yZGVyX2FwcA==");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("username", "zhangsan");
