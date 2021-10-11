@@ -15,8 +15,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
  * @author yuezh2@lenovo.com
  *	@date 2021年9月17日下午5:41:15
  */
-@Configuration
-@EnableAuthorizationServer
+//@Configuration
+//@EnableAuthorizationServer
 public class DemoAuthrizationServerConfig extends AuthorizationServerConfigurerAdapter{
 
 	@Autowired
