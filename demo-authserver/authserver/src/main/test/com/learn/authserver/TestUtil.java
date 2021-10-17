@@ -133,6 +133,7 @@ public class TestUtil {
 //		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    client_id:password   然后base64编码
 		
 		//order_app:order_app  ,  返回结果response为空的场景 , 需要换一个base64编码器
+		//db模式 ， 需要修改db中的client secret字段
 		headers.put("Authorization", "Basic b3JkZXJfYXBwOm9yZGVyX2FwcA==");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
