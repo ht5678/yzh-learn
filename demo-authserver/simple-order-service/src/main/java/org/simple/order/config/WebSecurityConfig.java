@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 //		remoteTokenServices.setClientId("order_app");
 //		remoteTokenServices.setClientSecret("zhangsan");
 		
-		//
+		//必须和获取token的 , clientId:clientSecret 一致
 		remoteTokenServices.setClientId("order_app");
 		remoteTokenServices.setClientSecret("order_app");		
 		
