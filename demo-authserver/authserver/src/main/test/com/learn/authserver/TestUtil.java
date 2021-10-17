@@ -100,13 +100,13 @@ public class TestUtil {
 //		headers.put("Content-Type", "application/json");
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		//portal_app:portal_app
-//		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    appid:appsecret   然后base64编码
+		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    appid:appsecret   然后base64编码
 		
 		//order_app:order_app  // 只支持password授权模式
-		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
+//		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("code", "u80ymc");
+		params.put("code", "1gBVXg");
 		params.put("grant_type", "authorization_code");
 		params.put("redirect_uri", "http://www.baidu.com");
 		
@@ -133,7 +133,7 @@ public class TestUtil {
 		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    client_id:password   然后base64编码
 		
 		//order_app:order_app  ,  返回结果response为空的场景 , 需要换一个base64编码器
-//		headers.put("Authorization", "Basic b3JkZXJfYXBwOm9yZGVyX2FwcA==");	//
+//		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("username", "zhangsan");
