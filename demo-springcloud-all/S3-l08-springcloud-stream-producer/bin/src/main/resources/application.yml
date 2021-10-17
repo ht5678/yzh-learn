@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: stream-producer
+  rabbitmq:
+    host: 10.99.205.17
+    port: 5672
+    username: admin
+    password: p@ssw0rd
+    
+management: 
+  endpoints:
+    web:
+      exposure: 
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"     
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://slave1:8761/eureka
+      

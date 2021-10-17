@@ -1,0 +1,21 @@
+spring:
+  #application:
+  #  name: config-client
+  cloud:
+    config:
+      #配置服务器的用户名密码 , 用于安全
+      username: root
+      password: 12345
+      failFast: false      #错误提前配置 , 客户端启动的时候有一次连接不上,就会抛出异常终止启动
+      url: http://localhost:8888
+      profile: dev,zuul         #会在config-server的searchpaths下读取 config-client-dev.yml文件
+      label: client-label
+      name: config-client2
+      
+      
+      
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  
