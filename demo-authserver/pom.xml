@@ -21,6 +21,7 @@
     <module>simple-order-service</module>
     <module>simple-base-dao</module>
     <module>authserver-gateway</module>
+    <module>gateway-order-service</module>
   </modules>
   
 
