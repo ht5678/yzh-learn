@@ -37,4 +37,25 @@ public class GateWayExceptionHandlerAdvice {
 	}
 	
 	
+	@ExceptionHandler(value= {GateWayException.class})
+	public Result handle(GateWayException ex) {
+		LOGGER.error("GatewayException : {}" , ex.getMessage());
+		return Result.fail(ex.getCode(),ex.getMsg());
+	}
+	
+	
+	@ExceptionHandler(value= {Throwable.class})
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Result handle(Throwable throwable) {
+		Result result = Result.fail();
+		
+		if(throwable instanceof ResponseStatusException) {
+			result = handle((ResponseStatusException)throwable);
+		}else if(throwable instanceof NotFoundException) {
+			result = handle((NotFoundException)throwable);
+		}else if(throwable instanceof GateWayException) {
+			result = handle((GateWayException)throwable);
+		}
+		return result;
+	}
 }
