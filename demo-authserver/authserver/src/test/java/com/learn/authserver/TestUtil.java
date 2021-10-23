@@ -77,7 +77,7 @@ public class TestUtil {
 //		headers.put("Content-Type", "application/json");
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		//token
-		headers.put("Authorization", "beare 67b74bb4-85f2-4839-8ed0-b1c2fbb4a417");	// token
+		headers.put("Authorization", "beare 11e0f52c-5e41-45bd-94aa-6b2ca1336472");	// token
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		
@@ -106,7 +106,7 @@ public class TestUtil {
 //		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("token", "2q2YOe");
+		params.put("token", "11e0f52c-5e41-45bd-94aa-6b2ca1336472");
 		
 		
 		String response = HTTPCLIENT.post("http://localhost:9999/oauth/check_token", params, headers, "UTF8");
@@ -134,7 +134,7 @@ public class TestUtil {
 //		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("code", "2q2YOe");
+		params.put("code", "pxSRok");
 		params.put("grant_type", "authorization_code");
 		params.put("redirect_uri", "http://www.baidu.com");
 		

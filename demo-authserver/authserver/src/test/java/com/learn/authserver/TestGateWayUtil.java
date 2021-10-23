@@ -28,11 +28,12 @@ public class TestGateWayUtil {
 		Map<String, String> headers = new HashMap<String, String>();
 		headers.put("Content-Type", "application/x-www-form-urlencoded");
 		//token
-		headers.put("Authorization", "bearer 67b74bb4-85f2-4839-8ed0-b1c2fbb4a417");	// token
+		headers.put("Authorization", "bearer 4240329c-27b0-42d5-861e-8604373d5c6c");	// token
+		headers.put("userName", "zhangsan");
 		
 		Map<String, Object> params = new HashMap<String, Object>();
 		
-		String response = HTTPCLIENT.post("http://localhost:8888/order/selectOrderInfoById/222333", params, headers, "UTF8");
+		String response = HTTPCLIENT.post("http://localhost:8888/order/selectOrderInfoByIdAndUserName/222333", params, headers, "UTF8");
 		System.out.println(response);
 	}
 	
