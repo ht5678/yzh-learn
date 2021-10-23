@@ -11,6 +11,7 @@ import org.authserver.gateway.config.role.service.ISysPermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,6 +36,7 @@ public class DemoUserDetailService implements UserDetailsService{
 	@Autowired
 	private SysUserMapper sysUserMapper;
 	
+	@Qualifier("sysPermissionServiceImpl")
 	@Autowired
 	private ISysPermissionService sysPermissionService;
 	
