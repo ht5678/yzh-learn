@@ -23,6 +23,7 @@
     <module>authserver-gateway</module>
     <module>gateway-order-service</module>
     <module>ms-cloud-gateway</module>
+    <module>sso-portal-password</module>
   </modules>
   
 
