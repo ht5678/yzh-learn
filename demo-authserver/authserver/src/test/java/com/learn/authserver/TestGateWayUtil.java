@@ -20,6 +20,24 @@ public class TestGateWayUtil {
 	
 	/**
 	 * 
+	 * 网关查询用户
+	 * 
+	 */
+	@Test
+	public void test5(){
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("access_token", "4240329c-27b0-42d5-861e-8604373d5c6c");	// token
+		
+		String response = HTTPCLIENT.post("http://localhost:9999/user/getCurrentUser", params, headers, "UTF8");
+		System.out.println(response);
+	}
+	
+	
+	/**
+	 * 
 	 * 请求gateway , 然后网关进行转发
 	 * 
 	 */

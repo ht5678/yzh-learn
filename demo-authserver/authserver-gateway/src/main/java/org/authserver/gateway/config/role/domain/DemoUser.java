@@ -14,14 +14,20 @@ public class DemoUser extends User{
 	
 	
 	
-	
-	
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6423037781312904292L;
 	
+	
+    private Integer userId;
+
+    private String phone;
+
+    private String email;
+
+    private String nickName;
 	
 	private Integer departmentId;//举个例子 , 部门id
 	
@@ -55,6 +61,38 @@ public class DemoUser extends User{
 
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
 	}
 
 	

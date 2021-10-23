@@ -134,7 +134,7 @@ public class TestUtil {
 //		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("code", "pxSRok");
+		params.put("code", "EZW4H4");
 		params.put("grant_type", "authorization_code");
 		params.put("redirect_uri", "http://www.baidu.com");
 		
