@@ -24,6 +24,7 @@
     <module>gateway-order-service</module>
     <module>ms-cloud-gateway</module>
     <module>sso-portal-password</module>
+    <module>ms-cloud-common</module>
   </modules>
   
 
