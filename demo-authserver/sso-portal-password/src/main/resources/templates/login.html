@@ -27,7 +27,7 @@
         var targetUrl = currentUrl.substr(targetUrlIndex+10,targetUrlIndex.length);
         $.ajax({
             type: "POST",
-            url: "http://portal.tuling.com:8855/login",
+            url: "http://localhost:8855/login",
             data:$('#login').serialize(),
             success: function(data){
                 if(data.status=='000004') {

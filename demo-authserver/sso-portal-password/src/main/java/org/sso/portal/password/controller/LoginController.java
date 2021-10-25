@@ -36,7 +36,16 @@ public class LoginController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 	
 	
-	
+	/**
+	 * 
+	 * http://localhost:8855/login.html
+	 * 
+	 * 
+	 * @param userName
+	 * @param password
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/login")
 	@ResponseBody
 	public Result login(@RequestParam(value="username")String userName 
