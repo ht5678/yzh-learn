@@ -18,6 +18,35 @@ public class TestGateWayUtil {
 	
 	
 	
+	
+	/**
+	 * 授权码模式
+	 * 
+	 * 1.  http://localhost:9999/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://www.baidu.com&state=abc
+	 * 2.  用code换token
+	 * 
+	 */
+	@Test
+	public void testRefreshToken(){
+		Map<String, String> headers = new HashMap<String, String>();
+//		headers.put("Content-Type", "application/json");
+		headers.put("Content-Type", "application/x-www-form-urlencoded");
+		//portal_app:portal_app
+		headers.put("Authorization", "Basic cG9ydGFsX2FwcDpwb3J0YWxfYXBw");	// 格式    appid:appsecret   然后base64编码
+		
+		//order_app:order_app  // 只支持password授权模式
+//		headers.put("Authorization", "Basic b3JkZXJfYXBwJTNBb3JkZXJfYXBw");	//
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("refresh_token", "2q2YOe");
+		params.put("grant_type", "refresh_token");
+		
+		
+		String response = HTTPCLIENT.post("http://localhost:9999/oauth/token", params, headers, "UTF8");
+		System.out.println(response);
+	}
+	
+	
 	/**
 	 * 
 	 * 网关查询用户
