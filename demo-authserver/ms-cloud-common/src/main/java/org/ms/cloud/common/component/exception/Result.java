@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 public class Result<T> {
 
-	public static final String SUCCESSFUL_CODE="000000";
+	public static final String SUCCESSFUL_CODE="000005";
 	
 	public static final String SUCCESSFUL_MSG="处理成功";
 	

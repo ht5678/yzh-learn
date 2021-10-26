@@ -30,11 +30,11 @@
             url: "http://localhost:8855/login",
             data:$('#login').serialize(),
             success: function(data){
-                if(data.status=='000004') {
+                if(data.code=='000004') {
                     alert("username or password error");
                     window.location.href=currentUrl;
                 }
-                if(data.status=='000005') {
+                if(data.code=='000005') {
                     window.location.href = targetUrl;
                 }
             }

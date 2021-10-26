@@ -38,6 +38,8 @@ public class LoginController {
 	
 	/**
 	 * 
+	 * http://localhost:8855/home.html
+	 * 
 	 * http://localhost:8855/login.html
 	 * 
 	 * 

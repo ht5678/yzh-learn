@@ -71,7 +71,7 @@ public class PortalProductController {
 		String token = tokenInfo.getAccess_token();
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set("Authorization", "bearer "+tokenInfo);
+		headers.set("Authorization", "bearer "+token);
 		
 		HttpEntity httpEntity = new HttpEntity<>(null , headers);
 		return httpEntity;

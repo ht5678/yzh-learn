@@ -16,7 +16,7 @@ public enum SystemErrorType implements ErrorType{
 
     GATEWAY_ERROR("010500", "网关异常"),
     
-    SUCCESS("200-1", "200返回值正常"),
+    SUCCESS("000005", "200返回值正常"),
 
     FORBIDDEN("403","无权访问"),
 
