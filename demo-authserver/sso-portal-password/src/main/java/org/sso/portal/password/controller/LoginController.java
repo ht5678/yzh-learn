@@ -43,6 +43,12 @@ public class LoginController {
 	 * http://localhost:8855/login.html
 	 * 
 	 * 
+	 * 	admin/admin
+	 * 
+	 * zhangsan/123456
+	 * 
+	 * 
+	 * 
 	 * @param userName
 	 * @param password
 	 * @param request
