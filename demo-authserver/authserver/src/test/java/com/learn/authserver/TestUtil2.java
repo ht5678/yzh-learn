@@ -13,7 +13,7 @@ public class TestUtil2 {
 	
 	@Test
 	public void test(){
-		System.out.println(new BCryptPasswordEncoder().encode("order_app"));
+		System.out.println(new BCryptPasswordEncoder().encode("product_app"));
 		
 	}
 	

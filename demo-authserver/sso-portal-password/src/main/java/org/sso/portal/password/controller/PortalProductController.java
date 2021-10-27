@@ -12,23 +12,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.sso.portal.password.config.MDA;
 import org.sso.portal.password.entity.ProductInfo;
 import org.sso.portal.password.entity.TokenInfo;
 
-import ch.qos.logback.core.subst.Token;
-
 /**
  * 
  * @author yue
  *
  */
-@Controller
+@RestController
 public class PortalProductController {
 
 	
@@ -46,7 +44,7 @@ public class PortalProductController {
 		TokenInfo tokenInfo = (TokenInfo)request.getSession().getAttribute(MDA.TOKEN_INFO_KEY);
 		
 		try{
-			ResponseEntity<Result<ProductInfo>> responseEntity = restTemplate.exchange(MDA.GET_PRODUCT_INFO+id, HttpMethod.GET , 
+			ResponseEntity<Result<ProductInfo>> responseEntity = restTemplate.exchange("http://product-center:8084/product/selectProductInfoById/1", HttpMethod.GET , 
 					wrapRequest(tokenInfo),
 					new ParameterizedTypeReference<Result<ProductInfo>>() {});
 			
