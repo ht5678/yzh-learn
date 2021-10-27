@@ -30,9 +30,9 @@ public class ProductInfoController {
 	 * @return
 	 */
 	@RequestMapping("/selectProductInfoById/{productNo}")
-	public String selectProductInfoById(@PathVariable("productNo")String productNo) {
+	public Object selectProductInfoById(@PathVariable("productNo")String productNo) {
 		ProductInfo productInfo = productInfoMapper.selectProductInfoById(productNo);
-		return JSON.toJSONString(productInfo);
+		return productInfo;
 	}
 	
 }

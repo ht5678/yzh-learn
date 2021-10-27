@@ -38,6 +38,21 @@ public class PortalProductController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(PortalProductController.class);	
 	
 	
+	
+	/**
+	 * 
+	 * http://localhost:8855/product/1
+	 * 
+	 * admin/admin
+	 * 
+	 * zhangsan/123456
+	 * 
+	 * 
+	 * 
+	 * @param id
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/product/{id}")
 	public ModelAndView showProductDetail(@PathVariable("id")Long id , HttpServletRequest request){
 		ModelAndView mv = new ModelAndView();
@@ -46,15 +61,18 @@ public class PortalProductController {
 		TokenInfo tokenInfo = (TokenInfo)request.getSession().getAttribute(MDA.TOKEN_INFO_KEY);
 		
 		try{
-			ResponseEntity<String> responseEntity = restTemplate.exchange("http://product-center:8084/product/selectProductInfoById/1", HttpMethod.GET , 
+			ResponseEntity<ProductInfo> responseEntity = restTemplate.exchange(MDA.GET_PRODUCT_INFO+id, HttpMethod.GET , 
 					wrapRequest(tokenInfo),
-					new ParameterizedTypeReference<String>() {});
+					new ParameterizedTypeReference<ProductInfo>() {});
 			System.out.println(JSON.toJSONString(responseEntity));
 			
-			Result<ProductInfo> productInfoResult = JSON.parseObject(responseEntity.getBody(),Result.class);
-			LOGGER.info("根据商品id : {}查询商品详细信息 : {}" , id, productInfoResult.getData());
+//			Result<ProductInfo> productInfoResult = JSON.parseObject(responseEntity.getBody(),ProductInfo.class);
+			ProductInfo productInfoResult = responseEntity.getBody();
+//			LOGGER.info("根据商品id : {}查询商品详细信息 : {}" , id, productInfoResult.getData());
+			LOGGER.info("根据商品id : {}查询商品详细信息 : {}" , id, JSON.toJSONString(productInfoResult));
 			
-			mv.addObject("productInfo" , productInfoResult.getData());
+//			mv.addObject("productInfo" , productInfoResult.getData());
+			mv.addObject("productInfo" , productInfoResult);
 			mv.addObject("loginUser" , tokenInfo.getLoginUser());
 			mv.setViewName("product_detail");
 			
