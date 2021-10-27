@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 
  * @author yuezh2@lenovo.com
@@ -28,9 +30,9 @@ public class ProductInfoController {
 	 * @return
 	 */
 	@RequestMapping("/selectProductInfoById/{productNo}")
-	public Object selectProductInfoById(@PathVariable("productNo")String productNo) {
+	public String selectProductInfoById(@PathVariable("productNo")String productNo) {
 		ProductInfo productInfo = productInfoMapper.selectProductInfoById(productNo);
-		return productInfo;
+		return JSON.toJSONString(productInfo);
 	}
 	
 }

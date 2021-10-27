@@ -21,6 +21,8 @@ import org.sso.portal.password.config.MDA;
 import org.sso.portal.password.entity.ProductInfo;
 import org.sso.portal.password.entity.TokenInfo;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 
  * @author yue
@@ -44,12 +46,12 @@ public class PortalProductController {
 		TokenInfo tokenInfo = (TokenInfo)request.getSession().getAttribute(MDA.TOKEN_INFO_KEY);
 		
 		try{
-			ResponseEntity<Result<ProductInfo>> responseEntity = restTemplate.exchange("http://product-center:8084/product/selectProductInfoById/1", HttpMethod.GET , 
+			ResponseEntity<String> responseEntity = restTemplate.exchange("http://product-center:8084/product/selectProductInfoById/1", HttpMethod.GET , 
 					wrapRequest(tokenInfo),
-					new ParameterizedTypeReference<Result<ProductInfo>>() {});
+					new ParameterizedTypeReference<String>() {});
+			System.out.println(JSON.toJSONString(responseEntity));
 			
-			
-			Result<ProductInfo> productInfoResult = responseEntity.getBody();
+			Result<ProductInfo> productInfoResult = JSON.parseObject(responseEntity.getBody(),Result.class);
 			LOGGER.info("根据商品id : {}查询商品详细信息 : {}" , id, productInfoResult.getData());
 			
 			mv.addObject("productInfo" , productInfoResult.getData());
