@@ -61,7 +61,8 @@ public class AuthenticationFilter implements GlobalFilter,Ordered,InitializingBe
 		TokenInfo tokenInfo = exchange.getAttribute("tokenInfo");
 		
 		//无需拦截,直接放行
-		if(shouldSkipUrl.contains(reqPath)) {
+		if(shouldSkip(reqPath)) {
+			LOGGER.info("无需认证的路径1");
 			return chain.filter(exchange);
 		}
 		
@@ -89,5 +90,18 @@ public class AuthenticationFilter implements GlobalFilter,Ordered,InitializingBe
 	}
 
 	
+	/**
+	 * 不需要授权的url
+	 * @param reqPath
+	 * @return
+	 */
+	private boolean shouldSkip(String reqPath) {
+		for(String skipPath: shouldSkipUrl) {
+			if(reqPath.contains(skipPath)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

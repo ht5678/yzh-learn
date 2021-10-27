@@ -75,7 +75,7 @@ public class AuthorizationFilter implements GlobalFilter,Ordered,InitializingBea
 		
 		//1.不需要认证的url
 		if(shouldSkip(reqPath)) {
-			LOGGER.info("无需认证的路径");
+			LOGGER.info("无需认证的路径0");
 			return chain.filter(exchange);
 		}
 		
