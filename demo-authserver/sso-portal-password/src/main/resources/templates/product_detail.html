@@ -16,19 +16,19 @@
             buyVo.productCount=1;
             $.ajax({
                 type: "POST",
-                url: "http://portal.tuling.com:8855/order/createOrder",
+                url: "http://localhost:8855/order/createOrder",
                 dataType:'json',
                 contentType:'application/json;charset=UTF-8',
                 data:JSON.stringify(buyVo),
                 success: function(ret){
                     if(ret.status=="-1") {
-                        window.location.href="http://portal.tuling.com:8855/login.html?callBack="+currentUrl;
+                        window.location.href="http://localhost:8855/login.html?callBack="+currentUrl;
                     }if(ret.status=='888888') {
                         var orderNo = ret.data;
                         //购买成功跳转到订单详情页面
-                        window.location.href="http://portal.tuling.com:8855/detail/"+orderNo;
+                        window.location.href="http://localhost:8855/detail/"+orderNo;
                     }else{
-                        alert(ret.msg);
+                        alert(ret.orderNo);
                     }
 
                 }

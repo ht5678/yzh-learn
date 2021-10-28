@@ -1,5 +1,7 @@
 package org.gateway.order.service.controller;
 
+import java.util.Date;
+
 import org.simple.base.dao.entity.OrderInfo;
 import org.simple.base.dao.mapper.OrderInfoMapper;
 import org.slf4j.Logger;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.alibaba.fastjson.JSON;
 
 /**
  * 
@@ -42,7 +46,10 @@ public class OrderController {
 	
 	@RequestMapping("/saveOrder")
 	public Object saveOrder(OrderInfo orderInfo) {
-		LOGGER.info("保存订单:{}",orderInfo.toString());
+		orderInfo.setCreate_dt(new Date());
+		orderInfo.setOrderNo("xxx");
+		orderInfo.setProductNo("1");
+		LOGGER.info("保存订单:{}",JSON.toJSONString(orderInfo));
 		return orderInfo;
 	}
 	

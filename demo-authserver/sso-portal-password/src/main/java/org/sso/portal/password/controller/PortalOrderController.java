@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import org.sso.portal.password.config.MDA;
+import org.sso.portal.password.entity.OrderInfo;
 import org.sso.portal.password.entity.TokenInfo;
 import org.sso.portal.password.vo.BuyVo;
 import org.sso.portal.password.vo.OrderInfoVo;
@@ -44,19 +45,20 @@ public class PortalOrderController {
 	
 	@RequestMapping("/order/createOrder")
 	@ResponseBody
-	public Result<String> saveOrder(@RequestBody BuyVo buyVo , HttpServletRequest request) throws JsonProcessingException{
+	public OrderInfo saveOrder(@RequestBody BuyVo buyVo , HttpServletRequest request) throws JsonProcessingException{
 		try{
 			
 			HttpEntity httpEntity = wrapRequest(request, buyVo);
 			
-			ResponseEntity<Result<String>> responseEntity = restTemplate.exchange(MDA.ORDER_SERVER_CREATEORDER, HttpMethod.POST
-									, httpEntity, new ParameterizedTypeReference<Result<String>>() { });
+			ResponseEntity<OrderInfo> responseEntity = restTemplate.exchange(MDA.ORDER_SERVER_CREATEORDER, HttpMethod.POST
+									, httpEntity, new ParameterizedTypeReference<OrderInfo>() { });
 			
 			return responseEntity.getBody();
 			
 		}catch(Exception e){
 			LOGGER.warn("创建订单异常...");
-			return Result.fail();
+//			return Result.fail();
+			return new OrderInfo();
 		}
 	}
 	
@@ -64,7 +66,7 @@ public class PortalOrderController {
 	private HttpEntity wrapRequest(HttpServletRequest request , BuyVo buyVo){
 		
 		TokenInfo tokenInfo = (TokenInfo)request.getSession().getAttribute(MDA.TOKEN_INFO_KEY);
-		OrderInfoVo orderInfoVo = createOrderInfo(buyVo, tokenInfo.getLoginUser());
+		OrderInfo orderInfoVo = createOrderInfo(buyVo, tokenInfo.getLoginUser());
 		
 		HttpEntity httpEntity = new HttpEntity<>(JSON.toJSONString(orderInfoVo) , wrapHeader(tokenInfo));
 		
@@ -72,12 +74,12 @@ public class PortalOrderController {
  	}
 	
 	
-	private OrderInfoVo createOrderInfo(BuyVo buyVo , String loginUserName){
-		OrderInfoVo orderInfoVo = new OrderInfoVo();
+	private OrderInfo createOrderInfo(BuyVo buyVo , String loginUserName){
+		OrderInfo orderInfoVo = new OrderInfo();
 		orderInfoVo.setProductNo(buyVo.getProductNo());
 		orderInfoVo.setUserName(loginUserName);
 		orderInfoVo.setProductCount(buyVo.getProductCount());
-		orderInfoVo.setCreateDt(new Date());
+//		orderInfoVo.setCreateDt(new Date());
 		return orderInfoVo;
 	}
 	
