@@ -26,6 +26,7 @@
     <module>sso-portal-password</module>
     <module>ms-cloud-common</module>
     <module>gateway-product-service</module>
+    <module>sso-auth-code-server</module>
   </modules>
   
 
