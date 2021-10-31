@@ -25,7 +25,9 @@ public enum SystemErrorType implements ErrorType{
     INVALID_TOKEN("401-2", "无效token"),
 
 
-    UNAUTHORIZED_HEADER_IS_EMPTY("401-1","无权访问,请求头为空");
+    UNAUTHORIZED_HEADER_IS_EMPTY("401-1","无权访问,请求头为空"),
+    
+    REFRESH_TOKEN_EXPIRE("501-1" , "refresh token expire");
 	
 	
 	//错误类型码
