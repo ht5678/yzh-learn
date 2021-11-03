@@ -41,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor{
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public static final String loginUrl = "http://localhost:8888/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://localhost:8855/callBack&state=";
+	public static final String loginUrl = "http://localhost:9999/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://localhost:8855/callBack&state=";
 	
 	
 	/**

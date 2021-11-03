@@ -61,6 +61,7 @@ public class AuthorizationFilter implements GlobalFilter,Ordered,InitializingBea
 		shouldSkipUrl.add("/product/selectProductInfoById");
 		//去认证的请求,本来就不需要拦截
 		shouldSkipUrl.add("/oauth/token");
+		shouldSkipUrl.add("/oauth/check_token");
 	}
 
 	@Override

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.sso.auth.code.server.config.role.mapper.SysRolePermissionMapper">
-    <select id="findByRoleIds" parameterType="list" resultType="org.sso.auth.code.server.config.role.entity.SysPermission">
+    <select id="findByRoleIds" parameterType="list" resultType="org.sso.auth.code.server.config.role.entity.SysRolePermission">
         SELECT * FROM sys_role_permission WHERE role_id in
         <foreach collection="list" open="(" close=")" separator="," item="id">
             #{id}

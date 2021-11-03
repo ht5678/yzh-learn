@@ -5,6 +5,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * 
+ * 
+ * http://localhost:8855/home.html
+ * 
+ * admin/admin
+ * 
  * @author yue
  *
  */

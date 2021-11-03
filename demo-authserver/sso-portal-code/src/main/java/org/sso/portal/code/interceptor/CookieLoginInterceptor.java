@@ -14,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -36,7 +35,7 @@ public class CookieLoginInterceptor implements HandlerInterceptor{
 	private static final Logger LOGGER = LoggerFactory.getLogger(CookieLoginInterceptor.class);
 
 	
-	public static final String loginUrl = "http://localhost:8888/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://localhost:8855/callBack&state=";
+	public static final String loginUrl = "http://localhost:9999/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://localhost:8855/callBack&state=";
 
 	
 	@Autowired
