@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 9999
 spring:
   application:
     name: auth-server
@@ -15,9 +15,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
 
   redis:
-    host: 192.168.159.8
+    host: localhost
     port: 6379
-    password: root
+    #password: root
   session:
     store-type: redis
     timeout: 1800
