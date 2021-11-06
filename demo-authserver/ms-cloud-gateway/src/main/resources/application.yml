@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 8866
 spring:
   application:
     name: api-gateway
@@ -21,7 +21,7 @@ spring:
         - id: auth_center
           uri: lb://auth-server
           predicates:
-            - Path=/oauth/**
+            - Path=/oauth/**,/user/**
     nacos:
       discovery:
         server-addr: localhost:8848

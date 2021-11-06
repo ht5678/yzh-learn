@@ -23,6 +23,8 @@ import org.sso.portal.code.config.MDA;
 import org.sso.portal.code.entity.SysUser;
 import org.sso.portal.code.entity.TokenInfo;
 
+import com.alibaba.fastjson.JSON;
+
 /**
  * 
  * @author yue
@@ -62,13 +64,13 @@ public class PortalProductController {
 		
 		
 		try{
-			ResponseEntity<Result<ProductInfo>> responseEntity = restTemplate.exchange(MDA.GET_PRODUCT_INFO+id, HttpMethod.GET, 
-					wrapRequest(accessToken), new ParameterizedTypeReference<Result<ProductInfo>>() {
+			ResponseEntity<ProductInfo> responseEntity = restTemplate.exchange(MDA.GET_PRODUCT_INFO+id, HttpMethod.GET, 
+					wrapRequest(accessToken), new ParameterizedTypeReference<ProductInfo>() {
 					});
 			
-			Result<ProductInfo> productInfoResult = responseEntity.getBody();
-			LOGGER.info("根据商品id:{}查询商品详细信息:{}" , id,productInfoResult.getData());
-			mv.addObject("productInfo" , productInfoResult.getData());
+//			Result<ProductInfo> productInfoResult = responseEntity.getBody();
+			LOGGER.info("根据商品id:{}查询商品详细信息:{}" , id,JSON.toJSONString(responseEntity));
+			mv.addObject("productInfo" , responseEntity);
 			mv.addObject("loginUser",sysUser.getUsername());
 			mv.setViewName("product_detail");
 		}catch(Exception e){
