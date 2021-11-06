@@ -64,6 +64,9 @@ public class DemoUserDetailService implements UserDetailsService{
 		}
 			
 		DemoUser demoUser = new DemoUser(sysUser.getUsername(), passwordEncoder.encode(sysUser.getPassword()), authorityList);
+		demoUser.setEmail(sysUser.getEmail());
+		demoUser.setUserId(sysUser.getId());
+		demoUser.setNickName(sysUser.getNickname());
 		LOGGER.info("用户登录成功: {}" , JSON.toJSONString(demoUser));
 		
 		return demoUser;
