@@ -1,4 +1,4 @@
-package org.gateway.product.controller;
+package org.sso.product.service.controller;
 
 import org.simple.base.dao.entity.ProductInfo;
 import org.simple.base.dao.mapper.ProductInfoMapper;
@@ -24,7 +24,7 @@ public class ProductInfoController {
 	
 	/**
 	 * 
-	 * 		http://localhost:8084/product/selectProductInfoById/1
+	 * 	http://localhost:8877/product/selectProductInfoById/1
 	 * 
 	 * @param productNo
 	 * @return

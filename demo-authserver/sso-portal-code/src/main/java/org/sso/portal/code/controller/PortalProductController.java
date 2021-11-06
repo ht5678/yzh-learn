@@ -68,9 +68,9 @@ public class PortalProductController {
 					wrapRequest(accessToken), new ParameterizedTypeReference<ProductInfo>() {
 					});
 			
-//			Result<ProductInfo> productInfoResult = responseEntity.getBody();
-			LOGGER.info("根据商品id:{}查询商品详细信息:{}" , id,JSON.toJSONString(responseEntity));
-			mv.addObject("productInfo" , responseEntity);
+			ProductInfo productInfoResult = responseEntity.getBody();
+			LOGGER.info("根据商品id:{}查询商品详细信息:{}" , id,JSON.toJSONString(productInfoResult));
+			mv.addObject("productInfo" , productInfoResult);
 			mv.addObject("loginUser",sysUser.getUsername());
 			mv.setViewName("product_detail");
 		}catch(Exception e){

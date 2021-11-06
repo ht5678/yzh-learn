@@ -27,12 +27,11 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848
-        #cluster-name: BJ-CLUSTER
 
 server:
-  port: 8084
+  port: 8877
 logging:
   level:
-    org:
-      simple:
-        base: debug
+    com:
+      tuling:
+        mapper: debug

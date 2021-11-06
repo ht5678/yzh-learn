@@ -17,20 +17,20 @@
         buyVo.productCount=1;
         $.ajax({
             type: "POST",
-            url: "http://portal.tuling.com:8855/order/createOrder",
+            url: "http://localhost:8855/order/createOrder",
             dataType:'json',
             contentType:'application/json;charset=UTF-8',
             data:JSON.stringify(buyVo),
             success: function(ret){
                 if(ret.status=="-1") {
-                    window.location.href="http://auth.tuling.com:8888/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://portal.tuling.com:8855/callBack&state="+currentUrl;
+                    window.location.href="http://localhost:8888/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://portal.tuling.com:8855/callBack&state="+currentUrl;
                 }if(ret.status=='888888') {
                     var orderNo = ret.data;
                     //购买成功跳转到订单详情页面
-                    window.location.href="http://portal.tuling.com:8855/detail/"+orderNo;
+                    window.location.href="http://localhost:8855/detail/"+orderNo;
                 }if(ret.status == "000007") {
 
-                    window.location.href="http://auth.tuling.com:8888/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://portal.tuling.com:8855/callBack&state="+currentUrl;
+                    window.location.href="http://localhost:8888/oauth/authorize?response_type=code&client_id=portal_app&redirect_uri=http://portal.tuling.com:8855/callBack&state="+currentUrl;
                 }
                 else{
                     alert(ret.msg);
@@ -41,7 +41,7 @@
     }
 
     function logOut() {
-        var targetUrl ="http://portal.tuling.com:8855/logout";
+        var targetUrl ="http://localhost:8855/logout";
         $.ajax({
             type: "POST",
             url: targetUrl,
@@ -54,7 +54,7 @@
 /*                    $.removeCookie("COOKIE-ACCESS-TOKEN-KEN", {path: '/',domain:'tuling.com',path:'/'});
                     $.removeCookie("COOKIE-REFRESH-TOKEN-KEN", {path: '/',domain:'tuling.com',path:'/'});*/
 
-                    window.location.href = "http://auth.tuling.com:8888/logout?redirectUrl=http://portal.tuling.com:8855/home.html";
+                    window.location.href = "http://localhost:8888/logout?redirectUrl=http://portal.tuling.com:8855/home.html";
                 }else {
                     //说明 我们的portal-web端退出失败
                 }
