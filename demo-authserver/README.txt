@@ -9,3 +9,4 @@ login filter:
 *org.sso.portal.code.config.PortalWebConfig切换cookie配置
 *org.sso.portal.code.controller.CallBackController修改callBack方法为cookie方式
 *org.sso.portal.code.controller.PortalProductController.showProductDetail修改为cookie方式
+*yzh-learn\demo-authserver\sso-portal-code\src\main\resources\templates 添加cookie方式
