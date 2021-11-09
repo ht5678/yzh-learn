@@ -30,6 +30,7 @@
     <module>sso-portal-code</module>
     <module>sso-product-service</module>
     <module>sso-auth-jwt-server</module>
+    <module>sso-api-gateway-jwt</module>
   </modules>
   
 

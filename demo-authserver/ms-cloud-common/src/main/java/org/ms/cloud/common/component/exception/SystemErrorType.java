@@ -27,7 +27,9 @@ public enum SystemErrorType implements ErrorType{
 
     UNAUTHORIZED_HEADER_IS_EMPTY("401-1","无权访问,请求头为空"),
     
-    REFRESH_TOKEN_EXPIRE("501-1" , "refresh token expire");
+    REFRESH_TOKEN_EXPIRE("501-1" , "refresh token expire"),
+    
+    GATEWAY_CONNECT_TIME_OUT("501-2" , "gateway  connect  timeout");
 	
 	
 	//错误类型码
