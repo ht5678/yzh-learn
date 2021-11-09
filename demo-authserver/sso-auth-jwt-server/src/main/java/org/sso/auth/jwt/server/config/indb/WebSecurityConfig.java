@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.logoutSuccessHandler(logoutSuccessHandler)
 				.and()
 				.authorizeRequests()
-				.antMatchers("/login","/login.html","/user/getCurrentUser").permitAll()
+				.antMatchers("/login","/login.html","/user/getCurrentUser","/publickey/jwks.json").permitAll()
 				.anyRequest()
 				.authenticated()
 				.and().csrf().disable().cors();
@@ -75,4 +75,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		return super.authenticationManagerBean();
 	}
 	
+	
+    public static void main(String[] args) {
+        new BCryptPasswordEncoder().encode("122222");
+    }
+    
 }
