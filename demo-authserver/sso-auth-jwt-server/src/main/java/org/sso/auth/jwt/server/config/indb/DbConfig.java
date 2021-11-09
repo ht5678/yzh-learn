@@ -20,7 +20,7 @@ import com.alibaba.druid.pool.DruidDataSource;
  */
 
 @Configuration
-@MapperScan(basePackages="org.sso.auth.code.server.config.role.mapper")
+@MapperScan(basePackages="org.sso.auth.jwt.server.config.role.mapper")
 public class DbConfig {
 
 	

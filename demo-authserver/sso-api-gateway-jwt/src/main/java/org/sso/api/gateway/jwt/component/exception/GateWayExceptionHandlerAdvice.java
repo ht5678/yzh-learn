@@ -5,6 +5,8 @@ import java.security.SignatureException;
 
 import org.ms.cloud.common.component.exception.Result;
 import org.ms.cloud.common.component.exception.SystemErrorType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.support.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -13,11 +15,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.netty.channel.ConnectTimeoutException;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Component
 public class GateWayExceptionHandlerAdvice {
+	
+	private static final Logger log = LoggerFactory.getLogger(GateWayExceptionHandlerAdvice.class);
 
     @ExceptionHandler(value = {ResponseStatusException.class})
     public Result handle(ResponseStatusException ex) {

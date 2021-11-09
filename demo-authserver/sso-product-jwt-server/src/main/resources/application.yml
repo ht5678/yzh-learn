@@ -3,8 +3,8 @@ spring:
   datasource:
       druid:
         username: root
-        #password: p@ssw0rd
-        password: admin
+        password: p@ssw0rd
+        #password: admin
         jdbcUrl: jdbc:mysql://localhost:3306/oauth2dev?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
         driverClassName: com.mysql.jdbc.Driver
         initialSize: 5
@@ -40,8 +40,8 @@ security:
   oauth2:
     client:
       client-id: product_app
-      client-secret: smlz
+      client-secret: product_app
     resource:
       jwt:
-        key-uri: http://auth.tuling.com:8888/oauth/token_key
+        key-uri: http://localhost:8888/oauth/token_key
 

@@ -22,6 +22,16 @@ public class ProductInfoController {
 	private ProductInfoMapper productInfoMapper;
 	
 	
+	
+	/**
+	 * 
+	 * http://localhost:8877/product/selectProductInfoById/1
+	 * 
+	 * 
+	 * @param productNo
+	 * @param username
+	 * @return
+	 */
 	@RequestMapping("/selectProductInfoById/{productNo}")
 	public Result<ProductInfo> selectProductInfoById(@PathVariable("productNo")String productNo , 
 																					@RequestHeader("username")String username) {

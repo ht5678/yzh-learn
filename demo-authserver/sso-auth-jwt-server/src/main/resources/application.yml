@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 9999
 spring:
   application:
     name: auth-server
@@ -9,7 +9,7 @@ spring:
         server-addr: localhost:8848
   datasource:
     username: root
-    password: admin
+    password: p@ssw0rd
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/oauth2dev?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource
@@ -17,7 +17,7 @@ spring:
   redis:
     host: localhost
     port: 6379
-    password: root
+    #password: root
   session:
     store-type: redis
     timeout: 1800

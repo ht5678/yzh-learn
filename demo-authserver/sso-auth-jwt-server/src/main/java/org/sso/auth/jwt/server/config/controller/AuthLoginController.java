@@ -1,5 +1,9 @@
 package org.sso.auth.jwt.server.config.controller;
 
+import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +21,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.sso.auth.jwt.server.config.role.domain.DemoUser;
 import org.sso.auth.jwt.server.config.role.entity.SysUser;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+
+
+
 /**
  * 
  * @author yue
@@ -25,6 +34,11 @@ import org.sso.auth.jwt.server.config.role.entity.SysUser;
 @Controller
 public class AuthLoginController {
 
+	
+    @Autowired
+    private KeyPair keyPair;
+    
+    
 	@Autowired
 	private TokenStore tokenService;
 	
@@ -62,6 +76,14 @@ public class AuthLoginController {
 		
 	}
 	
+	
+    @GetMapping("/publickey/jwks.json")
+    @ResponseBody
+    public Map<String, Object> getKey() {
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAKey key = new RSAKey.Builder(publicKey).build();
+        return new JWKSet(key).toJSONObject();
+    }
 	
 	
 	/**

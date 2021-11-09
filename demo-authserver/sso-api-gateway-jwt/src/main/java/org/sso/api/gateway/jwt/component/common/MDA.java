@@ -8,9 +8,9 @@ package org.sso.api.gateway.jwt.component.common;
  */
 public class MDA {
 
-    public static final String clientId = "api-gateway";
+    public static final String clientId = "product_app";
 
-    public static final String clientSecret = "yuezh2";
+    public static final String clientSecret = "product_app";
 
     public static final String getTokenKey = "http://localhost:8888/oauth/token_key";
 	
