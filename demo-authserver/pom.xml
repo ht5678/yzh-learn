@@ -31,6 +31,7 @@
     <module>sso-product-service</module>
     <module>sso-auth-jwt-server</module>
     <module>sso-api-gateway-jwt</module>
+    <module>sso-product-jwt-server</module>
   </modules>
   
 
