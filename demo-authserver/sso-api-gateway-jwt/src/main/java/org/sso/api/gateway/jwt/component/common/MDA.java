@@ -12,6 +12,6 @@ public class MDA {
 
     public static final String clientSecret = "product_app";
 
-    public static final String getTokenKey = "http://localhost:8888/oauth/token_key";
+    public static final String getTokenKey = "http://auth-server/oauth/token_key";
 	
 }

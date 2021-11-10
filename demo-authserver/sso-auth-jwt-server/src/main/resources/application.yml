@@ -9,7 +9,8 @@ spring:
         server-addr: localhost:8848
   datasource:
     username: root
-    password: p@ssw0rd
+    #password: p@ssw0rd
+    password: admin
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/oauth2dev?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource

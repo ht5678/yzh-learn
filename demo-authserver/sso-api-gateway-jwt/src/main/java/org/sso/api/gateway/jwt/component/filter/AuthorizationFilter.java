@@ -27,6 +27,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ServerWebExchange;
@@ -43,6 +44,7 @@ import reactor.core.publisher.Mono;
  * @author yuezh2@lenovo.com
  *	@date 2021年11月9日下午3:29:57
  */
+@Component
 public class AuthorizationFilter implements GlobalFilter,Ordered,InitializingBean{
 	
 	@Autowired
@@ -244,7 +246,7 @@ public class AuthorizationFilter implements GlobalFilter,Ordered,InitializingBea
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(null , headers);
 		
 		try {
-			ResponseEntity<Map> response = restTemplate.exchange(MDA.getTokenKey, HttpMethod.POST,entity , Map.class);
+			ResponseEntity<Map> response = restTemplate.exchange(MDA.getTokenKey, HttpMethod.GET,entity , Map.class);
 			
 			String tokenKey = response.getBody().get("value").toString();
 			

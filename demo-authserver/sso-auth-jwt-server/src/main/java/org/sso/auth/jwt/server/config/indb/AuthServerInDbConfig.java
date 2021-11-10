@@ -96,7 +96,7 @@ public class AuthServerInDbConfig extends AuthorizationServerConfigurerAdapter{
 		//jwt
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
 		converter.setKeyPair(keyPair());
-//		converter.setSigningKey("123456");
+//		converter.setSigningKey("123456");//不能这么做 , 不安全
 		return converter;
 	}
 	
