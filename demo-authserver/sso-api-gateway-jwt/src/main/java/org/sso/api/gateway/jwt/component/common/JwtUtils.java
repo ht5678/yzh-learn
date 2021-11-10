@@ -145,12 +145,12 @@ public class JwtUtils {
        log.info("生成的jwt:{}",jwt);
 
        //校验jwt
-/*       Boolean validateFlag = validateJwt(jwt);
-       log.info("校验jwt结果:{}",validateFlag);*/
+       Boolean validateFlag = validateJwt(jwt);
+       log.info("校验jwt结果:{}",validateFlag);
 
         //异常校验jwt
-        Boolean validateFlag2 = validateJwt(jwt+2);
-        log.info("校验jwt结果:{}",validateFlag2);
+        /*Boolean validateFlag2 = validateJwt(jwt+2);
+        log.info("校验jwt结果:{}",validateFlag2);*/
 
         //解析jwt的头部信息
         String jwtHeader = jwt.split("\\.")[0];
