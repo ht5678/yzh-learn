@@ -10,3 +10,20 @@ login filter:
 *org.sso.portal.code.controller.CallBackController修改callBack方法为cookie方式
 *org.sso.portal.code.controller.PortalProductController.showProductDetail修改为cookie方式
 *yzh-learn\demo-authserver\sso-portal-code\src\main\resources\templates 添加cookie方式
+
+
+
+
+code auth方式 (按顺序):
+*sso-auth-code-server
+*ms-cloud-gateway
+*gateway-product-service
+*gateway-order-service
+*sso-portal-code
+
+
+jwt方式:
+*sso-auth-jwt-server
+*sso-api-gateway-jwt
+*sso-product-jwt-server
+*TestJwtGatewayUtil
