@@ -4,6 +4,7 @@ import org.ms.cloud.common.component.exception.Result;
 import org.simple.base.dao.entity.ProductInfo;
 import org.simple.base.dao.mapper.ProductInfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,8 @@ public class ProductInfoController {
 	 */
 	@RequestMapping("/selectProductInfoById/{productNo}")
 	public Result<ProductInfo> selectProductInfoById(@PathVariable("productNo")String productNo , 
-																					@RequestHeader("username")String username) {
+//																					@RequestHeader("username")String username
+																					@AuthenticationPrincipal String username) {
 		System.out.println(username);
 		ProductInfo productInfo = productInfoMapper.selectProductInfoById(productNo);
 		return Result.success(productInfo);
