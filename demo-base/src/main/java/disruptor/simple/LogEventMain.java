@@ -20,7 +20,7 @@ public class LogEventMain {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		LogEventFactory factory = new LogEventFactory();
 		
 		
@@ -47,7 +47,7 @@ public class LogEventMain {
 			producer.onData(String.format("msg-%s", i));
 		}
 		
-		
+		Thread.sleep(1000);
 	}
 	
 }
