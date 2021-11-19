@@ -54,13 +54,19 @@ public class LogEventMain {
 		RingBuffer<LogEvent> ringBuffer = disruptor.getRingBuffer();
 		
 		LogEventProducer producer = new LogEventProducer(ringBuffer);
+
+		//start time
+		long begin = System.currentTimeMillis();
 		
 		//模拟消息发送
 		for(int i = 0 ; i < 10000 ; i ++) {
 			producer.onData(String.format("msg-%s", i));
 		}
 		
-		Thread.sleep(1000);
+		disruptor.shutdown();
+//		Thread.sleep(1000);
+		 System.err.println("总耗时: " + (System.currentTimeMillis() - begin));
+
 	}
 	
 }
