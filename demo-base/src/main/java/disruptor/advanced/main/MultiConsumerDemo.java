@@ -20,7 +20,7 @@ import disruptor.advanced.common.TradePushlisher;
  * @author yuezh2@lenovo.com
  *	@date 2021年11月22日上午11:17:38
  */
-public class BatchDemo {
+public class MultiConsumerDemo {
 
 	
 	
@@ -48,20 +48,18 @@ public class BatchDemo {
             consumers[i] = new MultiConsumer();
         }
         disruptor.handleEventsWithWorkerPool(consumers);
-        disruptor.start();
+        
+        //3 启动disruptor
+        RingBuffer<Trade> ringBuffer = disruptor.start();
         
         
-        
-        TradeEventProducer producer = new TradeEventProducer(disruptor.getRingBuffer());
+        TradeEventProducer producer = new TradeEventProducer(ringBuffer);
 
 		//模拟消息发送
 		for(int i = 0 ; i < 10000 ; i ++) {
 			producer.onData(String.format("msg-%s", i));
 		}
         
-		
-        //3 启动disruptor
-        RingBuffer<Trade> ringBuffer = disruptor.start();
         
         CountDownLatch latch = new CountDownLatch(1);
         
@@ -70,6 +68,7 @@ public class BatchDemo {
         es1.submit(new TradePushlisher(latch, disruptor));
         
         latch.await();  //进行向下
+        
         
         disruptor.shutdown();
         es1.shutdown();
