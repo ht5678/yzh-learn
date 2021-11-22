@@ -3,14 +3,12 @@ package disruptor.advanced.common;
 import com.lmax.disruptor.Sequence;
 import com.lmax.disruptor.SequenceReportingEventHandler;
 
-import disruptor.simple.LogEvent;
-
 /**
  * 
  * @author yuezh2@lenovo.com
  *	@date 2021年11月22日下午2:36:33
  */
-public class EarlyReleaseHandler implements SequenceReportingEventHandler<LogEvent>{
+public class EarlyReleaseHandler implements SequenceReportingEventHandler<Trade>{
 	
 	
 	private Sequence sequenceCallback;
@@ -27,12 +25,13 @@ public class EarlyReleaseHandler implements SequenceReportingEventHandler<LogEve
 	
 
 	@Override
-	public void onEvent(LogEvent event, long sequence, boolean endOfBatch) throws Exception {
+	public void onEvent(Trade event, long sequence, boolean endOfBatch) throws Exception {
 		processEvent(event);
 		
 		boolean logicalChunkofWorkComplete = isLogicalChunkOfWorkComplete();
 		if(logicalChunkofWorkComplete) {
 			sequenceCallback.set(sequence);
+			System.out.println("early sequence test");
 		}
 		batchRemaining = logicalChunkofWorkComplete || endOfBatch ? 20 : batchRemaining;
 		
@@ -52,7 +51,7 @@ public class EarlyReleaseHandler implements SequenceReportingEventHandler<LogEve
 	 * 
 	 * @param event
 	 */
-	private void processEvent(final LogEvent event) {
+	private void processEvent(final Trade event) {
 		// do processing 
 		System.out.println("cosuming msg success : "+event.toString());
 	}
