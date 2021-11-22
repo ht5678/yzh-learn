@@ -40,12 +40,16 @@ public class LogEventMain {
 		//性能最好，适合用于低延迟的系统；在要求极高性能且事件处理线程数小于CPU逻辑核心树的场景中，推荐使用此策略；例如，CPU开启超线程的特性；
 		//也是无锁的实现，只要是无锁的实现，signalAllWhenBlocking()都是空实现；
 		
+		//BusySpinWaitStrategy 
+		
+		
 		//构造Disruptor
 		Disruptor<LogEvent> disruptor = new Disruptor<>(factory, bufferSize, DaemonThreadFactory.INSTANCE , ProducerType.SINGLE , 
 									new YieldingWaitStrategy());//决定一个消费者如何等待生产者将Event置入Disruptor；	其所有实现都是针对消费者线程的；
 		
 		//设置消费者
-		disruptor.handleEventsWith(new LogEventConsumer());
+		disruptor.handleEventsWith(new LogEventConsumer())
+						.then(new ClearingEventHandler());
 		
 		//启动Disruptor
 		disruptor.start();

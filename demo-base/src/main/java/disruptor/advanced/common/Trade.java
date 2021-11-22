@@ -51,8 +51,14 @@ public class Trade {
 	public void setCount(AtomicInteger count) {
 		this.count = count;
 	}
+
 	
 	
+	
+	@Override
+	public String toString() {
+		return "Trade [id=" + id + ", name=" + name + ", price=" + price + ", count=" + count + "]";
+	}
 	
 	
 }

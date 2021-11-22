@@ -26,4 +26,10 @@ public class LogEvent {
 	}
 	
 	
+	/**
+	 * 
+	 */
+	public void clear(){
+		msg = null;
+    }
 }
