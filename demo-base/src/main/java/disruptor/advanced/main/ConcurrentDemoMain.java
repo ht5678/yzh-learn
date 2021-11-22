@@ -24,6 +24,9 @@ import disruptor.advanced.common.TradePushlisher;
 public class ConcurrentDemoMain {
 
 	
+	
+	
+	
 
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception {
@@ -47,7 +50,7 @@ public class ConcurrentDemoMain {
         //2.2 并行操作: 可以有两种方式去进行
         //1 handleEventsWith方法 添加多个handler实现即可
         //2 handleEventsWith方法 分别进行调用
-        disruptor.handleEventsWith(new Handler1(), new Handler2(), new Handler3());
+        disruptor.handleEventsWith(new Handler1(), new Handler2(), new Handler3());		//多个消费者 ,  重复消费
  //     disruptor.handleEventsWith(new Handler1());
 //      disruptor.handleEventsWith(new Handler2());
 //      disruptor.handleEventsWith(new Handler3());

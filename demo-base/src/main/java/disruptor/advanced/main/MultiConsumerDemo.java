@@ -29,6 +29,7 @@ public class MultiConsumerDemo {
         //构建一个线程池用于提交任务
         ExecutorService es1 = Executors.newFixedThreadPool(1);
         ExecutorService es2 = Executors.newFixedThreadPool(5);
+        
         //1 构建Disruptor
         Disruptor<Trade> disruptor = new Disruptor<Trade>(
                 new EventFactory<Trade>() {
@@ -47,7 +48,7 @@ public class MultiConsumerDemo {
         for (int i = 0; i < consumers.length; i++) {
             consumers[i] = new MultiConsumer();
         }
-        disruptor.handleEventsWithWorkerPool(consumers);
+        disruptor.handleEventsWithWorkerPool(consumers);				//多个消费者 , 不重复消费
         
         //3 启动disruptor
         RingBuffer<Trade> ringBuffer = disruptor.start();
