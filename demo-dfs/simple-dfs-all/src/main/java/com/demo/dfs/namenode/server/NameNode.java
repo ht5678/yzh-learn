@@ -9,9 +9,13 @@ package com.demo.dfs.namenode.server;
 public class NameNode {
 
 	/**
-	 * 核心 , 分布式文件系统的文件目录树 , 管理元数据
+	 * 核心 , 分布式文件系统的文件目录树 , 管理元数据 ; 支持权限设置
 	 */
 	private FSNamesystem namesystem;
+	/**
+	 * 负责管理集群里的所有datanode
+	 */
+	private DataNodeManager dataNodeManager;
 	/**
 	 * namenode对外提供rpc接口的server , 可以响应请求
 	 */
@@ -31,7 +35,8 @@ public class NameNode {
 	 */
 	private void initialize () {
 		this.namesystem = new FSNamesystem();
-		this.rpcServer = new NameNodeRpcServer(this.namesystem);
+		this.dataNodeManager = new DataNodeManager();
+		this.rpcServer = new NameNodeRpcServer(this.namesystem , this.dataNodeManager);
 		this.rpcServer.start();
 	}	
 	

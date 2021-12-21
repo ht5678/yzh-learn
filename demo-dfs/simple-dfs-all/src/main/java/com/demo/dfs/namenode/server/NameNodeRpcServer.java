@@ -13,13 +13,16 @@ public class NameNodeRpcServer {
 	 */
 	private FSNamesystem namesystem;
 	
+	private DataNodeManager dataNodeManager;
+	
 	
 	/**
 	 * 
 	 * @param namesystem
 	 */
-	public NameNodeRpcServer(FSNamesystem namesystem) {
+	public NameNodeRpcServer(FSNamesystem namesystem , DataNodeManager dataNodeManager) {
 		this.namesystem = namesystem;
+		this.dataNodeManager = dataNodeManager;
 	}
 	
 	
@@ -31,6 +34,17 @@ public class NameNodeRpcServer {
 	 */
 	public Boolean mkdir(String path) throws Exception {
 		return this.namesystem.mkdir(path);
+	}
+	
+	
+	/**
+	 * datanode进行注册
+	 * @param ip
+	 * @param hostname
+	 * @return
+	 */
+	public Boolean register(String ip , String hostname)throws Exception {
+		return dataNodeManager.register(ip, hostname);
 	}
 	
 	
