@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.demo.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.demo.dfs.model.backup";
+
+import "namenode.proto";
+
+message EditLog {
+	int64 txId = 1;
+	int32 opType = 2;
+	string path = 3;
+	map<string,string> attr = 4;
+}
+
+message FetchEditsLogResponse {
+	repeated EditLog editLogs = 1;
+	repeated UserEntity users = 2;
+}

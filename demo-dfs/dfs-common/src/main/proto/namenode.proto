@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package com.demo.dfs.common.proto;
+
+option java_multiple_files = true;
+option java_package = "com.demo.dfs.model.namenode";
+
+//import "commons.proto";
+//import "datanode.proto";
+
+message UserStorageEntity {
+	int64 storageSize = 1;
+	int32 fileCount = 2;
+	repeated string dataNodes = 3;
+}
+
+message UserEntity {
+	string username = 1;
+	string secret = 2;
+	UserStorageEntity storage = 3;
+	int64 createTime = 4;
+}

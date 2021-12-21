@@ -9,7 +9,14 @@
   
   <packaging>pom</packaging>
   
-  
+	<modules>
+		<module>dfs-common</module>
+		<module>dfs-datanode</module>
+		<module>dfs-namenode</module>
+		<module>dfs-client</module>
+	</modules>
+	
+	  
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -31,12 +38,7 @@
     </properties>
 
 
-	<modules>
-		<module>dfs-common</module>
-		<module>dfs-datanode</module>
-		<module>dfs-namenode</module>
-		<module>dfs-client</module>
-	</modules>
+
 
     <dependencyManagement>
         <dependencies>

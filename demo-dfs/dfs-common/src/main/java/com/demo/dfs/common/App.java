@@ -1,4 +1,4 @@
-package org.dfs.common;
+package com.demo.dfs.common;
 
 /**
  * Hello world!
