@@ -14,6 +14,7 @@
 		<module>dfs-datanode</module>
 		<module>dfs-namenode</module>
 		<module>dfs-client</module>
+		<module>simple-dfs-all</module>
 	</modules>
 	
 	  
