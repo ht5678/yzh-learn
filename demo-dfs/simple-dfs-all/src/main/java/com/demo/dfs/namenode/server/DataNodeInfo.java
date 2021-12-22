@@ -12,7 +12,7 @@ public class DataNodeInfo {
 	
 	private String hostname;
 
-	
+	private Long latestHeartbeatTime;
 	
 	
 	public DataNodeInfo(String ip, String hostname) {
@@ -39,7 +39,15 @@ public class DataNodeInfo {
 	public void setHostname(String hostname) {
 		this.hostname = hostname;
 	}
-	
-	
+
+	public Long getLatestHeartbeatTime() {
+		return latestHeartbeatTime;
+	}
+
+	public void setLatestHeartbeatTime(Long latestHeartbeatTime) {
+		this.latestHeartbeatTime = latestHeartbeatTime;
+	}
+
+
 	
 }
