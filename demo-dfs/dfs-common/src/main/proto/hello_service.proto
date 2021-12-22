@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package com.demo.dfs.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.demo.dfs.grpc.service";
+option java_outer_classname = "GreetingService";
+
+import "hello.proto";
+
+service HelloService {
+	rpc sayHello(HelloRequest ) returns (HelloResponse);
+}
