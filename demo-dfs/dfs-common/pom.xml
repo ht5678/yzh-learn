@@ -34,6 +34,11 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
         </dependency>
+        <!-- json和protobuf互转 -->
+		<dependency>
+		      <groupId>com.googlecode.protobuf-java-format</groupId>
+		      <artifactId>protobuf-java-format</artifactId>
+		</dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

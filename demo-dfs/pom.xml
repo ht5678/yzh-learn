@@ -15,6 +15,7 @@
 		<module>dfs-namenode</module>
 		<module>dfs-client</module>
 		<module>simple-dfs-all</module>
+		<module>demo-grpc</module>
 	</modules>
 	
 	  
@@ -88,6 +89,12 @@
                 <artifactId>protobuf-java</artifactId>
                 <version>${protobuf.version}</version>
             </dependency>
+            <!-- json和protobuf互转 -->
+			<dependency>
+			      <groupId>com.googlecode.protobuf-java-format</groupId>
+			      <artifactId>protobuf-java-format</artifactId>
+			      <version>1.2</version>
+			</dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-all</artifactId>
