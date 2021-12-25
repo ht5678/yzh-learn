@@ -1,12 +1,13 @@
 package org.dfs.namenode;
 
+import com.demo.dfs.namenode.service.NameNodeServer;
 
 /**
  * NameNode的rpc服务接口
  * @author yuezh2@lenovo.com
  *	@date 2021年12月21日下午8:58:04
  */
-public class NameNodeRpcServer {
+public class NameNodeServiceImpl implements NameNodeServer {
 	
 	/**
 	 * 负责管理元数据的核心组件
@@ -20,7 +21,7 @@ public class NameNodeRpcServer {
 	 * 
 	 * @param namesystem
 	 */
-	public NameNodeRpcServer(FSNamesystem namesystem , DataNodeManager dataNodeManager) {
+	public NameNodeServiceImpl(FSNamesystem namesystem , DataNodeManager dataNodeManager) {
 		this.namesystem = namesystem;
 		this.dataNodeManager = dataNodeManager;
 	}

@@ -19,7 +19,7 @@ public class NameNode {
 	/**
 	 * namenode对外提供rpc接口的server , 可以响应请求
 	 */
-	private NameNodeRpcServer rpcServer;
+	private NameNodeServiceImpl rpcServer;
 	
 	//NameNode是否运行
 	private volatile boolean shouldRun = false;
@@ -36,7 +36,7 @@ public class NameNode {
 	private void initialize () {
 		this.namesystem = new FSNamesystem();
 		this.dataNodeManager = new DataNodeManager();
-		this.rpcServer = new NameNodeRpcServer(this.namesystem , this.dataNodeManager);
+		this.rpcServer = new NameNodeServiceImpl(this.namesystem , this.dataNodeManager);
 		this.rpcServer.start();
 	}	
 	
