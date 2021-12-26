@@ -17,7 +17,7 @@
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <os.detected.classifier>windows-x86_64</os.detected.classifier>
-    <grpc.version>1.23.0</grpc.version>
+    <grpc.version>1.31.1</grpc.version>
     
     <java.version>1.8</java.version>
     <!-- 编译时的编码 -->
@@ -56,7 +56,13 @@
             <version>3.13.0</version>
         </dependency>        
 
-
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
+        
+        
         <!-- json和protobuf互转 -->
 <!--         <dependency>
             <groupId>com.googlecode.protobuf-java-format</groupId>
