@@ -17,6 +17,7 @@
 <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <os.detected.classifier>windows-x86_64</os.detected.classifier>
+    <grpc.version>1.23.0</grpc.version>
     
     <java.version>1.8</java.version>
     <!-- 编译时的编码 -->
@@ -29,33 +30,39 @@
 
     <dependencies>
         <!-- 添加grpc相关依赖包 -->
+
+ 
         <dependency>
             <groupId>io.grpc</groupId>
-            <artifactId>grpc-netty</artifactId>
-            <version>1.2.0</version>
+            <artifactId>grpc-netty-shaded</artifactId>
+            <version>${grpc.version}</version>
         </dependency>
+ 
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-protobuf</artifactId>
-            <version>1.2.0</version>
+            <version>${grpc.version}</version>
         </dependency>
+ 
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
-            <version>1.2.0</version>
+            <version>${grpc.version}</version>
         </dependency>
+        
         <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-all</artifactId>
-            <version>1.2.0</version>
-        </dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.13.0</version>
+        </dependency>        
+
 
         <!-- json和protobuf互转 -->
-        <dependency>
+<!--         <dependency>
             <groupId>com.googlecode.protobuf-java-format</groupId>
             <artifactId>protobuf-java-format</artifactId>
             <version>1.2</version>
-        </dependency>
+        </dependency> -->
 
         <!-- json >
         <dependency>
@@ -71,18 +78,19 @@
             <extension>
                 <groupId>kr.motd.maven</groupId>
                 <artifactId>os-maven-plugin</artifactId>
-                <version>1.4.1.Final</version>
+                <version>1.6.2</version>
             </extension>
         </extensions>
         <plugins>
             <plugin>
                 <groupId>org.xolstice.maven.plugins</groupId>
                 <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.5.0</version>
+                <version>0.6.1</version>
                 <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:3.1.0:exe:${os.detected.classifier}</protocArtifact>
+                    <protocArtifact>com.google.protobuf:protoc:3.13.0:exe:${os.detected.classifier}</protocArtifact>
                     <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.2.0:exe:${os.detected.classifier}</pluginArtifact>
+                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}</pluginArtifact>
+                    <protoSourceRoot>src/main/proto</protoSourceRoot>
                 </configuration>
                 <executions>
                     <execution>
