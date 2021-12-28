@@ -22,6 +22,10 @@
 		  <artifactId>dfs-common</artifactId>
         </dependency>
         <dependency>
+		  <groupId>com.demo.dfs.rpc</groupId>
+		  <artifactId>dfs-rpc</artifactId>
+        </dependency>        
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>

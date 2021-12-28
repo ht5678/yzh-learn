@@ -3,7 +3,7 @@ syntax = "proto3";
 package com.demo.dfs.namenode.rpc;//必须一样
 
 option java_multiple_files = true;
-option java_package = "com.demo.dfs.namenode.service";
+option java_package = "com.demo.dfs.rpc.service";
 option java_outer_classname = "NameNodeServer";
 
 import "NameNodeRpcModel.proto";

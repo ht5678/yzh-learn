@@ -16,7 +16,8 @@
 		<module>dfs-client</module>
 		<module>simple-dfs-all</module>
 		<module>demo-grpc</module>
-	</modules>
+    	<module>dfs-rpc</module>
+  </modules>
 	
 	  
     <properties>
@@ -28,6 +29,7 @@
         <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
 
         <demo.dfs.common.version>0.0.1-SNAPSHOT</demo.dfs.common.version>
+        <demo.dfs.rpc.version>0.0.1-SNAPSHOT</demo.dfs.rpc.version>
         <demo.dfs.datanode.version>1.0</demo.dfs.datanode.version>
         <demo.dfs.namenode.version>1.0</demo.dfs.namenode.version>
 
@@ -49,6 +51,14 @@
 			  <artifactId>dfs-common</artifactId>
                 <version>${demo.dfs.common.version}</version>
             </dependency>
+            
+	        <dependency>
+			  <groupId>com.demo.dfs.rpc</groupId>
+			  <artifactId>dfs-rpc</artifactId>
+			  <version>${demo.dfs.rpc.version}</version>
+	        </dependency>
+	        
+	                    
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
