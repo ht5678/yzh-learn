@@ -22,10 +22,11 @@
   
   
   <dependencies>
-        <dependency>
+  	<!-- dfs-common和dfs-rpc不能同时存在 , 因为netty依赖导致版本冲突 ,   namenode && datanode通信不成功 -->
+<!--         <dependency>
 		  <groupId>com.learn.dfs.common</groupId>
 		  <artifactId>dfs-common</artifactId>
-        </dependency>
+        </dependency> -->
         <dependency>
 		  <groupId>com.demo.dfs.rpc</groupId>
 		  <artifactId>dfs-rpc</artifactId>
