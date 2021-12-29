@@ -20,7 +20,14 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 */
 	private FSNamesystem namesystem;
 	
+	/**
+	 * 负责管理集群中所有的datanode组件
+	 */
 	private DataNodeManager dataNodeManager;
+	
+	public static final Integer STATUS_SUCCESS =1;
+	
+	public static final Integer STATUS_FAILURE = 2;
 	
 	
 	/**
@@ -50,9 +57,9 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 * @param hostname
 	 * @return
 	 */
-	public Boolean register(String ip , String hostname)throws Exception {
-		return dataNodeManager.register(ip, hostname);
-	}
+//	public Boolean register(String ip , String hostname)throws Exception {
+//		return dataNodeManager.register(ip, hostname);
+//	}
 	
 	
 	/**
@@ -62,18 +69,32 @@ public class NameNodeServiceImpl implements NameNodeService {
 		System.out.println("开始监听指定的rpc server端口号 , 来接收请求");
 	}
 
-
+	
+	/**
+	 * datanode进行注册
+	 */
 	@Override
 	public void register(RegisterRequest request, StreamObserver<RegisterResponse> responseObserver) {
-		// TODO Auto-generated method stub
-		
+		dataNodeManager.register(request.getIp(), request.getHostname());
+		RegisterResponse response = RegisterResponse.newBuilder()
+					.setStatus(STATUS_SUCCESS)
+					.build();
+		responseObserver.onNext(response);
+		responseObserver.onCompleted();
 	}
 
-
+	
+	/**
+	 * datanode心跳检测
+	 */
 	@Override
 	public void heartbeat(HeartbeatRequest request, StreamObserver<HeartbeatResponse> responseObserver) {
-		// TODO Auto-generated method stub
-		
+		dataNodeManager.heartbeat(request.getIp(), request.getHostname());
+		HeartbeatResponse response = HeartbeatResponse.newBuilder()
+					.setStatus(STATUS_SUCCESS)
+					.build();
+		responseObserver.onNext(response);
+		responseObserver.onCompleted();
 	}
 	
 }

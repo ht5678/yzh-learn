@@ -19,36 +19,41 @@ public class NameNode {
 	/**
 	 * namenode对外提供rpc接口的server , 可以响应请求
 	 */
-	private NameNodeServiceImpl rpcServer;
+//	private NameNodeServiceImpl rpcServer;
+	private NameNodeRpcServer rpcServer;
 	
 	//NameNode是否运行
-	private volatile boolean shouldRun = false;
+//	private volatile boolean shouldRun = false;
 	
 	
-	public NameNode() {
-		this.shouldRun = true;
-	}
+//	public NameNode() {
+//		this.shouldRun = true;
+//	}
 	
 	
 	/**
 	 * 初始化namenode
 	 */
-	private void initialize () {
+	private void initialize () throws Exception {
 		this.namesystem = new FSNamesystem();
 		this.dataNodeManager = new DataNodeManager();
-		this.rpcServer = new NameNodeServiceImpl(this.namesystem , this.dataNodeManager);
-		this.rpcServer.start();
+//		this.rpcServer = new NameNodeServiceImpl(this.namesystem , this.dataNodeManager);
+		this.rpcServer = new NameNodeRpcServer(this.namesystem, this.dataNodeManager);
+//		this.rpcServer.start();
+//		this.rpcServer.blockUntilShutdown();
 	}	
 	
 	
 	/**
 	 * 让NameNode运行起来
 	 */
-	private void run() {
+	private void start() {
 		try {
-			while(shouldRun) {//判断是否停止 
-				Thread.sleep(1000);
-			}
+//			while(shouldRun) {//判断是否停止 
+//				Thread.sleep(1000);
+//			}
+			this.rpcServer.start();
+			this.rpcServer.blockUntilShutdown();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -56,10 +61,11 @@ public class NameNode {
 	
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		NameNode namenode = new NameNode();
 		namenode.initialize();
-		namenode.run();
+//		namenode.run();
+		namenode.start();
 	}
 	
 }
