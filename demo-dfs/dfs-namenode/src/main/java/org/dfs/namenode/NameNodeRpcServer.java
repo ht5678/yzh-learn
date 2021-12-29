@@ -62,14 +62,14 @@ public class NameNodeRpcServer {
 					.build()
 					.start();
 		
-		LOGGER.info("server started , listening on "+DEFAULT_PORT);
+		LOGGER.info("NameNodeRpcServer启动 , 监听端口号 : "+DEFAULT_PORT);
 		
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				System.err.println("*** shutting down grpc server since JVM is shutting down");
+//				System.err.println("*** shutting down grpc server since JVM is shutting down");
 				NameNodeRpcServer.this.stop();
-				System.err.println("*** server shut down");
+//				System.err.println("*** server shut down");
 			}
 		});
 	}

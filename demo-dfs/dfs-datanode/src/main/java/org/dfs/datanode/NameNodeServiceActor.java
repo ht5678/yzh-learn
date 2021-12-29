@@ -79,7 +79,7 @@ public class NameNodeServiceActor {
 					System.out.println("接收到namenode返回的[心跳]响应  : "+response.getStatus());
 					
 					
-//					Thread.sleep(30 * 1000);	//每隔30s发送一次心跳到NameNode上去
+					Thread.sleep(30 * 1000);	//每隔30s发送一次心跳到NameNode上去
 				}
 			}catch(Exception e) {
 				e.printStackTrace();
