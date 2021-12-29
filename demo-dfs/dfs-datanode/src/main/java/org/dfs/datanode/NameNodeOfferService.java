@@ -13,8 +13,8 @@ public class NameNodeOfferService {
 
 	//负责跟NameNode主节点通信的ServiceActor组件
 	private NameNodeServiceActor activeServiceActor;
-	//负责跟NameNode备节点通信的ServiceActor组件
-	private NameNodeServiceActor standbyServiceActor;
+//	//负责跟NameNode备节点通信的ServiceActor组件
+//	private NameNodeServiceActor standbyServiceActor;
 	//这个datanode上保存的ServiceActor列表
 	private CopyOnWriteArrayList<NameNodeServiceActor> serviceActors;
 	
@@ -24,11 +24,11 @@ public class NameNodeOfferService {
 	 */
 	public NameNodeOfferService () {
 		this.activeServiceActor = new NameNodeServiceActor();
-		this.standbyServiceActor = new NameNodeServiceActor();
+//		this.standbyServiceActor = new NameNodeServiceActor();
 		
 		this.serviceActors = new CopyOnWriteArrayList<>();
 		this.serviceActors.add(activeServiceActor);
-		this.serviceActors.add(standbyServiceActor);
+//		this.serviceActors.add(standbyServiceActor);
 	}
 	
 	
@@ -38,6 +38,8 @@ public class NameNodeOfferService {
 	public void start() {
 		//直接使用两个ServiceActor组件分别向主备两个NameNode节点进行注册
 		register();
+		//开始发送心跳
+		startHeartbeat();
 	}
 
 	/**
@@ -45,14 +47,24 @@ public class NameNodeOfferService {
 	 */
 	private void register() {
 		try {
-			CountDownLatch latch = new CountDownLatch(2);
-			this.activeServiceActor.register(latch);
-			this.standbyServiceActor.register(latch);
-			latch.await();
+//			CountDownLatch latch = new CountDownLatch(2);
+//			this.activeServiceActor.register(latch);
+//			this.standbyServiceActor.register(latch);
+//			latch.await();
+			
+			this.activeServiceActor.register();
 			System.out.println("主备NameNode全部注册完毕 ... ...");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	/**
+	 * 开始发送心跳给namenode
+	 */
+	private void startHeartbeat() {
+		this.activeServiceActor.startHeartbeat();
 	}
 	
 	
