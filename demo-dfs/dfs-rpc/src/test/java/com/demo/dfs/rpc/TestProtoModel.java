@@ -20,8 +20,8 @@ public class TestProtoModel {
     	System.out.println(rr1.getHostname());
     	
     	//json
-    	JsonFormat format = new JsonFormat();
-    	String json = format.printToString(rr);
+//    	JsonFormat format = new JsonFormat();
+    	String json = JsonFormat.printToString(rr);
     	System.out.println(json);
     }
 	
