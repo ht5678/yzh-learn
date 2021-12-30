@@ -1,5 +1,6 @@
 package org.dfs.namenode;
 
+import java.io.File;
 
 /**
  * 
@@ -11,8 +12,8 @@ public class FSNamesystem {
 	
 	
 	public Boolean mkdir(String path) {
-		// TODO Auto-generated method stub
-		return null;
+		File dir = new File(path);
+		return dir.mkdirs();
 	}
 
 }

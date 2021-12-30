@@ -2,6 +2,8 @@ package org.dfs.namenode;
 
 import com.demo.dfs.rpc.model.HeartbeatRequest;
 import com.demo.dfs.rpc.model.HeartbeatResponse;
+import com.demo.dfs.rpc.model.MkdirRequest;
+import com.demo.dfs.rpc.model.MkdirResponse;
 import com.demo.dfs.rpc.model.RegisterRequest;
 import com.demo.dfs.rpc.model.RegisterResponse;
 import com.demo.dfs.rpc.service.NameNodeServiceGrpc.NameNodeService;
@@ -46,9 +48,9 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 * @return		是否创建成功
 	 * @throws Exception
 	 */
-	public Boolean mkdir(String path) throws Exception {
-		return this.namesystem.mkdir(path);
-	}
+//	public Boolean mkdir(String path) throws Exception {
+//		return this.namesystem.mkdir(path);
+//	}
 	
 	
 	/**
@@ -95,6 +97,28 @@ public class NameNodeServiceImpl implements NameNodeService {
 					.build();
 		responseObserver.onNext(response);
 		responseObserver.onCompleted();
+	}
+
+	
+	
+	/**
+	 * 创建目录
+	 */
+	@Override
+	public void mkdir(MkdirRequest request, StreamObserver<MkdirResponse> responseObserver) {
+		try {
+			this.namesystem.mkdir(request.getPath());
+			
+			System.out.println("创建目录 path : "+request.getPath());
+			
+			MkdirResponse response = MkdirResponse.newBuilder()
+					.setStatus(STATUS_SUCCESS)
+					.build();
+			responseObserver.onNext(response);
+			responseObserver.onCompleted();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
