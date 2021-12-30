@@ -12,11 +12,11 @@ public class FSEditlog {
 	private Integer txidSeq =0;
 	private ThreadLocal<Long> localTxid = new ThreadLocal<>();
 	
-	private Boolean isSyncRunning = false;
+	private volatile Boolean isSyncRunning = false;
 	
-	private Long syncMaxTxId = 11L;
+	private volatile Long syncMaxTxId = 11L;
 	
-	private Boolean isWatiSync = false;
+	private volatile Boolean isWatiSync = false;
 	
 	private DoubleBuffer editLogBuffer = new DoubleBuffer();
 	
@@ -179,18 +179,32 @@ public class FSEditlog {
 		}
 		
 		/*
-		 * 交换两块缓冲区,为了同步内存数据到磁盘做准备
+		 * 刷写磁盘
 		 */
 		public void flush() {
-			
+			for(EditLog log : syncBuffer) {
+				//把数据写到磁盘上
+				System.out.println("存入磁盘日志信息: "+log);
+			}
+			syncBuffer.clear();
 		}
 
+		/**
+		 * 获取内存2里的日志的最大事务编号
+		 * @return
+		 */
 		public Long getSyncMaxTxid() {
-			return null;
+			return syncBuffer.getLast().txid;
 		}
 
+		
+		/**
+		 * 交换两块缓冲区,为了同步内存数据到磁盘做准备
+		 */
 		public void setReadyToSync() {
-			
+			LinkedList<EditLog> tmp = currentBuffer;
+			currentBuffer = syncBuffer;
+			syncBuffer = tmp;
 		}
 		
 	}
