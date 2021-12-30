@@ -8,12 +8,39 @@ import java.io.File;
  *	@date 2021年12月21日下午8:57:21
  */
 public class FSNamesystem {
+	
+	/**
+	 * 负责管理内存文件目录树的组件
+	 */
+	private FSDirectory directory;
+	
+	/**
+	 * 负责管理edits log写入磁盘的组件
+	 */
+	private FSEditlog editlog;
+	
+	
+	/**
+	 * 
+	 */
+	public FSNamesystem () {
+		this.directory = new FSDirectory();
+		this.editlog = new FSEditlog();
+	}
 
 	
-	
+	/**
+	 * 创建目录
+	 * @param path
+	 * @return
+	 */
 	public Boolean mkdir(String path) {
-		File dir = new File(path);
-		return dir.mkdirs();
+		this.directory.mkdir(path);
+		this.editlog.logEdit("创建了一个目录 : "+path);
+		return true;
+		
+//		File dir = new File(path);
+//		return dir.mkdirs();
 	}
 
 }
