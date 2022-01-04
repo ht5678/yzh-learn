@@ -25,7 +25,7 @@ public class RegisterClient {
 		//这个线程启动后的第一件事就是注册
 		//注册完成后 , 进入一个while true死循环
 		//每隔30s发送请求进行心跳
-		new RegisterWorker().start();
+		new RegisterClientWorker(serviceInstanceId).start();
 	}
 
 }
