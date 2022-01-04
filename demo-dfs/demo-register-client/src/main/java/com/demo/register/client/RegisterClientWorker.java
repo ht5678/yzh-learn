@@ -63,6 +63,11 @@ public class RegisterClientWorker  extends Thread{
 			while(true) {
 				heartbeatResponse = httpSender.heartbeat(heartbeatRequest);
 				System.out.println("心跳的结果为: "+heartbeatResponse.getStatus()+"......");
+				try {
+					Thread.sleep(30 * 1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

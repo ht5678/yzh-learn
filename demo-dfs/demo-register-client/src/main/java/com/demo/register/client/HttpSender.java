@@ -34,7 +34,7 @@ public class HttpSender {
 	 * @return
 	 */
 	public HeartbeatResponse heartbeat(HeartbeatRequest request) {
-		System.out.println("发送请求进行心跳......");
+		System.out.println("发送请求进行心跳 : "+request.getServiceInstanceId() + " .......");
 		
 		HeartbeatResponse response = new HeartbeatResponse();
 		response.setStatus(RegisterResponse.SUCCESS);
