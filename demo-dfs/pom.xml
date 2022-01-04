@@ -17,6 +17,7 @@
 		<module>simple-dfs-all</module>
 		<module>demo-grpc</module>
     	<module>dfs-rpc</module>
+    <module>demo-juc</module>
   </modules>
 	
 	  
