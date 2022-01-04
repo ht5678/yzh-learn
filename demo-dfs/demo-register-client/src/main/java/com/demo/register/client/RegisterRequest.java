@@ -16,6 +16,10 @@ public class RegisterRequest {
 	
 	private int port;
 
+	private String serviceInstanceId;
+	
+	
+	
 	public String getServiceName() {
 		return serviceName;
 	}
@@ -46,6 +50,14 @@ public class RegisterRequest {
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public String getServiceInstanceId() {
+		return serviceInstanceId;
+	}
+
+	public void setServiceInstanceId(String serviceInstanceId) {
+		this.serviceInstanceId = serviceInstanceId;
 	}
 	
 	

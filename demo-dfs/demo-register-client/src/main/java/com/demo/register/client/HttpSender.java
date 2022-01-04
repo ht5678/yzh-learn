@@ -9,7 +9,11 @@ package com.demo.register.client;
 public class HttpSender {
 
 	
-	
+	/**
+	 * 发送注册的请求
+	 * @param request
+	 * @return
+	 */
 	public RegisterResponse register(RegisterRequest request) {
 		//类似于HttpClient这种开源的网络包
 		//可以构造一个请求 , 里面放入这个服务实例的信息 , 比如服务名称,  ip地址 , 端口号
@@ -22,5 +26,21 @@ public class HttpSender {
 		
 		return response;
 	} 
+	
+	
+	/**
+	 * 发送心跳
+	 * @param request
+	 * @return
+	 */
+	public HeartbeatResponse heartbeat(HeartbeatRequest request) {
+		System.out.println("发送请求进行心跳......");
+		
+		HeartbeatResponse response = new HeartbeatResponse();
+		response.setStatus(RegisterResponse.SUCCESS);
+		
+		return response;
+	} 
+	
 	
 }
