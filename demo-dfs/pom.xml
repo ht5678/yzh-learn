@@ -18,6 +18,8 @@
 		<module>demo-grpc</module>
     	<module>dfs-rpc</module>
     <module>demo-juc</module>
+    <module>demo-register-server</module>
+    <module>demo-register-client</module>
   </modules>
 	
 	  
