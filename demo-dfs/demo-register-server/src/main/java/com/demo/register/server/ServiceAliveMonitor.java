@@ -22,12 +22,16 @@ public class ServiceAliveMonitor {
 	
 	
 	public ServiceAliveMonitor() {
+		ThreadGroup daemonThreadGroup = new ThreadGroup("daemon");
+		
+		
 		this.daemon = new Daemon(); 
 		//只要设置了这个标志位 , 代表该线程是一个daemon线程 , 后台线程
 		//非daemon线程 , 我们一般叫做工作线程
 		//如果工作线程(main线程)都结束了 , daemon线程是不会阻止jvm线程结束的
 		//
 		daemon.setDaemon(true);
+		daemon.setName("ServiceAliveMonitor");
 	}
 	
 	
