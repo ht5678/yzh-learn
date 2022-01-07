@@ -26,6 +26,20 @@ public class ServiceInstance {
 	private Lease lease;
 	
 	
+	/**
+	 * 
+	 */
+	public ServiceInstance() {
+		this.lease = new Lease();
+	}
+	
+	
+	public void renew() {
+		this.lease.renew();
+	}
+	
+	
+	
 	public String getServiceName() {
 		return serviceName;
 	}
@@ -82,4 +96,34 @@ public class ServiceInstance {
 	
 	
 	
+	
+	
+	/**
+	 * 契约:
+	 * 		维护了一个服务实例和当前注册中心的联系
+	 * 		包括心跳的时间 , 创建时间 , 等等
+	 * 		
+	 * 
+	 * @author yuezh2@lenovo.com
+	 *	@date 2022年1月6日下午8:37:06
+	 */
+	private class Lease {
+		
+		//最近一次心跳时间
+		private Long latestHeartbeatTime = System.currentTimeMillis();
+		
+		
+		
+		/**
+		 * 续约, 只要发送一次心跳 , 就相当于把register-client和register-server之间维护的一个契约
+		 * 进行了续约 , 我还存活着 , 我们俩的契约可以维持着
+		 * 
+		 * @param latestHeartbeatTime
+		 */
+		public void renew() {
+			this.latestHeartbeatTime = System.currentTimeMillis();
+			System.out.println("服务实例:"+serviceInstanceId+" , 进行续约 : "+this.latestHeartbeatTime);
+		}
+
+	}
 }

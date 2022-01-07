@@ -9,6 +9,8 @@ package com.demo.register.server;
 public class HeartbeatRequest {
 
 	private String serviceInstanceId;
+	
+	private String serviceName;
 
 	
 	public String getServiceInstanceId() {
@@ -17,6 +19,14 @@ public class HeartbeatRequest {
 
 	public void setServiceInstanceId(String serviceInstanceId) {
 		this.serviceInstanceId = serviceInstanceId;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 	
 	

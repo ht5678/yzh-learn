@@ -1,7 +1,5 @@
 package com.demo.register.server;
 
-
-
 /**
  * 这个controller负责接收register-client发送过来的请求
  * 在Spring Cloud Eureka中用的组件是jersey  , 
@@ -29,7 +27,7 @@ public class RegisterServerController {
 			serviceInstance.setPort(request.getPort());
 			serviceInstance.setServiceInstanceId(request.getServiceInstanceId());
 			serviceInstance.setServiceName(request.getServiceName());
-			serviceInstance.setLease(new Lease());
+//			serviceInstance.setLease(new Lease());
 
 			registry.register(serviceInstance);
 			
@@ -42,6 +40,33 @@ public class RegisterServerController {
 		return registerResponse;
 	}
 	
+	
+	
+
+	
+	
+	/**
+	 * 发送心跳
+	 * @param heartbeatRequest
+	 * @return
+	 */
+	public HeartbeatResponse heartbeat(HeartbeatRequest heartbeatRequest) {
+		HeartbeatResponse heartbeatResponse = new HeartbeatResponse();
+		try {
+			ServiceInstance serviceInstance = 
+					registry.getServiceInstance(heartbeatRequest.getServiceName(), heartbeatRequest.getServiceInstanceId());
+			//
+			serviceInstance.renew();
+			
+			heartbeatResponse.setStatus(HeartbeatResponse.SUCCESS);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			heartbeatResponse.setStatus(heartbeatResponse.FAILTURE);
+		}
+			
+		return heartbeatResponse;
+	}
 	
 	
 	

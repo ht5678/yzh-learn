@@ -46,6 +46,18 @@ public class Registry {
 	}
 	
 	
+	
+	/**
+	 * 获取服务实例
+	 * @param serviceName
+	 * @return
+	 */
+	public ServiceInstance getServiceInstance(String serviceName , String serviceInstanceId) {
+		Map<String, ServiceInstance> serviceInstanceMap = registry.get(serviceName);
+		return serviceInstanceMap.get(serviceInstanceId);
+	}
+	
+	
 	public static Registry getInstance() {
 		return instance;
 	}

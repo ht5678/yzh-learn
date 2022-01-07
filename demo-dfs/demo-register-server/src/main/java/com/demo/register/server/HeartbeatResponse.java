@@ -7,6 +7,14 @@ package com.demo.register.server;
  *	@date 2022年1月4日下午8:39:10
  */
 public class HeartbeatResponse {
+	
+	
+	public static final String SUCCESS = "success";
+	
+	public static final String FAILTURE = "failure";
+	
+	
+	
 
 	private String status;
 
