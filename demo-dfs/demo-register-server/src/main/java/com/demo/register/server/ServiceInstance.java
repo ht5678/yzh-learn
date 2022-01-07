@@ -12,6 +12,11 @@ package com.demo.register.server;
  *	@date 2022年1月6日下午8:36:57
  */
 public class ServiceInstance {
+	
+	//判断服务实例 , 不再存活的周期
+	private static final Long NOT_ALIVE_PERIOD = 90 * 1000L;
+	
+	
 
 	private String serviceName;
 	
@@ -38,6 +43,10 @@ public class ServiceInstance {
 		this.lease.renew();
 	}
 	
+	
+	public Boolean isAlive() {
+		return this.lease.isAlive();
+	}
 	
 	
 	public String getServiceName() {
@@ -113,7 +122,6 @@ public class ServiceInstance {
 		private Long latestHeartbeatTime = System.currentTimeMillis();
 		
 		
-		
 		/**
 		 * 续约, 只要发送一次心跳 , 就相当于把register-client和register-server之间维护的一个契约
 		 * 进行了续约 , 我还存活着 , 我们俩的契约可以维持着
@@ -123,6 +131,21 @@ public class ServiceInstance {
 		public void renew() {
 			this.latestHeartbeatTime = System.currentTimeMillis();
 			System.out.println("服务实例:"+serviceInstanceId+" , 进行续约 : "+this.latestHeartbeatTime);
+		}
+		
+		
+		/**
+		 * 判断当前服务实例的契约是否存活
+		 * @return
+		 */
+		public Boolean isAlive() {
+			Long currentTime = System.currentTimeMillis();
+			if(currentTime - latestHeartbeatTime > NOT_ALIVE_PERIOD) {
+				System.out.println("服务实例:"+serviceInstanceId+" , 不再存活");
+				return false;
+			}
+			System.out.println("服务实例:"+serviceInstanceId+" , 保持存活");
+			return true;
 		}
 
 	}

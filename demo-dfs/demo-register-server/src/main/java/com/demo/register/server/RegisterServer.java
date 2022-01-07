@@ -29,8 +29,17 @@ public class RegisterServer {
 		
 		
 		//模拟一次心跳
+		HeartbeatRequest heartbeatRequest = new HeartbeatRequest();
+		heartbeatRequest.setServiceInstanceId(serviceInstanceId);
+		heartbeatRequest.setServiceName("inventory-service");
+		HeartbeatResponse heartbeatResponse = controller.heartbeat(heartbeatRequest);
+		System.out.println(heartbeatResponse.getStatus());
 		
 		
+		//开启一个后台线程 , 检查微服务的存活状态
+		//被摘除的一个原因是 , 心跳只模拟了一次 , 没有再次进行续约
+		ServiceAliveMonitor serviceAliveMonitor = new ServiceAliveMonitor();
+		serviceAliveMonitor.start();
 		
 		while(true) {
 			Thread.sleep(30 * 1000);

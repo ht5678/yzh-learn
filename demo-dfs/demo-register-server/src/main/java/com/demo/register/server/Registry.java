@@ -58,6 +58,27 @@ public class Registry {
 	}
 	
 	
+	/**
+	 * 获取整个注册表
+	 * @return
+	 */
+	public Map<String, Map<String , ServiceInstance>> getRegistry() {
+		return registry;
+	}
+	
+	
+	/**
+	 * 从注册表删除一个服务实例
+	 * @param serviceName
+	 * @param serviceInstanceId
+	 */
+	public void remove(String serviceName  , String serviceInstanceId) {
+		Map<String, ServiceInstance> serviceInstanceMap = registry.get(serviceName);
+		serviceInstanceMap.remove(serviceInstanceId);
+		System.out.println("服务实例:"+serviceInstanceId+" , 进行摘除");
+	}
+	
+	
 	public static Registry getInstance() {
 		return instance;
 	}
