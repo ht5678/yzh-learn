@@ -41,6 +41,16 @@ public class RegisterServer {
 		ServiceAliveMonitor serviceAliveMonitor = new ServiceAliveMonitor();
 		serviceAliveMonitor.start();
 		
+		//一般来说像register-server这种 , 不会只有一个main线程作为工作线程
+		//一般是web工程 , 部署在一个web服务器里
+		//核心的工作线程 , 是专门用于接收和处理register-client发送过来的请求的哪些工作线程
+		//正常来说 ,他只要有工作线程 , 是不会随便退出的
+		//当然如果说工作线程都停止了, 那么daemon线程就会跟着jvm进程一块退出
+		
+		//我们暂时这个项目没有网络这块东西
+		//暂时就是在main方法里加while true , 让main工作线程不要退出 , 
+		//可以保证服务一直运行 , daemon线程会跟着jvm进程一起退出 
+		
 		while(true) {
 			Thread.sleep(30 * 1000);
 		}
