@@ -9,9 +9,13 @@ package com.demo.register.client;
  */
 public class TestRegisterClient {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		RegisterClient registerClient = new RegisterClient();
 		registerClient.start();
+		
+		Thread.sleep(5 * 1000);
+		
+		registerClient.shutdown();
 	}
 	
 }
