@@ -9,9 +9,22 @@ import java.util.UUID;
  */
 public class RegisterClient {
 	
+	public static final String SERVICE_NAME = "inventory-service";
+	public static final String IP = "192.168.0.1";
+	public static final int PORT = 9000;
+	
+	private HttpSender httpSender;
+	
+	
+	
 	private String serviceInstanceId;
 	
+	
+	/**
+	 * 
+	 */
 	public RegisterClient() {
+		httpSender = new HttpSender();
 		this.serviceInstanceId = UUID.randomUUID().toString().replace("-", "");
 	}
 	
@@ -25,65 +38,109 @@ public class RegisterClient {
 		//这个线程启动后的第一件事就是注册
 		//注册完成后 , 进入一个while true死循环
 		//每隔30s发送请求进行心跳
-		new RegisterClientWorker(serviceInstanceId).start();
+		
+		RegisterWorker registerWorker = new RegisterWorker();
+		registerWorker.start();
+		try {
+			registerWorker.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+//		new HeartbeatWorker(serviceInstanceId).start();
+		new HeartbeatWorker().start();
 	}
 	
 	
+	/**
+	 * 注册线程
+	 * @author yue
+	 *
+	 */
+	private class RegisterWorker extends Thread{
+		
+		
+		@Override
+		public void run() {
+			//获取当前机器的信息 , ip , hostname , 监听的端口号
+			//从配置文件可以拿到
+			RegisterRequest registerRequest = new RegisterRequest();
+			registerRequest.setServiceName(SERVICE_NAME);
+			registerRequest.setIp(IP);
+			registerRequest.setPort(PORT);
+			registerRequest.setServiceInstanceId(UUID.randomUUID().toString().replace("-", ""));
+			
+			RegisterResponse registerResponse = httpSender.register(registerRequest);
+			System.out.println("服务注册的结果是:" + registerResponse.getStatus());
+			
+			//如果注册成功
+			if(RegisterResponse.SUCCESS.equals(registerResponse.getStatus())) {
+//				this.finishedRegister = true;
+			}else {
+				return;
+//				throw new Exception("服务注册失败");
+			}
+		}
+		
+		
+	}
+	
 	
 	/**
-	 * 
+	 * 心跳线程
 	 * @author yuezh2@lenovo.com
 	 *	@date 2022年1月4日下午8:31:23
 	 */
-	private class RegisterClientWorker  extends Thread{
+	private class HeartbeatWorker  extends Thread{
 
-		public static final String SERVICE_NAME = "inventory-service";
-		public static final String IP = "192.168.0.1";
-		public static final int PORT = 9000;
-		
-		private HttpSender httpSender;
+//		public static final String SERVICE_NAME = "inventory-service";
+//		public static final String IP = "192.168.0.1";
+//		public static final int PORT = 9000;
+//		
+//		private HttpSender httpSender;
 		
 		//是否完成注册
-		private Boolean finishedRegister;
+//		private Boolean finishedRegister;
 		
 		
-		private String serviceInstanceId;
+//		private String serviceInstanceId;
 		
 		
-		public RegisterClientWorker(String serviceInstanceId) {
-			httpSender = new HttpSender();
-			this.finishedRegister = false;
-			this.serviceInstanceId = serviceInstanceId;
+		public HeartbeatWorker() {
+//			public HeartbeatWorker(String serviceInstanceId) {
+//			httpSender = new HttpSender();
+//			this.finishedRegister = false;
+//			this.serviceInstanceId = serviceInstanceId;
 		}
 		
 		
 		@Override
 		public void run() {
 			
-			if(!finishedRegister) {
-				//获取当前机器的信息 , ip , hostname , 监听的端口号
-				//从配置文件可以拿到
-				RegisterRequest registerRequest = new RegisterRequest();
-				registerRequest.setServiceName(SERVICE_NAME);
-				registerRequest.setIp(IP);
-				registerRequest.setPort(PORT);
-				registerRequest.setServiceInstanceId(UUID.randomUUID().toString().replace("-", ""));
-				
-				RegisterResponse registerResponse = httpSender.register(registerRequest);
-				System.out.println("服务注册的结果是:" + registerResponse.getStatus());
-				
-				//如果注册成功
-				if(RegisterResponse.SUCCESS.equals(registerResponse.getStatus())) {
-					this.finishedRegister = true;
-				}else {
-					return;
-//					throw new Exception("服务注册失败");
-				}
-				
-			}
+//			if(!finishedRegister) {
+//				//获取当前机器的信息 , ip , hostname , 监听的端口号
+//				//从配置文件可以拿到
+//				RegisterRequest registerRequest = new RegisterRequest();
+//				registerRequest.setServiceName(SERVICE_NAME);
+//				registerRequest.setIp(IP);
+//				registerRequest.setPort(PORT);
+//				registerRequest.setServiceInstanceId(UUID.randomUUID().toString().replace("-", ""));
+//				
+//				RegisterResponse registerResponse = httpSender.register(registerRequest);
+//				System.out.println("服务注册的结果是:" + registerResponse.getStatus());
+//				
+//				//如果注册成功
+//				if(RegisterResponse.SUCCESS.equals(registerResponse.getStatus())) {
+//					this.finishedRegister = true;
+//				}else {
+//					return;
+////					throw new Exception("服务注册失败");
+//				}
+//				
+//			}
 			
 			//如果注册成功了 , 就进入while true死循环
-			if(finishedRegister) {
+//			if(finishedRegister) {
 				HeartbeatRequest heartbeatRequest = new HeartbeatRequest();
 				heartbeatRequest.setServiceInstanceId(serviceInstanceId);
 				heartbeatRequest.setServiceName(SERVICE_NAME);
@@ -99,7 +156,7 @@ public class RegisterClient {
 					}
 				}
 			}
-		}
+//		}
 		
 	}
 
