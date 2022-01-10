@@ -2,6 +2,8 @@ package com.demo.juc.lock.simple;
 
 /**
  * 
+ * cpu缓存模型 -> java内存模型 -> 原子性 , 可见性 , 有序性 -> volatile的作用 -> volatile底层原理 -> volatile实战
+ * 
  * @author yuezh2@lenovo.com
  *	@date 2022年1月10日下午8:43:43
  */
