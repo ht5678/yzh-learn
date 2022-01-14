@@ -119,7 +119,7 @@ public class ServiceInstance {
 	private class Lease {
 		
 		//最近一次心跳时间
-		private Long latestHeartbeatTime = System.currentTimeMillis();
+		private  volatile Long latestHeartbeatTime = System.currentTimeMillis();
 		
 		
 		/**
