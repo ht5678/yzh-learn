@@ -21,8 +21,12 @@ public class ThreadUnsafeDemo {
 			Thread thread1 = new Thread(){
 				public void run() {
 					for(int i = 0 ; i < 10 ; i ++){
-						ThreadUnsafeDemo.data++;
-						System.out.println(data);
+						//线程不安全
+//						ThreadUnsafeDemo.data++;
+//						System.out.println(data);
+						
+						//线程安全
+						increment();
 					}
 //					System.out.println(data);
 				};
@@ -35,8 +39,9 @@ public class ThreadUnsafeDemo {
 			Thread thread2 = new Thread(){
 				public void run() {
 					for(int i = 0 ; i < 10 ; i ++){
-						ThreadUnsafeDemo.data++;
-						System.out.println(data);
+//						ThreadUnsafeDemo.data++;
+//						System.out.println(data);
+						increment();
 					}
 //					System.out.println(data);
 				};
@@ -53,5 +58,11 @@ public class ThreadUnsafeDemo {
 		
 //		System.out.println(data);
 	}
+	
+	
+	 private synchronized static void increment(){
+		 ThreadUnsafeDemo.data++ ;
+		 System.out.println(data);
+	 }
 	
 }
