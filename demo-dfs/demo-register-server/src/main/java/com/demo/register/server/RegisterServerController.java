@@ -10,7 +10,7 @@ package com.demo.register.server;
  */
 public class RegisterServerController {
 
-	private Registry registry = Registry.getInstance();
+	private ServiceRegistry registry = ServiceRegistry.getInstance();
 	
 	
 	/**

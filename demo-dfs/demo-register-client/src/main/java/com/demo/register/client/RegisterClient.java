@@ -24,6 +24,10 @@ public class RegisterClient {
 	//服务实例是否在运行
 	private volatile Boolean isRunning;
 	
+	//客户端缓存的注册表
+	private ClientCachedServiceRegistry registry;
+	
+	
 	
 	/**
 	 * 
@@ -33,6 +37,7 @@ public class RegisterClient {
 		heartbeatWorker = new HeartbeatWorker();
 		this.serviceInstanceId = UUID.randomUUID().toString().replace("-", "");
 		isRunning = true;
+		this.registry = new ClientCachedServiceRegistry(this , httpSender);
 	}
 	
 	
@@ -50,18 +55,24 @@ public class RegisterClient {
 		//这个线程启动后的第一件事就是注册
 		//注册完成后 , 进入一个while true死循环
 		//每隔30s发送请求进行心跳
-		
-		RegisterWorker registerWorker = new RegisterWorker();
-		registerWorker.start();
 		try {
+			RegisterWorker registerWorker = new RegisterWorker();
+			registerWorker.start();
 			registerWorker.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
+		
+		//启动心跳线程 , 定时发送心跳信息
 //		new HeartbeatWorker(serviceInstanceId).start();
 //		heartbeatWorker = new HeartbeatWorker();
 		heartbeatWorker.start();
+		
+		
+		//初始化客户端缓存的服务注册表组件
+		this.registry.initialize();
+		
 	}
 	
 	
@@ -73,6 +84,8 @@ public class RegisterClient {
 		isRunning = false;
 		//heartbeat是非daemon线程 , 退出的时候 , jvm线程也就退出了
 		this.heartbeatWorker.interrupt();
+		
+		this.registry.destroy();
 	}
 	
 	
@@ -185,5 +198,14 @@ public class RegisterClient {
 		
 	}
 
+	
+	/**
+	 * client是否存活运行
+	 * @return
+	 */
+	public Boolean isRunning(){
+		return this.isRunning;
+	}
+	
 
 }

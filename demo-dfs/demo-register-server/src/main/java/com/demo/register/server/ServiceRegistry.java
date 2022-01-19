@@ -4,19 +4,19 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 注册表
+ * 服务注册表
  * @author yuezh2@lenovo.com
  *	@date 2022年1月6日下午8:35:30
  */
-public class Registry {
+public class ServiceRegistry {
 
 	/**
 	 * 单例
 	 */
-	private static Registry instance = new Registry();
+	private static ServiceRegistry instance = new ServiceRegistry();
 	
 	
-	private Registry() {
+	private ServiceRegistry() {
 		
 	}
 	
@@ -79,7 +79,7 @@ public class Registry {
 	}
 	
 	
-	public static Registry getInstance() {
+	public static ServiceRegistry getInstance() {
 		return instance;
 	}
 	

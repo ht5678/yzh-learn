@@ -51,7 +51,7 @@ public class ServiceAliveMonitor {
 	 */
 	private class Daemon extends Thread{
 		
-		private Registry registry = Registry.getInstance();
+		private ServiceRegistry registry = ServiceRegistry.getInstance();
 		
 		@Override
 		public void run() {
