@@ -1,5 +1,7 @@
 package com.demo.register.server;
 
+import java.util.Map;
+
 /**
  * 这个controller负责接收register-client发送过来的请求
  * 在Spring Cloud Eureka中用的组件是jersey  , 
@@ -69,5 +71,13 @@ public class RegisterServerController {
 	}
 	
 	
+	
+	/**
+	 * 拉取注册表
+	 * @return
+	 */
+	public Map<String, Map<String,ServiceInstance>> fetchServiceRegistry(){
+		return registry.getRegistry();
+	}
 	
 }
