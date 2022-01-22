@@ -68,6 +68,14 @@ public class ServiceAliveMonitor {
 							//从注册表移除该实例
 							if(!serviceInstance.isAlive()) {
 								registry.remove(serviceName, serviceInstance.getServiceInstanceId());
+								
+								//更新自我保护的阈值
+								synchronized (SelfProtectionPolicy.class) {
+									SelfProtectionPolicy selfProtectionPolicy = SelfProtectionPolicy.getInstance();
+									selfProtectionPolicy.setExpectedHeartbeatRate(selfProtectionPolicy.getExpectedHeartbeatRate() - 2);
+									selfProtectionPolicy.setExpectedHeartbeatThreshold((long)(selfProtectionPolicy.getExpectedHeartbeatRate()*0.85));
+								}
+								
 							}
 						}
 					}

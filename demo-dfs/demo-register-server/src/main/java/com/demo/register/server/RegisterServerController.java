@@ -23,6 +23,7 @@ public class RegisterServerController {
 	public RegisterResponse register(RegisterRequest request) {
 		RegisterResponse registerResponse = new RegisterResponse();
 		try {
+			//在注册表中加入这个服务实例
 			ServiceInstance serviceInstance = new ServiceInstance();
 			serviceInstance.setHostname(request.getHostname());
 			serviceInstance.setIp(request.getIp());
@@ -32,6 +33,13 @@ public class RegisterServerController {
 //			serviceInstance.setLease(new Lease());
 
 			registry.register(serviceInstance);
+			
+			//更新自我保护机制的阈值
+			synchronized (SelfProtectionPolicy.class) {
+				SelfProtectionPolicy selfProtectionPolicy = SelfProtectionPolicy.getInstance();
+				selfProtectionPolicy.setExpectedHeartbeatRate(selfProtectionPolicy.getExpectedHeartbeatRate()+2);
+				selfProtectionPolicy.setExpectedHeartbeatThreshold((long)(selfProtectionPolicy.getExpectedHeartbeatRate()*0.85));
+			}
 			
 			registerResponse.setStatus(RegisterResponse.SUCCESS);
 		} catch (Exception e) {
@@ -90,6 +98,12 @@ public class RegisterServerController {
 	 */
 	public void cancel(String serviceName  , String serviceInstanceId){
 		registry.remove(serviceName, serviceInstanceId);
+		
+		synchronized (SelfProtectionPolicy.class) {
+			SelfProtectionPolicy selfProtectionPolicy = SelfProtectionPolicy.getInstance();
+			selfProtectionPolicy.setExpectedHeartbeatRate(selfProtectionPolicy.getExpectedHeartbeatRate()  -  2);
+			selfProtectionPolicy.setExpectedHeartbeatThreshold((long)(selfProtectionPolicy.getExpectedHeartbeatRate()*0.85));
+		}
 	}
 	
 }
