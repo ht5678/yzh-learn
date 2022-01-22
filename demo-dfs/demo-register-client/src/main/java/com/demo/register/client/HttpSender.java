@@ -73,4 +73,12 @@ public class HttpSender {
 	}
 	
 	
+	
+	/**
+	 * 服务下线
+	 */
+	public void cancel(String serviceName , String serviceInstanceId){
+		System.out.println("服务实例下线: "+serviceName+" , "+serviceInstanceId);
+	}
+	
 }

@@ -84,4 +84,12 @@ public class RegisterServerController {
 		return registry.getRegistry();
 	}
 	
+	
+	/**
+	 * 服务下线
+	 */
+	public void cancel(String serviceName  , String serviceInstanceId){
+		registry.remove(serviceName, serviceInstanceId);
+	}
+	
 }
