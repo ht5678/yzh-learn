@@ -43,7 +43,7 @@ public class MyQueue {
 				wait();		//释放锁 , 等待其他线程放入数据
 			}
 			
-			element = queue.getFirst();
+			element = queue.pop();
 			notifyAll();		//唤醒当前在等待锁的线程
 		}catch(Exception e){
 			e.printStackTrace();
@@ -51,5 +51,33 @@ public class MyQueue {
 		
 		return element;
 	}
+	
+	
+	public static void main(String[] args) throws Exception{
+		MyQueue myQueue = new MyQueue();
+		
+		new Thread(){
+			public void run() {
+				for(int i = 0 ; i < 11 ; i ++){
+					myQueue.offer("元素"+i);
+				}
+			};
+		}.start();
+		
+		
+		Thread.sleep(1000);
+		
+		
+		new Thread(){
+			public void run() {
+				for(int i = 0 ; i < 12 ; i ++){
+					System.out.println(myQueue.take());
+				}
+			};
+		}.start();
+		
+		Thread.sleep(2000);
+	}
+	
 	
 }
