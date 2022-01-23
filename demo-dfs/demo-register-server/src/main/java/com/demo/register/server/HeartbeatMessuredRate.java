@@ -24,6 +24,14 @@ public class HeartbeatMessuredRate {
 	private long latestMinuteTimestamp = System.currentTimeMillis();
 	
 	
+	private HeartbeatMessuredRate(){
+		Daemon daemon = new Daemon();
+		daemon.setDaemon(true);
+		daemon.start();
+	}
+	
+	
+	
 	/**
 	 * 获取单例实例
 	 * @return
@@ -37,14 +45,17 @@ public class HeartbeatMessuredRate {
 	 * 增加一次最近一分钟的心跳次数
 	 */
 	public synchronized void increment(){
-		long currentTime = System.currentTimeMillis();
+//		long currentTime = System.currentTimeMillis();
+//		
+//		if(currentTime - latestMinuteTimestamp >60 * 1000L){
+//			latestMinuteHeartbeatRate = 0L;
+//			this.latestMinuteTimestamp = System.currentTimeMillis();
+//		}
 		
-		if(currentTime - latestMinuteTimestamp >60 * 1000L){
-			latestMinuteHeartbeatRate = 0L;
-			this.latestMinuteTimestamp = System.currentTimeMillis();
+		synchronized (HeartbeatMessuredRate.class) {
+			latestMinuteHeartbeatRate++;
 		}
 		
-		latestMinuteHeartbeatRate++;
 	}
 	
 	
@@ -53,6 +64,31 @@ public class HeartbeatMessuredRate {
 	 */
 	public synchronized long get(){
 		return latestMinuteHeartbeatRate;
+	}
+	
+	
+	
+	private class Daemon extends Thread{
+		
+		@Override
+		public void run() {
+			try{
+				synchronized (HeartbeatMessuredRate.class) {
+					
+					long currentTime = System.currentTimeMillis();
+					
+					if(currentTime - latestMinuteTimestamp >60 * 1000L){
+						latestMinuteHeartbeatRate = 0L;
+						latestMinuteTimestamp = System.currentTimeMillis();
+					}
+				}
+				
+				Thread.sleep(1000);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 }
