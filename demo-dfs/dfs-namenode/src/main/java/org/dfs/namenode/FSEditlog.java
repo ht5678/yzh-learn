@@ -4,6 +4,8 @@ import java.util.LinkedList;
 
 /**
  * 
+ * editslog双缓冲机制 + 全局txid + 分段锁 
+ * 
  * @author yuezh2@lenovo.com
  *	@date 2021年12月30日下午2:53:59
  */
@@ -26,6 +28,7 @@ public class FSEditlog {
 	 */
 	public void logEdit(String content) {
 		//这里必须直接加锁
+		//分段加锁1
 		synchronized (this) {
 			//获取全剧唯一递增的txid , 代表了 edits log的序号
 			txidSeq++;
@@ -50,6 +53,7 @@ public class FSEditlog {
 	 */
 	private void logSync() {
 		//再次尝试加锁
+		//分段加锁2
 		synchronized (this) {
 			//如果说当前正好有人刷内存缓冲到磁盘中去
 			if(isSyncRunning) {
@@ -104,6 +108,7 @@ public class FSEditlog {
 		editLogBuffer.flush();
 		
 		
+		//分段加锁3
 		synchronized (this) {
 			//同步完了磁盘之后 , 就会将标志位复位 , 再释放锁
 			isSyncRunning = false;
