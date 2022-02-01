@@ -151,6 +151,13 @@ public class FSEditlog {
 		public void setContent(String content) {
 			this.content = content;
 		}
+
+
+
+		@Override
+		public String toString() {
+			return "EditLog [txid=" + txid + ", content=" + content + "]";
+		}
 		
 	}
 	

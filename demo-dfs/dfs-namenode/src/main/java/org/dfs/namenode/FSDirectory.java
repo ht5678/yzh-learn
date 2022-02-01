@@ -45,9 +45,27 @@ public class FSDirectory {
 				
 				INodeDirectory child = new INodeDirectory(splitedPath);
 				parent.addChild(child);
+				parent = child;
 			}
 		}
+//		System.out.println(dirTree.toString());
+		printDirTree(dirTree , "  ");
+	}
+	
+	
+	/**
+	 * 
+	 * @param dirTree
+	 */
+	private void printDirTree(INodeDirectory dirTree , String blank){
+		if(dirTree.getChildren().size() == 0){
+			return ;
+		}
 		
+		for(INode dir : dirTree.getChildren()){
+			System.out.println(blank + ((INodeDirectory)dir).getPath());
+			printDirTree(((INodeDirectory)dir) , blank + blank);
+		}
 	}
 	
 	
@@ -61,7 +79,7 @@ public class FSDirectory {
 			return null;
 		}
 		
-		INodeDirectory resultDir = null;
+//		INodeDirectory resultDir = null;
 		
 		for(INode child : dir.getChildren()) {
 			if(child instanceof INodeDirectory) {
@@ -71,10 +89,11 @@ public class FSDirectory {
 					return childDir;
 				}
 				
-				resultDir = findDirectory(resultDir, path);
-				if(resultDir != null) {
-					return resultDir;
-				}
+				//移除递归
+//				resultDir = findDirectory(childDir, path);
+//				if(resultDir != null) {
+//					return resultDir;
+//				}
 			}
 		}
 		return null;
@@ -127,6 +146,11 @@ public class FSDirectory {
 			return children;
 		}
 
+		@Override
+		public String toString() {
+			return "INodeDirectory [children=" + children + ", path=" + path + "]";
+		}
+
 		
 	}
 	
@@ -146,6 +170,11 @@ public class FSDirectory {
 
 		public void setName(String name) {
 			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return "INodeFile [name=" + name + "]";
 		}
 		
 	}

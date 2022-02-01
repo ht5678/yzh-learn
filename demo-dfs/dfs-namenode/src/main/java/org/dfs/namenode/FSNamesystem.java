@@ -11,6 +11,9 @@ public class FSNamesystem {
 	
 	/**
 	 * 负责管理内存文件目录树的组件
+	 * 
+	 * 专门管理维护内存中的文件目录树
+	 * 
 	 */
 	private FSDirectory directory;
 	

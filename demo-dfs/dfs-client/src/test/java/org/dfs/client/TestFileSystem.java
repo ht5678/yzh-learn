@@ -13,6 +13,8 @@ public class TestFileSystem {
 	public static void main(String[] args) throws Exception{
 		FileSystem fileSystem = new FileSystemImpl();
 		fileSystem.mkdir("d:/testdfs/data");
+		fileSystem.mkdir("d:/testdfs/data1");
+		fileSystem.mkdir("d:/testdfs/data2");
 	}
 	
 }

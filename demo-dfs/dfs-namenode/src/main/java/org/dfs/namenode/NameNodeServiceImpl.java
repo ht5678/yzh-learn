@@ -23,6 +23,9 @@ public class NameNodeServiceImpl implements NameNodeService {
 	private FSNamesystem namesystem;
 	
 	/**
+	 * 是一个逻辑上的组件 , 负责管理元数据的更新
+	 * 比如说要更新内存里的文件目录树 , 就可以用dataNodeManager , ta更新的是元数据
+	 * 
 	 * 负责管理集群中所有的datanode组件
 	 */
 	private DataNodeManager dataNodeManager;
@@ -107,7 +110,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 	@Override
 	public void mkdir(MkdirRequest request, StreamObserver<MkdirResponse> responseObserver) {
 		try {
-			this.namesystem.mkdir(request.getPath());
+			this.namesystem.mkdir(request.getPath());//保存文件目录结构到内存中
 			
 			System.out.println("创建目录 path : "+request.getPath());
 			
