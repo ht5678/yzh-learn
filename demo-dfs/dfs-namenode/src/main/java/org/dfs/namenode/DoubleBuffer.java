@@ -1,6 +1,11 @@
 package org.dfs.namenode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.dfs.namenode.FSEditlog.EditLog;
+
+import com.google.common.io.ByteArrayDataOutput;
 
 /**
  * 内存双缓冲
@@ -10,9 +15,9 @@ import org.dfs.namenode.FSEditlog.EditLog;
 public class DoubleBuffer{
 	
 	/*
-	 * 单块editlog缓冲区最大的大小
+	 * 单块editlog缓冲区最大的大小, 512kb
 	 */
-	public static final Long EDIT_LOG_BUFFER_LIMIT = 512 * 1024L;
+	public static final Integer EDIT_LOG_BUFFER_LIMIT = 512 * 1024;
 	
 	/*
 	 * 是专门用来承载线程写入edits log
@@ -31,8 +36,9 @@ public class DoubleBuffer{
 	
 	/**
 	 * 将edits log写到内存缓冲里去
+	 * @throws IOException 
 	 */
-	public void write(EditLog log) {
+	public void write(EditLog log) throws IOException {
 //		currentBuffer.add(log);
 		currentBuffer.write(log);
 //		maxTxId = log.getTxid();
@@ -99,11 +105,19 @@ public class DoubleBuffer{
 	 */
 	class EditLogBuffer {
 		
+		/*
+		 * 
+		 */
+		ByteArrayOutputStream out = new ByteArrayOutputStream(EDIT_LOG_BUFFER_LIMIT * 2);
+		
+		
 		/**
 		 * editlog写入缓冲区
 		 */
-		public void write(EditLog log){
+		public void write(EditLog log)throws IOException{
+			out.write(log.getContent().getBytes());
 			System.out.println("在currentBuffer中写入一条数据 : "+log.getContent());
+			System.out.println("当前缓冲区的大小 : "+this.size());
 		}
 		
 		
@@ -111,8 +125,8 @@ public class DoubleBuffer{
 		 * 获取当前缓冲区已经写入数据的字节数量
 		 * @return
 		 */
-		public Long size() {
-			return 0L;
+		public Integer size() {
+			return out.size();
 		}
 		
 		

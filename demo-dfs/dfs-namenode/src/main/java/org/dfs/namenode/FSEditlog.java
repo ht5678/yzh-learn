@@ -1,5 +1,9 @@
 package org.dfs.namenode;
 
+import java.io.IOException;
+
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * 
  * editslog双缓冲机制 + 全局txid + 分段锁 
@@ -44,7 +48,11 @@ public class FSEditlog {
 			EditLog log = new EditLog(txid,content);
 			
 			//将edits log写入内存缓冲中 , 不是直接输入磁盘文件
-			doubleBuffer.write(log);
+			try {
+				doubleBuffer.write(log);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			
 			//每次写完一条editlog后 , 应该检查一下当前这个缓冲区是否满了
 			if(doubleBuffer.shouldSyncToDisk()){
@@ -195,6 +203,11 @@ public class FSEditlog {
 
 		public void setTxid(long txid) {
 			this.txid = txid;
+			
+			JSONObject jsonObject = JSONObject.parseObject(content);
+			jsonObject.put("txid", txid);
+			
+			this.content = jsonObject.toJSONString();
 		}
 
 		public String getContent() {
