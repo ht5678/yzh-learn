@@ -161,7 +161,11 @@ public class FSEditlog {
 		
 		//开始同步内存缓冲的数据到磁盘文件里去
 		//这个过程其实比较慢 , 基本上肯定是ms级别了 , 弄不好就要几十ms
-		doubleBuffer.flush();
+		try {
+			doubleBuffer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		
 		//分段加锁3

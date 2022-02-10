@@ -1,7 +1,11 @@
 package org.dfs.namenode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 import org.dfs.namenode.FSEditlog.EditLog;
 
@@ -67,7 +71,7 @@ public class DoubleBuffer{
 	/*
 	 * 刷写磁盘
 	 */
-	public void flush() {
+	public void flush() throws IOException{
 //		for(EditLog log : syncBuffer) {
 //			//把数据写到磁盘上
 //			System.out.println("存入磁盘日志信息: "+log);
@@ -106,16 +110,36 @@ public class DoubleBuffer{
 	class EditLogBuffer {
 		
 		/*
-		 * 
+		 * 针对内存缓冲区的字节数组输出液
 		 */
-		ByteArrayOutputStream out = new ByteArrayOutputStream(EDIT_LOG_BUFFER_LIMIT * 2);
+		ByteArrayOutputStream buffer = null;
+		
+		/*
+		 * 磁盘上的editslog日志文件的channel
+		 */
+		FileChannel editsLogFileChannel ; 
+		
+		
+		public EditLogBuffer() {
+			buffer = new ByteArrayOutputStream(EDIT_LOG_BUFFER_LIMIT * 2);
+			
+			String editsLogFilePath = "d:\\data\\dfs-editslog.log";
+			try {
+				RandomAccessFile file = new RandomAccessFile(editsLogFilePath, "rw");	//读写模式 , 数据写入
+				FileOutputStream fos = new FileOutputStream(file.getFD());
+				this.editsLogFileChannel = fos.getChannel();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 		
 		/**
 		 * editlog写入缓冲区
 		 */
 		public void write(EditLog log)throws IOException{
-			out.write(log.getContent().getBytes());
+			buffer.write(log.getContent().getBytes());
+			buffer.write("\n".getBytes());
 			System.out.println("在currentBuffer中写入一条数据 : "+log.getContent());
 			System.out.println("当前缓冲区的大小 : "+this.size());
 		}
@@ -126,16 +150,26 @@ public class DoubleBuffer{
 		 * @return
 		 */
 		public Integer size() {
-			return out.size();
+			return buffer.size();
 		}
 		
 		
-		public void flush(){
-			
+		/**
+		 * 将syncBuffer中的数据刷入磁盘
+		 */
+		public void flush()throws IOException{
+			byte[] data = buffer.toByteArray();
+			ByteBuffer dataBuffer = ByteBuffer.wrap(data);
+			editsLogFileChannel.write(dataBuffer);
+			editsLogFileChannel.force(false);		//强制把数据刷到磁盘上
 		}
 		
+		
+		/**
+		 * 清空内存缓冲的数据
+		 */
 		public void clear(){
-			
+			buffer.reset();
 		}
 		
 	}
