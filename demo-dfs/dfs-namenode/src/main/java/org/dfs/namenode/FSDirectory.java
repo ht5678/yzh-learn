@@ -1,5 +1,7 @@
 package org.dfs.namenode;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,7 +48,21 @@ public class FSDirectory {
 				INodeDirectory child = new INodeDirectory(splitedPath);
 				parent.addChild(child);
 				parent = child;
+				
+				
 			}
+			
+			//
+			File file = new File(path);
+			if(!file.exists()) {
+				file.mkdirs();
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
 		}
 //		System.out.println(dirTree.toString());
 		printDirTree(dirTree , "  ");

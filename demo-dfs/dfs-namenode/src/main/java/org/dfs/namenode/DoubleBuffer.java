@@ -1,6 +1,7 @@
 package org.dfs.namenode;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -117,20 +118,30 @@ public class DoubleBuffer{
 		/*
 		 * 磁盘上的editslog日志文件的channel
 		 */
-		FileChannel editsLogFileChannel ; 
+		FileChannel editsLogFileChannel ;
+		
+		/*
+		 * 当前这块缓冲区写入的最大txid
+		 */
+		long maxTxId = 0L;
+		
+		/*
+		 * 上一次flush到磁盘的时候最大txid是多少
+		 */
+		long lastMaxTxId = 0L;
 		
 		
 		public EditLogBuffer() {
 			buffer = new ByteArrayOutputStream(EDIT_LOG_BUFFER_LIMIT * 2);
 			
-			String editsLogFilePath = "d:\\data\\dfs-editslog.log";
-			try {
-				RandomAccessFile file = new RandomAccessFile(editsLogFilePath, "rw");	//读写模式 , 数据写入
-				FileOutputStream fos = new FileOutputStream(file.getFD());
-				this.editsLogFileChannel = fos.getChannel();
-			}catch(Exception e) {
-				e.printStackTrace();
-			}
+//			String editsLogFilePath = "d:\\data\\dfs-editslog.log";
+//			try {
+//				RandomAccessFile file = new RandomAccessFile(editsLogFilePath, "rw");	//读写模式 , 数据写入
+//				FileOutputStream fos = new FileOutputStream(file.getFD());
+//				this.editsLogFileChannel = fos.getChannel();
+//			}catch(Exception e) {
+//				e.printStackTrace();
+//			}
 		}
 		
 		
@@ -138,8 +149,9 @@ public class DoubleBuffer{
 		 * editlog写入缓冲区
 		 */
 		public void write(EditLog log)throws IOException{
+			this.maxTxId = log.getTxid();
 			buffer.write(log.getContent().getBytes());
-			buffer.write("\n".getBytes());
+			buffer.write("\r\n".getBytes());
 			System.out.println("在currentBuffer中写入一条数据 : "+log.getContent());
 			System.out.println("当前缓冲区的大小 : "+this.size());
 		}
@@ -160,8 +172,44 @@ public class DoubleBuffer{
 		public void flush()throws IOException{
 			byte[] data = buffer.toByteArray();
 			ByteBuffer dataBuffer = ByteBuffer.wrap(data);
+			
+			String editsLogFilePath = String.format("d:\\data\\edits-%s-%s.log" , ++lastMaxTxId , maxTxId);
+			try {
+				
+				File editsLogFile = new File(editsLogFilePath);
+				if(!editsLogFile.exists()) {
+					editsLogFile.createNewFile();
+				}
+				
+				RandomAccessFile file = null;
+				FileOutputStream fos = null; 
+						
+				try {
+					file = new RandomAccessFile(editsLogFilePath, "rw");	//读写模式 , 数据写入
+					fos = new FileOutputStream(file.getFD());
+					this.editsLogFileChannel = fos.getChannel();
+				}finally {
+					if(file!= null) {
+						file.close();
+					}
+					
+					if(fos!=null) {
+						fos.close();
+					}
+					
+					if(editsLogFileChannel!=null) {
+						editsLogFileChannel.close();
+					}
+				}
+				
+				this.lastMaxTxId = maxTxId;
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
 			editsLogFileChannel.write(dataBuffer);
 			editsLogFileChannel.force(false);		//强制把数据刷到磁盘上
+			
 		}
 		
 		
