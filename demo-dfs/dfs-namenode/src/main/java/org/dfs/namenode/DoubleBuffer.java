@@ -152,8 +152,7 @@ public class DoubleBuffer{
 			this.maxTxId = log.getTxid();
 			buffer.write(log.getContent().getBytes());
 			buffer.write("\r\n".getBytes());
-			System.out.println("在currentBuffer中写入一条数据 : "+log.getContent());
-			System.out.println("当前缓冲区的大小 : "+this.size());
+			System.out.println("在currentBuffer中写入一条数据 : "+log.getContent() + " , 当前缓冲区的大小 : "+this.size());
 		}
 		
 		
@@ -188,6 +187,9 @@ public class DoubleBuffer{
 					file = new RandomAccessFile(editsLogFilePath, "rw");	//读写模式 , 数据写入
 					fos = new FileOutputStream(file.getFD());
 					this.editsLogFileChannel = fos.getChannel();
+					
+					editsLogFileChannel.write(dataBuffer);
+					editsLogFileChannel.force(false);		//强制把数据刷到磁盘上
 				}finally {
 					if(file!= null) {
 						file.close();
@@ -206,10 +208,6 @@ public class DoubleBuffer{
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
-			
-			editsLogFileChannel.write(dataBuffer);
-			editsLogFileChannel.force(false);		//强制把数据刷到磁盘上
-			
 		}
 		
 		

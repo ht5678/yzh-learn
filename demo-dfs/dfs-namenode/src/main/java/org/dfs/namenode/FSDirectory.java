@@ -65,7 +65,7 @@ public class FSDirectory {
 			
 		}
 //		System.out.println(dirTree.toString());
-		printDirTree(dirTree , "  ");
+//		printDirTree(dirTree , "  ");
 	}
 	
 	
@@ -73,6 +73,7 @@ public class FSDirectory {
 	 * 
 	 * @param dirTree
 	 */
+	@SuppressWarnings("unused")
 	private void printDirTree(INodeDirectory dirTree , String blank){
 		if(dirTree.getChildren().size() == 0){
 			return ;
