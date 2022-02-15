@@ -55,7 +55,7 @@ public class FSEditlog {
 			}
 			
 			//每次写完一条editlog后 , 应该检查一下当前这个缓冲区是否满了
-			if(doubleBuffer.shouldSyncToDisk()){
+			if(!doubleBuffer.shouldSyncToDisk()){
 				return;
 			}
 			

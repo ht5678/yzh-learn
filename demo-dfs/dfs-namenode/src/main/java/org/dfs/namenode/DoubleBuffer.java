@@ -150,6 +150,7 @@ public class DoubleBuffer{
 		 */
 		public void write(EditLog log)throws IOException{
 			this.maxTxId = log.getTxid();
+			System.out.println( " , 当前缓冲区的大小 : "+this.size());
 			buffer.write(log.getContent().getBytes());
 			buffer.write("\r\n".getBytes());
 			System.out.println("在currentBuffer中写入一条数据 : "+log.getContent() + " , 当前缓冲区的大小 : "+this.size());
