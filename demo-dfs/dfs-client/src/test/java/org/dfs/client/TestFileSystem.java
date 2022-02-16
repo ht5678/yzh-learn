@@ -28,7 +28,7 @@ public class TestFileSystem {
 				@Override
 				public void run() {
 					try {
-						for(int i = 0 ; i < 5 ; i ++) {
+						for(int i = 0 ; i < 20 ; i ++) {
 							fileSystem.mkdir("d:/testdfs/data"+i+"_"+Thread.currentThread().getName());
 						}
 						Thread.sleep(2000);
