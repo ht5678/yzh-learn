@@ -34,6 +34,16 @@ public class DoubleBuffer{
 	private EditLogBuffer syncBuffer = new EditLogBuffer();
 	
 	/*
+	 * 当前这块缓冲区写入的最大txid
+	 */
+	long maxTxId = 0L;
+	
+	/*
+	 * 上一次flush到磁盘的时候最大txid是多少
+	 */
+	long lastMaxTxId = 0L;
+	
+	/*
 	 * 当前写入的最大txid
 	 */
 //	private Long maxTxId = 0L;
@@ -120,15 +130,7 @@ public class DoubleBuffer{
 		 */
 		FileChannel editsLogFileChannel ;
 		
-		/*
-		 * 当前这块缓冲区写入的最大txid
-		 */
-		long maxTxId = 0L;
-		
-		/*
-		 * 上一次flush到磁盘的时候最大txid是多少
-		 */
-		long lastMaxTxId = 0L;
+		long endTxId = 0L;
 		
 		
 		public EditLogBuffer() {
@@ -149,7 +151,7 @@ public class DoubleBuffer{
 		 * editlog写入缓冲区
 		 */
 		public void write(EditLog log)throws IOException{
-			this.maxTxId = log.getTxid();
+			endTxId = log.getTxid();
 			System.out.println( " , 当前缓冲区的大小 : "+this.size());
 			buffer.write(log.getContent().getBytes());
 			buffer.write("\r\n".getBytes());
@@ -173,7 +175,7 @@ public class DoubleBuffer{
 			byte[] data = buffer.toByteArray();
 			ByteBuffer dataBuffer = ByteBuffer.wrap(data);
 			
-			String editsLogFilePath = String.format("d:\\data\\edits-%s-%s.log" , ++lastMaxTxId , maxTxId);
+			String editsLogFilePath = String.format("d:\\data\\edits-%s-%s.log" , ++lastMaxTxId , endTxId);
 			try {
 				
 				File editsLogFile = new File(editsLogFilePath);
@@ -205,7 +207,7 @@ public class DoubleBuffer{
 					}
 				}
 				
-				this.lastMaxTxId = maxTxId;
+				lastMaxTxId = endTxId;
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
