@@ -179,6 +179,18 @@ public class FSEditlog {
 
 	
 	
+	/**
+	 * 强制把内存缓冲里的数据刷入磁盘中
+	 */
+	public void flush() {
+		try {
+			doubleBuffer.setReadyToSync();
+			doubleBuffer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	
 	

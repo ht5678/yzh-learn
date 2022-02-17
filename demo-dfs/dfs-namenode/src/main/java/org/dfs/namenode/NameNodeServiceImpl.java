@@ -6,6 +6,8 @@ import com.demo.dfs.rpc.model.MkdirRequest;
 import com.demo.dfs.rpc.model.MkdirResponse;
 import com.demo.dfs.rpc.model.RegisterRequest;
 import com.demo.dfs.rpc.model.RegisterResponse;
+import com.demo.dfs.rpc.model.ShutdownRequest;
+import com.demo.dfs.rpc.model.ShutdownResponse;
 import com.demo.dfs.rpc.service.NameNodeServiceGrpc.NameNodeService;
 
 import io.grpc.stub.StreamObserver;
@@ -33,6 +35,13 @@ public class NameNodeServiceImpl implements NameNodeService {
 	public static final Integer STATUS_SUCCESS =1;
 	
 	public static final Integer STATUS_FAILURE = 2;
+	
+	public static final Integer STATUS_SHUTDOWN = 3;
+	
+	/*
+	 * 是否在运行
+	 */
+	private volatile boolean isRunning = true;
 	
 	
 	/**
@@ -110,18 +119,37 @@ public class NameNodeServiceImpl implements NameNodeService {
 	@Override
 	public void mkdir(MkdirRequest request, StreamObserver<MkdirResponse> responseObserver) {
 		try {
-			this.namesystem.mkdir(request.getPath());//保存文件目录结构到内存中
-			
-			System.out.println("创建目录 path : "+request.getPath());
-			
-			MkdirResponse response = MkdirResponse.newBuilder()
-					.setStatus(STATUS_SUCCESS)
-					.build();
+			MkdirResponse response = null;
+			if(!isRunning) {
+				response = MkdirResponse.newBuilder()
+						.setStatus(STATUS_SHUTDOWN)
+						.build();
+				responseObserver.onNext(response);
+				responseObserver.onCompleted();
+			}else {
+				this.namesystem.mkdir(request.getPath());//保存文件目录结构到内存中
+				System.out.println("创建目录 path : "+request.getPath());
+				
+				response = MkdirResponse.newBuilder()
+						.setStatus(STATUS_SUCCESS)
+						.build();
+			}
 			responseObserver.onNext(response);
 			responseObserver.onCompleted();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+
+	
+	/**
+	 * 优雅关闭
+	 */
+	@Override
+	public void shutdown(ShutdownRequest request, StreamObserver<ShutdownResponse> responseObserver) {
+		this.isRunning = false;
+		this.namesystem.flush();
 	}
 	
 }

@@ -17,4 +17,10 @@ public interface FileSystem {
 	 */
 	void mkdir(String path) throws Exception;
 	
+	
+	/**
+	 * 优雅关闭
+	 */
+	void shutdown() throws Exception;
+	
 }

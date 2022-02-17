@@ -46,5 +46,14 @@ public class FSNamesystem {
 //		File dir = new File(path);
 //		return dir.mkdirs();
 	}
+	
+	
+	/**
+	 * 强制把内存里的edits log刷入磁盘中
+	 */
+	public void flush() {
+		this.editlog.flush();
+	}
+	
 
 }

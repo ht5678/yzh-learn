@@ -2,6 +2,7 @@ package com.demo.dfs.client;
 
 import com.demo.dfs.rpc.model.MkdirRequest;
 import com.demo.dfs.rpc.model.MkdirResponse;
+import com.demo.dfs.rpc.model.ShutdownRequest;
 import com.demo.dfs.rpc.service.NameNodeServiceGrpc;
 
 import io.grpc.ManagedChannel;
@@ -49,6 +50,19 @@ public class FileSystemImpl implements FileSystem {
 		
 		MkdirResponse response = namenode.mkdir(request);
 		System.out.println("创建目录的响应: "+response.getStatus());
+	}
+
+
+
+	/**
+	 * 优雅关闭
+	 */
+	@Override
+	public void shutdown() throws Exception {
+		ShutdownRequest request = ShutdownRequest.newBuilder()
+				.setCode(1)
+				.build();		
+		namenode.shutdown(request);
 	}
 
 }
