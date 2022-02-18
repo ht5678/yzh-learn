@@ -1,5 +1,7 @@
 package org.dfs.namenode;
 
+import com.demo.dfs.rpc.model.FetchEditsLogRequest;
+import com.demo.dfs.rpc.model.FetchEditsLogResponse;
 import com.demo.dfs.rpc.model.HeartbeatRequest;
 import com.demo.dfs.rpc.model.HeartbeatResponse;
 import com.demo.dfs.rpc.model.MkdirRequest;
@@ -150,6 +152,15 @@ public class NameNodeServiceImpl implements NameNodeService {
 	public void shutdown(ShutdownRequest request, StreamObserver<ShutdownResponse> responseObserver) {
 		this.isRunning = false;
 		this.namesystem.flush();
+	}
+
+	
+	/**
+	 * 拉取editslog
+	 */
+	@Override
+	public void fetchEditsLog(FetchEditsLogRequest request, StreamObserver<FetchEditsLogResponse> responseObserver) {
+		
 	}
 	
 }

@@ -20,6 +20,7 @@
     <module>demo-juc</module>
     <module>demo-register-server</module>
     <module>demo-register-client</module>
+    <module>dfs-backupnode</module>
   </modules>
 	
 	  
