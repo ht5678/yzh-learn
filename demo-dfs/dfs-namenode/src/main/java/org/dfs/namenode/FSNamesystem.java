@@ -55,5 +55,13 @@ public class FSNamesystem {
 		this.editlog.flush();
 	}
 	
+	
+	/**
+	 * 获取一个FsEditLog组件
+	 * @return
+	 */
+	public FSEditlog getEditsLog() {
+		return editlog;
+	}
 
 }

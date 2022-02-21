@@ -1,6 +1,7 @@
 package org.dfs.namenode;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -191,6 +192,27 @@ public class FSEditlog {
 		}
 	}
 	
+	
+	/**
+	 * 获取已经刷入磁盘的editslog数据
+	 * @return
+	 */
+	public List<String> getFlushedTxids() {
+		synchronized (this) {
+			return doubleBuffer.getFlushedTxids();
+		}
+	}
+	
+	
+	/**
+	 * 获取当前缓冲区的数据
+	 * @return
+	 */
+	public String[] getBufferedEditsLog() {
+		synchronized (this) {
+			return doubleBuffer.getBufferedEditsLog();
+		}
+	}
 	
 	
 	

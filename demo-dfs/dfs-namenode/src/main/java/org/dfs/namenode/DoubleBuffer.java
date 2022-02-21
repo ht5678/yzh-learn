@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.dfs.namenode.FSEditlog.EditLog;
-
-import com.google.common.io.ByteArrayDataOutput;
 
 /**
  * 内存双缓冲
@@ -36,12 +36,17 @@ public class DoubleBuffer{
 	/*
 	 * 当前这块缓冲区写入的最大txid
 	 */
-	long maxTxId = 0L;
+//	long maxTxId = 1L;
 	
 	/*
 	 * 上一次flush到磁盘的时候最大txid是多少
 	 */
-	long lastMaxTxId = 0L;
+	long startTxid = 1L;
+	
+	/**
+	 * 已经刷入磁盘中的txid, 范围
+	 */
+	private List<String> flushedTxids = new ArrayList<>();
 	
 	/*
 	 * 当前写入的最大txid
@@ -111,6 +116,23 @@ public class DoubleBuffer{
 	}
 	
 	
+	/**
+	 * 获取已经刷入磁盘的editslog数据
+	 * @return
+	 */
+	public List<String> getFlushedTxids() {
+		return flushedTxids;
+	}
+	
+	
+	/**
+	 * 获取当前缓冲区里的数据
+	 * @return
+	 */
+	public String[] getBufferedEditsLog() {
+		String editsLogRawData = new String(currentBuffer.getBufferData());
+		return editsLogRawData.split("\n");
+	}
 	
 	
 	/**
@@ -175,7 +197,9 @@ public class DoubleBuffer{
 			byte[] data = buffer.toByteArray();
 			ByteBuffer dataBuffer = ByteBuffer.wrap(data);
 			
-			String editsLogFilePath = String.format("d:\\data\\edits-%s-%s.log" , ++lastMaxTxId , endTxId);
+			String editsLogFilePath = String.format("d:\\data\\edits-%s-%s.log" , ++startTxid , endTxId);
+			flushedTxids.add(startTxid + "_" + endTxId);
+			
 			try {
 				
 				File editsLogFile = new File(editsLogFilePath);
@@ -207,7 +231,7 @@ public class DoubleBuffer{
 					}
 				}
 				
-				lastMaxTxId = endTxId;
+				startTxid = endTxId;
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -219,6 +243,15 @@ public class DoubleBuffer{
 		 */
 		public void clear(){
 			buffer.reset();
+		}
+		
+		
+		/**
+		 * 获取内存缓冲区当前的数据
+		 * @return
+		 */
+		public byte[] getBufferData() {
+			return buffer.toByteArray();
 		}
 		
 	}
