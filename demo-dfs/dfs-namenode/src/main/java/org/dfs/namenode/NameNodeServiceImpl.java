@@ -1,5 +1,8 @@
 package org.dfs.namenode;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
@@ -60,6 +63,11 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 * 当前缓冲的一小部分editslog,
 	 */
 	private JSONArray currentBufferedEditsLog = new JSONArray();
+	
+	/**
+	 * 当前内存缓冲了哪个磁盘文件的数据
+	 */
+	private String bufferedFlushedTxid;
 	
 	
 	/**
@@ -222,12 +230,134 @@ public class NameNodeServiceImpl implements NameNodeService {
 				}
 				
 			}
+		} else {
+			//第一种情况 , 要拉取的txid是在某个磁盘文件里的
+			if(bufferedFlushedTxid != null) {
+				String[] flushedTxidSplited = bufferedFlushedTxid.split("_");
+				
+				long startTxid = Long.valueOf(flushedTxidSplited[0]);
+				long endTxid = Long.valueOf(flushedTxidSplited[1]);
+				long fetchBeginTxid = backupSyncTxid+1;
+				
+				if(fetchBeginTxid >= startTxid && fetchBeginTxid<= endTxid) {
+					int fetchCount = 0;
+					
+					for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+						if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+							fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+							backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+							fetchCount++;
+						}
+						
+						if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+							break;
+						}
+					}
+				}else {
+					String nextFlushedTxid = null;
+					
+					for(int i = 0 ; i < flushedTxids.size() ; i++) {
+						if(flushedTxids.get(i).equals(bufferedFlushedTxid) ) {
+							if((i+1) < flushedTxids.size()) {
+								nextFlushedTxid = flushedTxids.get(i+1);
+								
+							}
+						}
+					}
+					
+					
+					if(flushedTxids != null) {
+						flushedTxidSplited = nextFlushedTxid.split("_");
+						
+						startTxid = Long.valueOf(flushedTxidSplited[0]);
+						endTxid = Long.valueOf(flushedTxidSplited[1]);
+						
+						String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
+						
+						try {
+							currentBufferedEditsLog.clear();
+							List<String> editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile));
+							for(String editLog : editsLogs) {
+								currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
+							}
+							
+							//
+							int fetchCount = 0;
+							
+							for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+								if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+									fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+									backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+									fetchCount++;
+								}
+								
+								if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+									break;
+								}
+							}
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+				}
+				
+			}
 			
-			response = FetchEditsLogResponse.newBuilder()
-					.setEditsLog(fetchedEditsLog.toJSONString())
-					.build();
+			for(String flushedTxid : flushedTxids) {
+//			for(int i = 0 ; i < flushedTxids.size() ; i++) {
+				String[] flushedTxidSplited = flushedTxid.split("_");
+				
+				long startTxid = Long.valueOf(flushedTxidSplited[0]);
+				long endTxid = Long.valueOf(flushedTxidSplited[1]);
+				long fetchBeginTxid = backupSyncTxid+1;
+				
+				if(fetchBeginTxid >= startTxid && fetchBeginTxid<= endTxid) {
+					//此时可以把这个磁盘文件里以及下一个磁盘文件的数据都读出来 , 放到内存里缓存
+					//就怕一个磁盘文件的数据不够10条
+					bufferedFlushedTxid = flushedTxid;
+					
+					currentBufferedEditsLog.clear();
+					
+					String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
+					
+					try {
+						List<String> editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile));
+						for(String editLog : editsLogs) {
+							currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
+						}
+						
+						//
+						int fetchCount = 0;
+						
+						for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+							if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+								fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+								backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+								fetchCount++;
+							}
+							
+							if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+								break;
+							}
+						}
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			}
+			
+			//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
+			
 			
 		}
+		
+		response = FetchEditsLogResponse.newBuilder()
+				.setEditsLog(fetchedEditsLog.toJSONString())
+				.build();
+		
 		responseObserver.onNext(response);
 		responseObserver.onCompleted();
 	}
