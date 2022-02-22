@@ -1,6 +1,7 @@
 package com.learn.dfs.backupnode;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 从namenode同步editslog组件
@@ -13,13 +14,17 @@ public class EditsLogFetcher extends Thread{
 	
 	private NameNodeRpcClient namenode;
 	
+	private FSNamesystem namesystem;
+	
+	
 	/**
 	 * 
 	 * @param backupNode
 	 */
-	public EditsLogFetcher(BackupNode backupNode) {
+	public EditsLogFetcher(BackupNode backupNode , FSNamesystem namesystem) {
 		this.backupNode = backupNode;
 		this.namenode = new NameNodeRpcClient();
+		this.namesystem = namesystem;
 	}
 	
 	
@@ -27,7 +32,15 @@ public class EditsLogFetcher extends Thread{
 	public void run() {
 		while(backupNode.isRunning()) {
 			JSONArray editsLogs = namenode.fetchEditsLog();
-			
+			for(int i = 0 ; i < editsLogs.size() ; i++) {
+				JSONObject editsLog = editsLogs.getJSONObject(i);
+				String op = editsLog.getString("OP");
+				
+				if(op.equals("MKDIR")) {
+					String path = editsLog.getString("PATH");
+					namesystem.mkdir(path);
+				}
+			}
 		}
 	}
 	
