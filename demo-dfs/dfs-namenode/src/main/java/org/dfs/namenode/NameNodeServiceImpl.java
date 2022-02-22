@@ -266,7 +266,9 @@ public class NameNodeServiceImpl implements NameNodeService {
 					}
 					
 					
-					if(flushedTxids != null) {
+					if(nextFlushedTxid != null) {
+						bufferedFlushedTxid = nextFlushedTxid;
+						
 						flushedTxidSplited = nextFlushedTxid.split("_");
 						
 						startTxid = Long.valueOf(flushedTxidSplited[0]);
@@ -297,6 +299,23 @@ public class NameNodeServiceImpl implements NameNodeService {
 							}
 						}catch(Exception e) {
 							e.printStackTrace();
+						}
+					}else {
+						//如果没有找到下一个文件, 需要从内存中继续读取
+						bufferedFlushedTxid = null;
+						currentBufferedEditsLog.clear();
+						int fetchCount = 0;
+						
+						for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+							if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+								fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+								backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+								fetchCount++;
+							}
+							
+							if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+								break;
+							}
 						}
 					}
 					
@@ -350,7 +369,20 @@ public class NameNodeServiceImpl implements NameNodeService {
 			}
 			
 			//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
+			currentBufferedEditsLog.clear();
+			int fetchCount = 0;
 			
+			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+				if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+					fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+					fetchCount++;
+				}
+				
+				if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+					break;
+				}
+			}
 			
 		}
 		
