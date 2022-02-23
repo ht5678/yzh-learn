@@ -1,6 +1,7 @@
 package org.dfs.namenode;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -197,7 +198,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 //			}else { 	//如果之前从来没拉取过数据
 //				fetchFromBufferEditsLog(fetchedEditsLog);
 //			}
-		} else {
+		} else {//如果此时已经有落地磁盘文件 , 要扫描所有磁盘文件额索引范围
 			//第一种情况 , 要拉取的txid是在某个磁盘文件里的
 			if(bufferedFlushedTxid != null) {
 				String[] flushedTxidSplited = bufferedFlushedTxid.split("_");
@@ -290,53 +291,122 @@ public class NameNodeServiceImpl implements NameNodeService {
 				
 			}
 			
+			
+			//遍历所有磁盘文件的索引范围 , 0-391 , 
+			boolean fetchedFromFlushedFile = false;
 			for(String flushedTxid : flushedTxids) {
 //			for(int i = 0 ; i < flushedTxids.size() ; i++) {
-				String[] flushedTxidSplited = flushedTxid.split("_");
+//				String[] flushedTxidSplited = flushedTxid.split("_");
+//				
+//				long startTxid = Long.valueOf(flushedTxidSplited[0]);
+//				long endTxid = Long.valueOf(flushedTxidSplited[1]);
+//				long fetchBeginTxid = backupSyncTxid+1;
 				
-				long startTxid = Long.valueOf(flushedTxidSplited[0]);
-				long endTxid = Long.valueOf(flushedTxidSplited[1]);
-				long fetchBeginTxid = backupSyncTxid+1;
+//				if(fetchBeginTxid >= startTxid && fetchBeginTxid<= endTxid) {
 				
-				if(fetchBeginTxid >= startTxid && fetchBeginTxid<= endTxid) {
+				//如果要拉取的下一条数据在某个磁盘文件里
+				if(existInFlushedFile(flushedTxid)) {
 					//此时可以把这个磁盘文件里以及下一个磁盘文件的数据都读出来 , 放到内存里缓存
 					//就怕一个磁盘文件的数据不够10条
-					bufferedFlushedTxid = flushedTxid;
-					
-					currentBufferedEditsLog.clear();
-					
-					String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
-					
-					try {
-						List<String> editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile));
-						for(String editLog : editsLogs) {
-							currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
-						}
-						
-						//
-						int fetchCount = 0;
-						
-						for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-							if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-								fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-								backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-								fetchCount++;
-							}
-							
-							if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-								break;
-							}
-						}
-						
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					
+					fetchFromFlushedFile(flushedTxid, fetchedEditsLog);
+					fetchedFromFlushedFile = true;
+					break;
 				}
+					
+					//------------------------------------------------------------------------
+//					bufferedFlushedTxid = flushedTxid;
+//					
+//					currentBufferedEditsLog.clear();
+//					
+//					String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
+//					
+//					try {
+//						List<String> editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile));
+//						for(String editLog : editsLogs) {
+//							currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
+//						}
+//						
+//						//
+//						int fetchCount = 0;
+//						
+//						for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+//							if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+//								fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+//								backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+//								fetchCount++;
+//							}
+//							
+//							if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+//								break;
+//							}
+//						}
+//						
+//					} catch (IOException e) {
+//						e.printStackTrace();
+//					}
+//				}
+				
+				
 			}
 			
 			//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
+			if(!fetchedFromFlushedFile) {
+				fetchFromBufferEditsLog(fetchedEditsLog);
+			}
+			
+//			currentBufferedEditsLog.clear();
+//			int fetchCount = 0;
+//			
+//			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+//				if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+//					fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+//					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+//					fetchCount++;
+//				}
+//				
+//				if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+//					break;
+//				}
+//			}
+			
+		}
+		
+		response = FetchEditsLogResponse.newBuilder()
+				.setEditsLog(fetchedEditsLog.toJSONString())
+				.build();
+		
+		responseObserver.onNext(response);
+		responseObserver.onCompleted();
+	}
+	
+	
+	
+	/**
+	 * 从已经刷入的文件里读取editsLog , 同时缓存文件到内存 
+	 * @param flushedTxid
+	 */
+	private void fetchFromFlushedFile(String flushedTxid , JSONArray fetchedEditsLog) {
+		String[] flushedTxidSplited = flushedTxid.split("_");
+		
+		long startTxid = Long.valueOf(flushedTxidSplited[0]);
+		long endTxid = Long.valueOf(flushedTxidSplited[1]);
+//		long fetchTxid = backupSyncTxid+1;
+		
+		
+		String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
+		
+		List<String> editsLogs;
+		try {
+			editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile) , StandardCharsets.UTF_8);
+			
 			currentBufferedEditsLog.clear();
+			for(String editLog : editsLogs) {
+				currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
+			}
+			
+			bufferedFlushedTxid = flushedTxid;		//缓存了某个刷入磁盘文件的数据
+			
+			//
 			int fetchCount = 0;
 			
 			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
@@ -351,15 +421,34 @@ public class NameNodeServiceImpl implements NameNodeService {
 				}
 			}
 			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
-		response = FetchEditsLogResponse.newBuilder()
-				.setEditsLog(fetchedEditsLog.toJSONString())
-				.build();
-		
-		responseObserver.onNext(response);
-		responseObserver.onCompleted();
+
 	}
+	
+	
+	
+	
+	/**
+	 * 是否存在于刷到磁盘文件中
+	 * @param flushedTxid
+	 * @return
+	 */
+	private Boolean existInFlushedFile(String flushedTxid) {
+		String[] flushedTxidSplited = flushedTxid.split("_");
+		
+		long startTxid = Long.valueOf(flushedTxidSplited[0]);
+		long endTxid = Long.valueOf(flushedTxidSplited[1]);
+		long fetchTxid = backupSyncTxid+1;
+		
+		if(fetchTxid >= startTxid && fetchTxid<= endTxid) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	
 	
