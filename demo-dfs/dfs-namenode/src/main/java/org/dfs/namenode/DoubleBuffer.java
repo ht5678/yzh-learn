@@ -130,6 +130,9 @@ public class DoubleBuffer{
 	 * @return
 	 */
 	public String[] getBufferedEditsLog() {
+		if(currentBuffer.size()==0) {
+			return null;
+		}
 		String editsLogRawData = new String(currentBuffer.getBufferData());
 		return editsLogRawData.split("\n");
 	}

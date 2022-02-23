@@ -34,6 +34,11 @@ public class EditsLogFetcher extends Thread{
 			JSONArray editsLogs = namenode.fetchEditsLog();
 			for(int i = 0 ; i < editsLogs.size() ; i++) {
 				JSONObject editsLog = editsLogs.getJSONObject(i);
+				
+				if(editsLog.size() == 0) {
+					
+				}
+				
 				String op = editsLog.getString("OP");
 				
 				if(op.equals("MKDIR")) {
