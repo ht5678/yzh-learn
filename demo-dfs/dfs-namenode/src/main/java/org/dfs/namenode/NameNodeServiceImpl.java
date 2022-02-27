@@ -253,8 +253,8 @@ public class NameNodeServiceImpl implements NameNodeService {
 		long endTxid = Long.valueOf(flushedTxidSplited[1]);
 //		long fetchTxid = backupSyncTxid+1;
 		
-		
-		String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
+		//*****目录必须一直 *****
+		String currentEditsLogFile = "d:\\data\\edits-"+startTxid+"-"+endTxid+".log";
 		
 		List<String> editsLogs;
 		try {
