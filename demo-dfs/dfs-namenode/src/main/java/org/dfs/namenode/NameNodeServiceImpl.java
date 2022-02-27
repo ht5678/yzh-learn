@@ -58,7 +58,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 	/**
 	 * 当前backup node 节点同步到了哪条txid
 	 */
-	private long backupSyncTxid = 0L;
+	private long syncedTxid = 0L;
 	
 	/**
 	 * 当前缓冲的一小部分editslog,
@@ -192,183 +192,44 @@ public class NameNodeServiceImpl implements NameNodeService {
 		
 		//如果此时没有刷出任何磁盘文件 ,  此时数据仅在于内存缓冲中
 		if(flushedTxids.size() == 0) {
-			
-//			if(backupSyncTxid!=0) {
-				fetchFromBufferEditsLog(fetchedEditsLog);
-//			}else { 	//如果之前从来没拉取过数据
-//				fetchFromBufferEditsLog(fetchedEditsLog);
-//			}
+			fetchFromBufferEditsLog(fetchedEditsLog);
 		} else {//如果此时已经有落地磁盘文件 , 要扫描所有磁盘文件额索引范围
 			//第一种情况 , 要拉取的txid是在某个磁盘文件里的
+			//有磁盘文件,  而且内存里还缓存了某个磁盘文件的数据
 			if(bufferedFlushedTxid != null) {
-				String[] flushedTxidSplited = bufferedFlushedTxid.split("_");
-				
-				long startTxid = Long.valueOf(flushedTxidSplited[0]);
-				long endTxid = Long.valueOf(flushedTxidSplited[1]);
-				long fetchBeginTxid = backupSyncTxid+1;
-				
-				if(fetchBeginTxid >= startTxid && fetchBeginTxid<= endTxid) {
-					int fetchCount = 0;
-					
-					for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-						if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-							fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-							backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-							fetchCount++;
-						}
-						
-						if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-							break;
-						}
-					}
-				}else {
-					String nextFlushedTxid = null;
-					
-					for(int i = 0 ; i < flushedTxids.size() ; i++) {
-						if(flushedTxids.get(i).equals(bufferedFlushedTxid) ) {
-							if((i+1) < flushedTxids.size()) {
-								nextFlushedTxid = flushedTxids.get(i+1);
-								
-							}
-						}
-					}
-					
-					
+				//如果要拉取的数据就在当前缓存的磁盘文件数据里
+				if(existInFlushedFile(bufferedFlushedTxid)) {
+					fetchFromCurrentBuffer(fetchedEditsLog);
+				}else {//如果要拉取的数据不在当前缓存的磁盘文件数据里 , 那么需要从下一个磁盘文件拉取
+					String nextFlushedTxid = getNextFlushedTxid(flushedTxids , bufferedFlushedTxid);
+
+					//如果可以找到下一个磁盘文件 , 那么就从下一个磁盘文件里开始读取数据
 					if(nextFlushedTxid != null) {
-						bufferedFlushedTxid = nextFlushedTxid;
-						
-						flushedTxidSplited = nextFlushedTxid.split("_");
-						
-						startTxid = Long.valueOf(flushedTxidSplited[0]);
-						endTxid = Long.valueOf(flushedTxidSplited[1]);
-						
-						String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
-						
-						try {
-							currentBufferedEditsLog.clear();
-							List<String> editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile));
-							for(String editLog : editsLogs) {
-								currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
-							}
-							
-							//
-							int fetchCount = 0;
-							
-							for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-								if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-									fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-									backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-									fetchCount++;
-								}
-								
-								if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-									break;
-								}
-							}
-						}catch(Exception e) {
-							e.printStackTrace();
-						}
+						fetchFromFlushedFile(nextFlushedTxid, fetchedEditsLog);
 					}else {
 						//如果没有找到下一个文件, 需要从内存中继续读取
-						bufferedFlushedTxid = null;
-						currentBufferedEditsLog.clear();
-						int fetchCount = 0;
-						
-						for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-							if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-								fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-								backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-								fetchCount++;
-							}
-							
-							if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-								break;
-							}
-						}
+						fetchFromBufferEditsLog(fetchedEditsLog);
 					}
-					
+				}
+			}else{
+				//遍历所有磁盘文件的索引范围 , 0-391 , 
+				boolean fetchedFromFlushedFile = false;
+				for(String flushedTxid : flushedTxids) {
+					//如果要拉取的下一条数据在某个磁盘文件里
+					if(existInFlushedFile(flushedTxid)) {
+						//此时可以把这个磁盘文件里以及下一个磁盘文件的数据都读出来 , 放到内存里缓存
+						//就怕一个磁盘文件的数据不够10条
+						fetchFromFlushedFile(flushedTxid, fetchedEditsLog);
+						fetchedFromFlushedFile = true;
+						break;
+					}
 				}
 				
-			}
-			
-			
-			//遍历所有磁盘文件的索引范围 , 0-391 , 
-			boolean fetchedFromFlushedFile = false;
-			for(String flushedTxid : flushedTxids) {
-//			for(int i = 0 ; i < flushedTxids.size() ; i++) {
-//				String[] flushedTxidSplited = flushedTxid.split("_");
-//				
-//				long startTxid = Long.valueOf(flushedTxidSplited[0]);
-//				long endTxid = Long.valueOf(flushedTxidSplited[1]);
-//				long fetchBeginTxid = backupSyncTxid+1;
-				
-//				if(fetchBeginTxid >= startTxid && fetchBeginTxid<= endTxid) {
-				
-				//如果要拉取的下一条数据在某个磁盘文件里
-				if(existInFlushedFile(flushedTxid)) {
-					//此时可以把这个磁盘文件里以及下一个磁盘文件的数据都读出来 , 放到内存里缓存
-					//就怕一个磁盘文件的数据不够10条
-					fetchFromFlushedFile(flushedTxid, fetchedEditsLog);
-					fetchedFromFlushedFile = true;
-					break;
+				//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
+				if(!fetchedFromFlushedFile) {
+					fetchFromBufferEditsLog(fetchedEditsLog);
 				}
-					
-					//------------------------------------------------------------------------
-//					bufferedFlushedTxid = flushedTxid;
-//					
-//					currentBufferedEditsLog.clear();
-//					
-//					String currentEditsLogFile = "d:\\testdfs\\edits-"+startTxid+"-"+endTxid+".log";
-//					
-//					try {
-//						List<String> editsLogs = Files.readAllLines(Paths.get(currentEditsLogFile));
-//						for(String editLog : editsLogs) {
-//							currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
-//						}
-//						
-//						//
-//						int fetchCount = 0;
-//						
-//						for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-//							if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-//								fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-//								backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-//								fetchCount++;
-//							}
-//							
-//							if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-//								break;
-//							}
-//						}
-//						
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					}
-//				}
-				
-				
 			}
-			
-			//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
-			if(!fetchedFromFlushedFile) {
-				fetchFromBufferEditsLog(fetchedEditsLog);
-			}
-			
-//			currentBufferedEditsLog.clear();
-//			int fetchCount = 0;
-//			
-//			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-//				if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-//					fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-//					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-//					fetchCount++;
-//				}
-//				
-//				if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-//					break;
-//				}
-//			}
-			
 		}
 		
 		response = FetchEditsLogResponse.newBuilder()
@@ -407,19 +268,22 @@ public class NameNodeServiceImpl implements NameNodeService {
 			bufferedFlushedTxid = flushedTxid;		//缓存了某个刷入磁盘文件的数据
 			
 			//
-			int fetchCount = 0;
+			fetchFromCurrentBuffer(fetchedEditsLog);
 			
-			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-				if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-					fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-					fetchCount++;
-				}
-				
-				if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-					break;
-				}
-			}
+			//
+//			int fetchCount = 0;
+//			
+//			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+//				if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+//					fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+//					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+//					fetchCount++;
+//				}
+//				
+//				if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+//					break;
+//				}
+//			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -441,7 +305,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		
 		long startTxid = Long.valueOf(flushedTxidSplited[0]);
 		long endTxid = Long.valueOf(flushedTxidSplited[1]);
-		long fetchTxid = backupSyncTxid+1;
+		long fetchTxid = syncedTxid+1;
 		
 		if(fetchTxid >= startTxid && fetchTxid<= endTxid) {
 			return true;
@@ -488,13 +352,35 @@ public class NameNodeServiceImpl implements NameNodeService {
 		for(String editsLog : bufferedEditsLog) {
 			currentBufferedEditsLog.add(JSONObject.parseObject(editsLog));
 		}
+
+		//
+		fetchFromCurrentBuffer(fetchedEditsLog);
 		
 		//
+//		int fetchCount = 0;
+//		for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
+//			if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+//				fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
+//				backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+//				fetchCount++;
+//			}
+//			
+//			if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
+//				break;
+//			}
+//		}
+	}
+	
+	
+	/**
+	 * 从当前已经在内存缓存里的数据拉取editslog
+	 */
+	private void fetchFromCurrentBuffer(JSONArray fetchedEditsLog) {
 		int fetchCount = 0;
 		for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-			if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
+			if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  ==  syncedTxid + 1) {
 				fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-				backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
+				syncedTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
 				fetchCount++;
 			}
 			
@@ -503,5 +389,25 @@ public class NameNodeServiceImpl implements NameNodeService {
 			}
 		}
 	}
+	
+	
+
+	/**
+	 * 获取下一个磁盘文件对应的txid范围
+	 * @param flushedTxids
+	 * @param bufferedFlushedTxid
+	 * @return
+	 */
+	private String getNextFlushedTxid(List<String> flushedTxids , String bufferedFlushedTxid) {
+		for(int i = 0 ; i < flushedTxids.size() ; i++) {
+			if(flushedTxids.get(i).equals(bufferedFlushedTxid) ) {
+				if((i+1) < flushedTxids.size()) {
+					return flushedTxids.get(i+1);
+				}
+			}
+		}
+		return null;
+	}
+	
 	
 }

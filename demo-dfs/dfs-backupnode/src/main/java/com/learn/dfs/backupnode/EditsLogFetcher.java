@@ -31,20 +31,27 @@ public class EditsLogFetcher extends Thread{
 	@Override
 	public void run() {
 		while(backupNode.isRunning()) {
-			JSONArray editsLogs = namenode.fetchEditsLog();
-			for(int i = 0 ; i < editsLogs.size() ; i++) {
-				JSONObject editsLog = editsLogs.getJSONObject(i);
+			try{
+				JSONArray editsLogs = namenode.fetchEditsLog();
 				
-				if(editsLog.size() == 0) {
+				if(editsLogs.size() ==0){
+					System.out.println("没有收到任何一条editslog , 等待1s后继续尝试拉取");
+					Thread.sleep(1000);
+					continue;
+				}
+				
+				for(int i = 0 ; i < editsLogs.size() ; i++) {
+					JSONObject editsLog = editsLogs.getJSONObject(i);
+					System.out.println("拉取到一条editslog : "+editsLog.toJSONString());
+					String op = editsLog.getString("OP");
 					
+					if(op.equals("MKDIR")) {
+						String path = editsLog.getString("PATH");
+						namesystem.mkdir(path);
+					}
 				}
-				
-				String op = editsLog.getString("OP");
-				
-				if(op.equals("MKDIR")) {
-					String path = editsLog.getString("PATH");
-					namesystem.mkdir(path);
-				}
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 		}
 	}

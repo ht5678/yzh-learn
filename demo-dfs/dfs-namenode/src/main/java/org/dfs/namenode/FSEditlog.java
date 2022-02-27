@@ -209,7 +209,8 @@ public class FSEditlog {
 	 * @return
 	 */
 	public String[] getBufferedEditsLog() {
-		synchronized (this) {
+		synchronized (this) {	//这边此时只要获取到锁 , 意味着肯定没有人当前在修改内存数据
+			//此时拉取肯定可以获取到当前完整的内存缓冲里的数据
 			return doubleBuffer.getBufferedEditsLog();
 		}
 	}
