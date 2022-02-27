@@ -192,7 +192,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		
 		//如果此时没有刷出任何磁盘文件 ,  此时数据仅在于内存缓冲中
 		if(flushedTxids.size() == 0) {
-			fetchFromBufferEditsLog(fetchedEditsLog);
+			fetchFromBufferedEditsLog(fetchedEditsLog);
 		} else {//如果此时已经有落地磁盘文件 , 要扫描所有磁盘文件额索引范围
 			//第一种情况 , 要拉取的txid是在某个磁盘文件里的
 			//有磁盘文件,  而且内存里还缓存了某个磁盘文件的数据
@@ -208,7 +208,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 						fetchFromFlushedFile(nextFlushedTxid, fetchedEditsLog);
 					}else {
 						//如果没有找到下一个文件, 需要从内存中继续读取
-						fetchFromBufferEditsLog(fetchedEditsLog);
+						fetchFromBufferedEditsLog(fetchedEditsLog);
 					}
 				}
 			}else{
@@ -227,7 +227,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 				
 				//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
 				if(!fetchedFromFlushedFile) {
-					fetchFromBufferEditsLog(fetchedEditsLog);
+					fetchFromBufferedEditsLog(fetchedEditsLog);
 				}
 			}
 		}
@@ -320,55 +320,20 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 * 就是从, 内存缓冲 的editslog中拉取数据
 	 * @param fetchedEditsLog
 	 */
-	private void fetchFromBufferEditsLog(JSONArray fetchedEditsLog) {
-		//此时数据全部存在于内存缓冲里
-//		String[] bufferedEditsLog = namesystem.getEditsLog().getBufferedEditsLog();
-//		
-//		if(bufferedEditsLog != null) {
-//			//把内存缓冲里的数据放到一个内存缓存里 , 
-//			currentBufferedEditsLog.clear();
-//			for(String editsLog : bufferedEditsLog) {
-//				currentBufferedEditsLog.add(JSONObject.parseObject(editsLog));
-//			}
-//			
-//			//此时就可以从内存缓冲里的数据开始取数据
-//			int fetchSize = Math.min(BACKUP_NODE_FETCH_SIZE, currentBufferedEditsLog.size());
-//			for(int i = 0 ; i < fetchSize ; i++) {
-//				fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-//				backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-//				
-////				if(i == fetchSize-1) {//last index
-////					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-////				}
-//			}
-//		}
-		
-		
-		
+	private void fetchFromBufferedEditsLog(JSONArray fetchedEditsLog) {
 		//必须重新把内存缓冲里的数据加载到内存缓存里来
 		currentBufferedEditsLog.clear();
 		
 		String[] bufferedEditsLog = namesystem.getEditsLog().getBufferedEditsLog();
-		for(String editsLog : bufferedEditsLog) {
-			currentBufferedEditsLog.add(JSONObject.parseObject(editsLog));
-		}
-
-		//
-		fetchFromCurrentBuffer(fetchedEditsLog);
 		
-		//
-//		int fetchCount = 0;
-//		for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-//			if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-//				fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-//				backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-//				fetchCount++;
-//			}
-//			
-//			if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-//				break;
-//			}
-//		}
+		if(bufferedEditsLog != null){
+			for(String editsLog : bufferedEditsLog) {
+				currentBufferedEditsLog.add(JSONObject.parseObject(editsLog));
+			}
+			bufferedFlushedTxid = null;
+			//
+			fetchFromCurrentBuffer(fetchedEditsLog);
+		}
 	}
 	
 	

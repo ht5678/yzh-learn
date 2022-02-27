@@ -22,7 +22,7 @@ public class DoubleBuffer{
 	/*
 	 * 单块editlog缓冲区最大的大小, 512kb
 	 */
-	public static final Integer EDIT_LOG_BUFFER_LIMIT = 1 * 1024;
+	public static final Integer EDIT_LOG_BUFFER_LIMIT = 5 * 1024;
 	
 	/*
 	 * 是专门用来承载线程写入edits log
