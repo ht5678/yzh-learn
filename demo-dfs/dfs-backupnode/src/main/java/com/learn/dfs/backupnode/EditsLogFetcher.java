@@ -16,6 +16,7 @@ public class EditsLogFetcher extends Thread{
 	
 	private FSNamesystem namesystem;
 	
+	public static final Integer BACKUP_NODE_FETCH_SIZE = 10;
 	
 	/**
 	 * 
@@ -39,6 +40,11 @@ public class EditsLogFetcher extends Thread{
 					System.out.println("没有收到任何一条editslog , 等待1s后继续尝试拉取");
 					Thread.sleep(1000);
 					continue;
+				}
+				
+				if(editsLogs.size() < BACKUP_NODE_FETCH_SIZE){
+					Thread.sleep(1000);
+					System.out.println("拉取到的editslog不足10条数据 , 等待1s后再次继续拉取");
 				}
 				
 				for(int i = 0 ; i < editsLogs.size() ; i++) {

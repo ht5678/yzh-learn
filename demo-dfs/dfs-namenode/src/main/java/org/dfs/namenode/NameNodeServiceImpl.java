@@ -66,6 +66,11 @@ public class NameNodeServiceImpl implements NameNodeService {
 	private JSONArray currentBufferedEditsLog = new JSONArray();
 	
 	/**
+	 * 当前缓存里editslog最大的txid
+	 */
+	private long currentBufferedMaxTxid = 0L;
+	
+	/**
 	 * 当前内存缓冲了哪个磁盘文件的数据
 	 */
 	private String bufferedFlushedTxid;
@@ -192,6 +197,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		
 		//如果此时没有刷出任何磁盘文件 ,  此时数据仅在于内存缓冲中
 		if(flushedTxids.size() == 0) {
+			System.out.println("暂时没有任何磁盘文件 , 直接从内存缓冲中拉取 ... ... ");
 			fetchFromBufferedEditsLog(fetchedEditsLog);
 		} else {//如果此时已经有落地磁盘文件 , 要扫描所有磁盘文件额索引范围
 			//第一种情况 , 要拉取的txid是在某个磁盘文件里的
@@ -199,24 +205,28 @@ public class NameNodeServiceImpl implements NameNodeService {
 			if(bufferedFlushedTxid != null) {
 				//如果要拉取的数据就在当前缓存的磁盘文件数据里
 				if(existInFlushedFile(bufferedFlushedTxid)) {
+					System.out.println("上一次已经缓存过磁盘文件的数据 , 直接从磁盘文件缓存中拉取editslog ...");
 					fetchFromCurrentBuffer(fetchedEditsLog);
 				}else {//如果要拉取的数据不在当前缓存的磁盘文件数据里 , 那么需要从下一个磁盘文件拉取
 					String nextFlushedTxid = getNextFlushedTxid(flushedTxids , bufferedFlushedTxid);
 
 					//如果可以找到下一个磁盘文件 , 那么就从下一个磁盘文件里开始读取数据
 					if(nextFlushedTxid != null) {
+						System.out.println("上一次缓存的磁盘文件找不到要拉取的数据 , 从下一个磁盘文件中拉取editslog ");
 						fetchFromFlushedFile(nextFlushedTxid, fetchedEditsLog);
 					}else {
+						System.out.println("上一次缓存的磁盘文件找不到要拉取的数据 , 而且没有下一个文件 , 尝试从内存缓冲中拉取 ");
 						//如果没有找到下一个文件, 需要从内存中继续读取
 						fetchFromBufferedEditsLog(fetchedEditsLog);
 					}
 				}
-			}else{
+			}else{//第一次尝试从磁盘文件中拉取
 				//遍历所有磁盘文件的索引范围 , 0-391 , 
 				boolean fetchedFromFlushedFile = false;
 				for(String flushedTxid : flushedTxids) {
 					//如果要拉取的下一条数据在某个磁盘文件里
 					if(existInFlushedFile(flushedTxid)) {
+						System.out.println("尝试从磁盘文件中拉取 ...");
 						//此时可以把这个磁盘文件里以及下一个磁盘文件的数据都读出来 , 放到内存里缓存
 						//就怕一个磁盘文件的数据不够10条
 						fetchFromFlushedFile(flushedTxid, fetchedEditsLog);
@@ -227,6 +237,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 				
 				//第二种情况 , 要拉取的txid已经比磁盘文件的都新了 , 还在内存缓冲
 				if(!fetchedFromFlushedFile) {
+					System.out.println("所有磁盘文件都没有找到要拉取的editslog , 尝试从内存缓冲中拉取editslog ... ...");
 					fetchFromBufferedEditsLog(fetchedEditsLog);
 				}
 			}
@@ -263,6 +274,9 @@ public class NameNodeServiceImpl implements NameNodeService {
 			currentBufferedEditsLog.clear();
 			for(String editLog : editsLogs) {
 				currentBufferedEditsLog.add(JSONObject.parseObject(editLog));
+				//我们在这里记录一下 , 当前内存缓冲中的数据最大txid是多少 , 这样下去再拉取
+				//可以判断 , 内存缓存里的数据是否还可以读取,不要每次都重新从内存缓冲中去加载
+				currentBufferedMaxTxid = JSONObject.parseObject(editLog).getLongValue("txid");
 			}
 			
 			bufferedFlushedTxid = flushedTxid;		//缓存了某个刷入磁盘文件的数据
@@ -271,20 +285,6 @@ public class NameNodeServiceImpl implements NameNodeService {
 			fetchFromCurrentBuffer(fetchedEditsLog);
 			
 			//
-//			int fetchCount = 0;
-//			
-//			for(int i = 0 ; i < currentBufferedEditsLog.size() ;i++) {
-//				if(currentBufferedEditsLog.getJSONObject(i).getLong("txid")  >  backupSyncTxid) {
-//					fetchedEditsLog.add(currentBufferedEditsLog.getJSONObject(i));
-//					backupSyncTxid = currentBufferedEditsLog.getJSONObject(i).getLong("txid");
-//					fetchCount++;
-//				}
-//				
-//				if(fetchCount == BACKUP_NODE_FETCH_SIZE) {
-//					break;
-//				}
-//			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -321,14 +321,24 @@ public class NameNodeServiceImpl implements NameNodeService {
 	 * @param fetchedEditsLog
 	 */
 	private void fetchFromBufferedEditsLog(JSONArray fetchedEditsLog) {
+		//如果要拉取的txid还在上一次内存缓冲中 , 此时继续从内存缓冲中拉取即可
+		long fetchTxid = syncedTxid + 1;
+		if(fetchTxid <= currentBufferedMaxTxid){
+			fetchFromCurrentBuffer(fetchedEditsLog);
+			return;
+		}
+		
 		//必须重新把内存缓冲里的数据加载到内存缓存里来
 		currentBufferedEditsLog.clear();
-		
+
 		String[] bufferedEditsLog = namesystem.getEditsLog().getBufferedEditsLog();
 		
 		if(bufferedEditsLog != null){
 			for(String editsLog : bufferedEditsLog) {
 				currentBufferedEditsLog.add(JSONObject.parseObject(editsLog));
+				//我们在这里记录一下 , 当前内存缓冲中的数据最大txid是多少 , 这样下去再拉取
+				//可以判断 , 内存缓存里的数据是否还可以读取,不要每次都重新从内存缓冲中去加载
+				currentBufferedMaxTxid = JSONObject.parseObject(editsLog).getLongValue("txid");
 			}
 			bufferedFlushedTxid = null;
 			//
