@@ -41,7 +41,7 @@ public class DoubleBuffer{
 	/*
 	 * 上一次flush到磁盘的时候最大txid是多少
 	 */
-	long startTxid = 1L;
+	long startTxid = 0L;
 	
 	/**
 	 * 已经刷入磁盘中的txid, 范围

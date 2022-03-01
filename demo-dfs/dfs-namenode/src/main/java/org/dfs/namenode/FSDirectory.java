@@ -52,16 +52,18 @@ public class FSDirectory {
 				
 			}
 			
+			System.out.println("创建了目录："+path);
+			
 			//
-			File file = new File(path);
-			if(!file.exists()) {
-				file.mkdirs();
-				try {
-					file.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+//			File file = new File(path);
+//			if(!file.exists()) {
+//				file.mkdirs();
+//				try {
+//					file.createNewFile();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 			
 		}
 //		System.out.println(dirTree.toString());
