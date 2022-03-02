@@ -29,7 +29,8 @@ public class BackupNode {
 		EditsLogFetcher editsLogFetcher = new EditsLogFetcher(this , namesystem);
 		editsLogFetcher.start();
 		
-
+		FsImageCheckpointer fsImageCheckpointer = new FsImageCheckpointer(this , namesystem);
+		fsImageCheckpointer.start();
 	}
 	
 	
