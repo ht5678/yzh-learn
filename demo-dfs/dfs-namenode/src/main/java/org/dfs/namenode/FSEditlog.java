@@ -198,9 +198,9 @@ public class FSEditlog {
 	 * @return
 	 */
 	public List<String> getFlushedTxids() {
-		synchronized (this) {
+//		synchronized (this) {
 			return doubleBuffer.getFlushedTxids();
-		}
+//		}
 	}
 	
 	

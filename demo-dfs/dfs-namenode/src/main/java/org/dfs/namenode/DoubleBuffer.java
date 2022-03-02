@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.dfs.namenode.FSEditlog.EditLog;
 
@@ -46,7 +46,7 @@ public class DoubleBuffer{
 	/**
 	 * 已经刷入磁盘中的txid, 范围
 	 */
-	private List<String> flushedTxids = new ArrayList<>();
+	private List<String> flushedTxids = new CopyOnWriteArrayList<>();
 	
 	/*
 	 * 当前写入的最大txid
