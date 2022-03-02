@@ -186,6 +186,21 @@ public class NameNodeServiceImpl implements NameNodeService {
 
 	
 	/**
+	 * 
+	 * editslog同步机制方案设计：
+	 * 1.采用pull模型
+	 * 		降低对namenode影响，
+	 * 
+	 * 2.backnode批量拉取editslog
+	 * 		10条
+	 * 
+	 * 3.缓存机制
+	 * 		大部分拉取 ， 直接从缓存走 
+	 * 
+	 * 4.低成本解决并发冲突问题
+	 * 		避免竞争所拉取内存缓冲的数据 ， flushTxids使用CopyOnWriteArrayList , 或者用读写锁
+	 * 
+	 * 
 	 * 拉取editslog
 	 */
 	@Override
