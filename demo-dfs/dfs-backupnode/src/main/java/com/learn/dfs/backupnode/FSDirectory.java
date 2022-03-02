@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 管理内存中的文件目录树的核心组件
@@ -14,11 +17,47 @@ public class FSDirectory {
 
 	private INodeDirectory dirTree ;
 	
+	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+	
+	
+	public void writeLock() {
+		lock.writeLock().lock();
+	}
+	
+	public void writeUnLock() {
+		lock.writeLock().unlock();
+	}
+	
+	public void readLock() {
+		lock.readLock().lock();
+	}
+	
+	public void readUnLock() {
+		lock.readLock().unlock();
+	}
 	
 	
 	
 	public FSDirectory () {
 		this.dirTree = new INodeDirectory("/");
+	}
+	
+	
+	
+	/**
+	 * 以json格式获取到fsimage内存元数据
+	 * @return
+	 */
+	public String getFsImageJson() {
+		String fsImageJson = null;
+		try {
+			readLock();
+			
+			fsImageJson = JSONObject.toJSONString(dirTree);
+		}finally {
+			readUnLock();
+		}
+		return fsImageJson;
 	}
 	
 	
@@ -30,7 +69,11 @@ public class FSDirectory {
 		//path = /usr/local/hive
 		//应该先判断一下 , "/"根目录下有没有一个  usr  目录的存在
 		//每级目录都需要创建 , 最后对 "/hive" 这个目录创建一个节点挂载上去
-		synchronized (dirTree) {
+//		synchronized (dirTree) {
+		try {
+			
+			writeLock();
+			
 			String[] pathes = path.split("/");
 			INodeDirectory parent = dirTree;
 			
@@ -63,6 +106,8 @@ public class FSDirectory {
 				}
 			}
 			
+		}finally {
+			writeUnLock();
 		}
 //		System.out.println(dirTree.toString());
 //		printDirTree(dirTree , "  ");
