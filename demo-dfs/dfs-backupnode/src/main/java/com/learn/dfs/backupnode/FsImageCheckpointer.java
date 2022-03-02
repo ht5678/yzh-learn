@@ -18,13 +18,13 @@ public class FsImageCheckpointer extends Thread{
 	/**
 	 * checkpoint定时触发
 	 */
-	private static final Integer CHECKPOINT_INTERVAL = 1000 * 60 * 60 *1;
+	private static final Integer CHECKPOINT_INTERVAL = 1000 * 60 * 1;
 
 	private BackupNode backupNode;
 	
 	private FSNamesystem namesystem;
 	
-	private String lastFsImageFile;
+	private String lastFsImageFile="";
 	
 	
 	public FsImageCheckpointer(BackupNode backupNode , FSNamesystem namesystem) {
@@ -42,6 +42,7 @@ public class FsImageCheckpointer extends Thread{
 				
 				//可以触发这个checkpoint操作， 去把内存里的数据写入磁盘就可以了
 				//在写数据的过程中 ， 
+				System.out.println("准备执行checkpoint操作 ， 写入fsimage文件。。。");
 				FsImage fsimage = namesystem.getFsImage();
 				
 				//
