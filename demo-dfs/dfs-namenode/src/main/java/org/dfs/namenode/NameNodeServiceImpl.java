@@ -324,6 +324,7 @@ public class NameNodeServiceImpl implements NameNodeService {
 		//如果要拉取的txid还在上一次内存缓冲中 , 此时继续从内存缓冲中拉取即可
 		long fetchTxid = syncedTxid + 1;
 		if(fetchTxid <= currentBufferedMaxTxid){
+			System.out.println("尝试从内存缓冲拉取的时候 ， 发现上一次内存缓冲有数据可供拉取。。。");
 			fetchFromCurrentBuffer(fetchedEditsLog);
 			return;
 		}
