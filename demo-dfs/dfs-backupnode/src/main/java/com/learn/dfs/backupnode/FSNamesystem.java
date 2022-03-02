@@ -1,7 +1,5 @@
 package com.learn.dfs.backupnode;
 
-import java.io.File;
-
 /**
  * 
  * @author yuezh2@lenovo.com
@@ -37,8 +35,8 @@ public class FSNamesystem {
 	 * @param path
 	 * @return
 	 */
-	public Boolean mkdir(String path) {
-		this.directory.mkdir(path);
+	public Boolean mkdir(long txid , String path) {
+		this.directory.mkdir(txid , path);
 //		this.editlog.logEdit("创建了一个目录 : "+path);
 //		this.editlog.logEdit("{'OP':'MKDIR','PATH':'"+path+"'}");
 		return true;
@@ -46,6 +44,17 @@ public class FSNamesystem {
 //		File dir = new File(path);
 //		return dir.mkdirs();
 	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public FsImage getFsImage() throws Exception{
+		return directory.getFsImageJson();
+	}
+	
 	
 	
 	/**

@@ -18,6 +18,8 @@ public class EditsLogFetcher extends Thread{
 	
 	public static final Integer BACKUP_NODE_FETCH_SIZE = 10;
 	
+	
+	
 	/**
 	 * 
 	 * @param backupNode
@@ -54,7 +56,7 @@ public class EditsLogFetcher extends Thread{
 					
 					if(op.equals("MKDIR")) {
 						String path = editsLog.getString("PATH");
-						namesystem.mkdir(path);
+						namesystem.mkdir(editsLog.getLongValue("txid") , path);
 					}
 				}
 			}catch(Exception e){

@@ -17,9 +17,20 @@ public class FSDirectory {
 
 	private INodeDirectory dirTree ;
 	
+	/**
+	 * 当前文件目录树的更新到了哪个txid对应的editslog
+	 */
+	private long maxTxid = 0L;
+	
+	/**
+	 * 文件目录树的读写锁
+	 */
 	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	
-	
+
+	/**
+	 * 读写锁加锁和释放锁
+	 */
 	public void writeLock() {
 		lock.writeLock().lock();
 	}
@@ -48,16 +59,20 @@ public class FSDirectory {
 	 * 以json格式获取到fsimage内存元数据
 	 * @return
 	 */
-	public String getFsImageJson() {
-		String fsImageJson = null;
+	public FsImage getFsImageJson() {
+		FsImage fsimage = null;
 		try {
 			readLock();
 			
-			fsImageJson = JSONObject.toJSONString(dirTree);
+			String fsImageJson = JSONObject.toJSONString(dirTree);
+			//在这个时候 ， 我们还需要知道 ， 当前这份元数据 ， 同步到的最大txid是多少
+			//这样 ， 我们才知道 ， 这个fsimage对应着txid等于多少的editslog , 在这个txid之前的editslog都可以不需要了
+			//都可以删除了
+			fsimage = new FsImage(maxTxid, fsImageJson);
 		}finally {
 			readUnLock();
 		}
-		return fsImageJson;
+		return fsimage;
 	}
 	
 	
@@ -65,7 +80,7 @@ public class FSDirectory {
 	 * 创建目录
 	 * @param path
 	 */
-	public void mkdir(String path) {
+	public void mkdir(long txid , String path) {
 		//path = /usr/local/hive
 		//应该先判断一下 , "/"根目录下有没有一个  usr  目录的存在
 		//每级目录都需要创建 , 最后对 "/hive" 这个目录创建一个节点挂载上去
@@ -73,6 +88,8 @@ public class FSDirectory {
 		try {
 			
 			writeLock();
+			
+			maxTxid = txid;
 			
 			String[] pathes = path.split("/");
 			INodeDirectory parent = dirTree;

@@ -1,5 +1,9 @@
 package com.learn.dfs.backupnode;
 
+import java.io.FileOutputStream;
+import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 /**
  * 
@@ -36,8 +40,36 @@ public class FsImageCheckpointer extends Thread{
 				Thread.sleep(CHECKPOINT_INTERVAL);
 				
 				//可以触发这个checkpoint操作， 去把内存里的数据写入磁盘就可以了
+				//在写数据的过程中 ， 
+				FsImage fsimage = namesystem.getFsImage();
+				ByteBuffer buffer = ByteBuffer.wrap(fsimage.getFsImageJson().getBytes());
 				
-			} catch (Exception e) {
+				//fsimage的文件名的格式 ， 他应该是包含了当前这个里面最后一个editslog的txid
+				String fsImageFilePath = String.format("d:\\data\\fsimage-%s.meta" , fsimage.getMaxTxid());
+				RandomAccessFile file = null;
+				FileOutputStream fos = null; 
+				FileChannel channel = null;
+				try {
+					file = new RandomAccessFile(fsImageFilePath, "rw");	//读写模式 , 数据写入
+					fos = new FileOutputStream(file.getFD());
+					channel = fos.getChannel();
+					
+					channel.write(buffer);
+					channel.force(false);		//强制把数据刷到磁盘上
+				}finally {
+					if(file!= null) {
+						file.close();
+					}
+					
+					if(fos!=null) {
+						fos.close();
+					}
+					
+					if(channel!=null) {
+						channel.close();
+					}
+				}
+			}catch(Exception e) {
 				e.printStackTrace();
 			}
 		}
