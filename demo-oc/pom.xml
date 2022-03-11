@@ -20,5 +20,6 @@
   </dependencies>
   <modules>
     <module>demo-oc-im</module>
+    <module>demo-hazelcast</module>
   </modules>
 </project>
