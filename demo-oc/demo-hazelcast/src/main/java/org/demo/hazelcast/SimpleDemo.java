@@ -21,6 +21,12 @@ public class SimpleDemo {
 		System.out.println(hc1.getMap("testcache"));
 		System.out.println(hc2.getMap("testcache"));
 		
+		System.out.println(hc1.getCluster());
+		System.out.println(hc2.getCluster());
+		
+		System.out.println(hc1.getName());
+		
+		
 		hc1.shutdown();
 		hc2.shutdown();
 	}
