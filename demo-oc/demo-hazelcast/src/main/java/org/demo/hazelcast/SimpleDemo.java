@@ -1,5 +1,6 @@
 package org.demo.hazelcast;
 
+import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 
@@ -11,12 +12,17 @@ import com.hazelcast.core.HazelcastInstance;
 public class SimpleDemo {
 
 	public static void main(String[] args) {
-		HazelcastInstance hc1 = Hazelcast.newHazelcastInstance();
-		HazelcastInstance hc2 = Hazelcast.newHazelcastInstance();
+		Config config = new Config();
+		
+		HazelcastInstance hc1 = Hazelcast.newHazelcastInstance(config);
+		HazelcastInstance hc2 = Hazelcast.newHazelcastInstance(config);
 		
 		hc1.getMap("testcache").put("name", "zhangsan");
 		System.out.println(hc1.getMap("testcache"));
 		System.out.println(hc2.getMap("testcache"));
+		
+		hc1.shutdown();
+		hc2.shutdown();
 	}
 	
 }
