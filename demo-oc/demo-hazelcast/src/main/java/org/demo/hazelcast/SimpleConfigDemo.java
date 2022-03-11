@@ -32,6 +32,7 @@ public class SimpleConfigDemo {
 //        // 输出默认map的备份副本个数
 //        System.out.println("Default map backup count:" + mapConfigDefault.getBackupCount());
 		
+		//TODO: port already in use , update  auto-increment = true
 		Config config = new ClasspathXmlConfig("hazelcast-dev.xml");
 		
 		HazelcastInstance hc1 = Hazelcast.newHazelcastInstance(config);
