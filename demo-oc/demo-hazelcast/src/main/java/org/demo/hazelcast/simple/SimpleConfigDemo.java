@@ -1,4 +1,4 @@
-package org.demo.hazelcast;
+package org.demo.hazelcast.simple;
 
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;

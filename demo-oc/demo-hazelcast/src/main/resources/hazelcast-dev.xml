@@ -29,7 +29,7 @@
 	</management-center>
 
 	<network>
-		<port auto-increment="false" port-count="10">5701</port>
+		<port auto-increment="true" port-count="10">5701</port>
 		<outbound-ports>
 			<ports>0</ports>
 		</outbound-ports>
