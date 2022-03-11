@@ -35,6 +35,12 @@ public class ClusterLifecycleListenerDemo {
 		cluster2.addMembershipListener(clusterListener2);
 		
 		
+		//
+		System.out.println(cluster.getMembers());
+		 Hazelcast.newHazelcastInstance();
+		 System.out.println(cluster.getMembers());
+
+		 
 		//shutdown
 		hazelcastInstance.shutdown();
 		hazelcastInstance2.shutdown();
