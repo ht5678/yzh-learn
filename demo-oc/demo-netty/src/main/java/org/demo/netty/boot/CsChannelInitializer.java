@@ -24,7 +24,7 @@ public class CsChannelInitializer extends ChannelInitializer<Channel>{
 	private EncoderHandler encoderHandler;
 	
 	private SslContext sslContext;
-	private saslauthentication
+//	private saslauthentication
 	
 	
 	/**
