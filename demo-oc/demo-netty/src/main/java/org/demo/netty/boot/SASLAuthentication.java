@@ -19,6 +19,6 @@ public class SASLAuthentication {
 	public final static String MECHANISM = "mechanism";
 	public final static String AUTHENTICATION_VALUE = "authenticationValue";
 	
-	private static 
+//	private static 
 	
 }
