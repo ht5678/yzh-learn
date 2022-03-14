@@ -17,7 +17,7 @@ public class CsSaslProvider extends Provider{
 	
 	
 	
-	protected CsSaslProvider(String name, double version, String info) {
+	protected CsSaslProvider() {
 		super("OnlineCall", 1.01, "OnlineCall SASL provider v1.01");
 		CsSaslServerFactory factory = new CsSaslServerFactory();
 		String[] mechanismNames = factory.getMechanismNames(null);
