@@ -24,8 +24,9 @@ public class CsChannelInitializer extends ChannelInitializer<Channel>{
 	private EncoderHandler encoderHandler;
 	
 	private SslContext sslContext;
-//	private saslauthentication
+	private SASLAuthentication saslAuthentication;
 	
+	private exceptionlis
 	
 	/**
 	 * 
@@ -46,6 +47,9 @@ public class CsChannelInitializer extends ChannelInitializer<Channel>{
 		decoder = new PacketDecoder(jsonSupport); 
 		encoderHandler = new EncoderHandler(encoder);
 		sslContext = null;
+		
+		saslAuthentication = new SASLAuthentication(serverConfig);
+		
 		
 	}
 	

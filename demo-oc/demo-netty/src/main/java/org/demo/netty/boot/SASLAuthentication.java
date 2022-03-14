@@ -1,5 +1,6 @@
 package org.demo.netty.boot;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ import io.netty.util.AttributeKey;
  */
 public class SASLAuthentication {
 
-	public static AttributeKey<SaslServer> saslServer = AttributeKey.valueOf("SaslServer");
+	public static AttributeKey<SaslServer> SaslServer = AttributeKey.valueOf("SaslServer");
 	public static AttributeKey<Waiter> WAITER = AttributeKey.valueOf("waiter"); 
 	
 	public final static String MECHANISM = "mechanism";
@@ -70,8 +71,30 @@ public class SASLAuthentication {
 					if(null == saslServer) {
 						throw new SaslFailureException("没有找到合适的SASLService", "生成鉴权服务失败");
 					}
-//					ctx.channel().attr(saslServer)
-					return null;
+					ctx.channel().attr(SaslServer).set(saslServer);
+					if(mechanism.equals(MECHANISM)) {
+						packet.getBody().setContent("");
+					}
+				case RESPONSE:
+					saslServer = (SaslServer)ctx.channel().attr(SaslServer).get();
+					if(null == saslServer) {
+						throw new SaslFailureException("没有找到合适的SASLServer", "没有找到鉴权服务");
+					}
+					
+					final String encoded = packet.getBody().getContent();
+					
+					byte[] challenge = saslServer.evaluateResponse(encoded.getBytes(StandardCharsets.UTF_8));
+					
+					if(!saslServer.isComplete()) {
+						Body body = new Body(BodyType.RESPONSE , new String(challenge , StandardCharsets.UTF_8));
+						Packet challengeMessage = new Packet(PacketType.AUTH , body);
+						ctx.write(challengeMessage);
+						return SSLStatus.NEED_RESPONSE;
+					}
+					afterLoginSucceed(ctx);
+					return SSLStatus.SUCCESSED;
+				default:
+					throw new IllegalStateException("不支持此授权机制");
 			}
 			
 			
@@ -83,8 +106,17 @@ public class SASLAuthentication {
 			afterLoginFailed(ctx, msg);
 			return SSLStatus.FAILED;
 		}
-		return null;
 	}
+	
+	
+	
+	private void afterLoginSucceed(ChannelHandlerContext ctx) {
+		Body body = new Body(BodyType.SUCCESS , "验证成功");
+		Packet packet = new Packet(PacketType.AUTH , body);
+		ctx.channel().attr(SaslServer).set(null);
+		ctx.channel().writeAndFlush(packet);
+	}
+	
 	
 	
 	
@@ -94,7 +126,7 @@ public class SASLAuthentication {
 	private void afterLoginFailed(ChannelHandlerContext ctx , String msg) {
 		Body body = new Body(BodyType.FAIL , msg);
 		Packet packet = new Packet(PacketType.AUTH, body);
-		ctx.channel().attr(saslServer).set(null);
+		ctx.channel().attr(SaslServer).set(null);
 		ctx.channel().writeAndFlush(packet);
 	}
 	
