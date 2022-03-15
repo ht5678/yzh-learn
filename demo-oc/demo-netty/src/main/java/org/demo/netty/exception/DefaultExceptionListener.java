@@ -1,7 +1,7 @@
 package org.demo.netty.exception;
 
-import javax.websocket.Session;
 
+import org.demo.netty.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
