@@ -15,6 +15,7 @@ import org.demo.netty.domain.Packet;
 import org.demo.netty.domain.PacketType;
 import org.demo.netty.domain.Waiter;
 import org.demo.netty.exception.SaslFailureException;
+import org.demo.netty.im.cs.config.CsConfiguration;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.AttributeKey;

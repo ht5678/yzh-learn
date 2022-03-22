@@ -1,5 +1,7 @@
 package org.demo.netty.boot;
 
+import org.demo.netty.exception.ExceptionListener;
+import org.demo.netty.im.cs.config.CsConfiguration;
 import org.demo.netty.util.JsonSupport;
 import org.demo.netty.util.PacketDecoder;
 import org.demo.netty.util.PacketEncoder;
@@ -26,7 +28,7 @@ public class CsChannelInitializer extends ChannelInitializer<Channel>{
 	private SslContext sslContext;
 	private SASLAuthentication saslAuthentication;
 	
-	private exceptionlis
+	private ExceptionListener exceptionListener;
 	
 	/**
 	 * 
