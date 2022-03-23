@@ -3,6 +3,8 @@ package org.demo.netty.cluster.collection.cache;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -27,62 +29,74 @@ public class DefaultCacheFactoryStrategy implements CacheFactoryStrategy{
 	public <K, V> Cache<K, V> createCache(String name) {
 		long maxCacheSize = CacheFactory.getMaxCacheSize(name);
 		long maxLifttime = CacheFactory.getMaxLifeTime(name);
-		return new defaultcache;
+		return new DefaultCache<>(name, maxCacheSize, maxLifttime);
 	}
 
 	@Override
 	public <K, V> Cache<K, V> createCache(String name, long maxLifetime, long maxCacheSize) {
-		return null;
+		return new DefaultCache<>(name, maxCacheSize, maxLifetime);
 	}
-
+	
 	@Override
 	public void destroyCache(Cache<?, ?> cache) {
-		
+		cache.clear();
 	}
-
+	
+	/**
+	 * 非集群模式 , 失效
+	 */
 	@Override
 	public boolean isMasterClusterMember() {
-		return false;
+		throw new IllegalStateException("集群服务不可用.");
 	}
-
+	
+	/**
+	 * 非集群模式 , 失效
+	 */
 	@Override
 	public Collection<ClusterNode> getClusterNodeInfo() {
-		return null;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
+	/**
+	 * 非集群模式 , 失效
+	 */
 	@Override
 	public byte[] getClusterMemberID() {
-		return null;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
+	/**
+	 * 非集群模式 , 失效
+	 */
 	@Override
 	public long getClusterTime() {
-		return 0;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
 	@Override
 	public boolean doClusterTask(ClusterTask<?> task) {
-		return false;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
 	@Override
 	public boolean doClusterTask(ClusterTask<?> task, byte[] nodeID) {
-		return false;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
 	@Override
 	public RemoteTaskResult doSynchronousClusterTask(ClusterTask<?> task, byte[] nodeID) {
-		return null;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
 	@Override
 	public void updateClusterStats(Map<String, Cache<?, ?>> cachs) {
-		
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
 	@Override
 	public ClusterNode getClusterNodeInfo(byte[] nodeID) {
-		return null;
+		throw new IllegalStateException("集群服务不可用.");
 	}
 
 	@Override
@@ -90,6 +104,58 @@ public class DefaultCacheFactoryStrategy implements CacheFactoryStrategy{
 		return null;
 	}
 
+	
+	
+	
+	
+	private class LocalLock implements Lock{
+		
+		private final Object key;
+		
+		LocalLock(Object key){
+			this.key = key;
+		}
+		
+
+		@Override
+		public void lock() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void lockInterruptibly() throws InterruptedException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean tryLock() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void unlock() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Condition newCondition() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		
+		
+	}
 	
 	
 	
