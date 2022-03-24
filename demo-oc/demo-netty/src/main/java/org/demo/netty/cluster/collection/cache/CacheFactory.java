@@ -5,8 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.demo.netty.cluster.collection.cache.hazelcast.ClusteredCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hazelcast.core.HazelcastInstance;
 
 import io.netty.util.internal.PlatformDependent;
 
@@ -35,8 +38,21 @@ public class CacheFactory {
 	private static final Map<String, Long> cacheProps = PlatformDependent.newConcurrentHashMap();
 	
 	static {
-//		localCacheFactoryStrategy = new 
+		localCacheFactoryStrategy = new DefaultCacheFactoryStrategy();
+		//默认采用本地缓存策略
+		cacheFactoryStrategy = localCacheFactoryStrategy;
 	}
+	
+	
+	/**
+	 * 
+	 * @param hi
+	 */
+	public static synchronized void startCluster(HazelcastInstance hi) {
+		log.info("CacheFactory 开启HazelcastInstance集群模式");
+		clusterCacheFactoryStrategy = new ClusteredCache<K,V>(name, hi, DEFAULT_MAX_CACHE_LIFETIME)
+	}
+	
 	
 	
 	public static long getMaxCacheSize(String cacheName) {
@@ -53,5 +69,9 @@ public class CacheFactory {
 		Long defaultSize = cacheProps.get(propName);
 		return defaultSize == null ? defaultValue:defaultSize;
 	}
+	
+	
+	
+	
 	
 }

@@ -99,11 +99,77 @@ public class DefaultCacheFactoryStrategy implements CacheFactoryStrategy{
 		throw new IllegalStateException("集群服务不可用.");
 	}
 
+	
+	/**
+	 * 
+	 */
 	@Override
 	public Lock getLock(Object key, Cache<?, ?> cache) {
-		return null;
+		return new LocalLock(key);
 	}
 
+	
+	/**
+	 * 
+	 * @param key
+	 */
+	private void acquireLock(Object key) {
+		ReentrantLock lock = lookupLockForAcquire(key);
+		lock.lock();
+	}
+	
+	
+	/**
+	 * 
+	 * @param key
+	 * @return
+	 */
+	private ReentrantLock lookupLockForAcquire(Object key) {
+		synchronized (key) {
+			LockAndCount lac = locks.get(key);
+			if(lac == null) {
+				lac = new LockAndCount(new ReentrantLock());
+				lac.count = 1;
+				locks.put(key, lac);
+			}else {
+				lac.count ++;
+			}
+			return lac.lock;
+		}
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void releaseLock(Object key) {
+		ReentrantLock lock = lookupLockForRelease(key);
+		lock.unlock();
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private ReentrantLock lookupLockForRelease(Object key) {
+		synchronized (key) {
+			LockAndCount lac = locks.get(key);
+			if(lac ==null) {
+				throw new IllegalStateException("没有为对象找到锁 : "+key);
+			}
+			
+			if(lac.count <= 1) {
+				locks.remove(key);
+			}else {
+				lac.count--;
+			}
+			
+			return lac.lock;
+		}
+	}
 	
 	
 	
@@ -119,38 +185,32 @@ public class DefaultCacheFactoryStrategy implements CacheFactoryStrategy{
 
 		@Override
 		public void lock() {
-			// TODO Auto-generated method stub
-			
+			acquireLock(key);
 		}
 
 		@Override
 		public void lockInterruptibly() throws InterruptedException {
-			// TODO Auto-generated method stub
-			
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
 		public boolean tryLock() {
-			// TODO Auto-generated method stub
-			return false;
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
 		public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
-			// TODO Auto-generated method stub
-			return false;
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
 		public void unlock() {
-			// TODO Auto-generated method stub
-			
+			releaseLock(key);
 		}
 
 		@Override
 		public Condition newCondition() {
-			// TODO Auto-generated method stub
-			return null;
+			throw new UnsupportedOperationException();
 		}
 		
 		
