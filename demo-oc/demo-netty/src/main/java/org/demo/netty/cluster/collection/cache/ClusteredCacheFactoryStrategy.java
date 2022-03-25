@@ -2,15 +2,22 @@ package org.demo.netty.cluster.collection.cache;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 import org.demo.netty.cluster.collection.cache.hazelcast.ClusteredCache;
 import org.demo.netty.cluster.node.ClusterNode;
+import org.demo.netty.cluster.node.LocalClusterNode;
 import org.demo.netty.cluster.task.ClusterTask;
 import org.demo.netty.domain.RemoteTaskResult;
 import org.slf4j.Logger;
@@ -23,7 +30,6 @@ import com.hazelcast.core.Cluster;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.Member;
 
-import io.netty.util.concurrent.Future;
 
 /**
  * 
@@ -196,30 +202,123 @@ public class ClusteredCacheFactoryStrategy implements CacheFactoryStrategy{
 		}else {
 			Member member = getMember(nodeID);
 			if(null != member) {
-				Future<V>
+				Future <?> future = hazelcastInstance.getExecutorService(HAZELCAST_EXECUTOR_SERVICE_NAME).submitToMember(new CallableTask<>(task), member);
+				
+				try {
+					Object object = future.get(MAX_CLUSTER_EXECUTION_TIME , TimeUnit.SECONDS);
+					if(future.isDone()) {
+						result = new RemoteTaskResult(100, "执行成功" , object);
+					}else {
+						future.cancel(true);
+						result = new RemoteTaskResult(106, "执行任务超时" , object);
+					}
+				}catch(TimeoutException e) {
+					result = new RemoteTaskResult(103, "任务执行超时");
+					log.error("未能执行集群任务在规定 "+MAX_CLUSTER_EXECUTION_TIME +" 秒时间内: {} ", e);
+				}catch(InterruptedException e) {
+					result = new RemoteTaskResult(104, "任务执行被打断");
+					log.error("任务执行被打断异常 : {}" , e);
+				}catch(ExecutionException e) {
+					result = new RemoteTaskResult(105, "任务执行中发生异常");
+					log.error("任务执行异常: {}" , e);
+				}
+				
+			}else {
+				result = new RemoteTaskResult(101, "没有找到服务节点 , 认为客户/客服已经离开");
+				String msg = MessageFormat.format("请求节点{0}不能在集群中找到,判定当前节点已经离开集群", new String(nodeID , StandardCharsets.UTF_8));
+				log.warn(msg);
 			}
 		}
-		return null;
+		return result;
 	}
 
 	@Override
 	public void updateClusterStats(Map<String, Cache<?, ?>> cachs) {
-		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public ClusterNode getClusterNodeInfo(byte[] nodeID) {
-		// TODO Auto-generated method stub
-		return null;
+		if(cluster == null) {
+			return null;
+		}
+		
+		ClusterNode result = null;
+		Member member = getMember(nodeID);
+		if(member!=null) {
+			result = new LocalClusterNode(member , cluster.getClusterTime());
+		}
+		
+		return result;
 	}
 
 	@Override
 	public Lock getLock(Object key, Cache<?, ?> cache) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ClusterLock(key, (ClusteredCache)cache);
 	}
 
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	 * @author yuezh2
+	 * @date	  2022年3月25日 下午9:17:38
+	 */
+	private static class ClusterLock implements Lock{
+		
+		private Object key;
+		private ClusteredCache cache;
+		
+		
+		/**
+		 * 
+		 * @param key
+		 * @param cache
+		 */
+		ClusterLock(Object key , ClusteredCache cache) {
+			this.key = key;
+			this.cache = cache;
+		}
+		
+
+		@Override
+		public void lock() {
+			cache.lock(key, -1);
+		}
+
+		@Override
+		public void lockInterruptibly() throws InterruptedException {
+			cache.lock(key, -1);
+		}
+
+		@Override
+		public boolean tryLock() {
+			return cache.lock(key, 0);
+		}
+
+		@Override
+		public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
+			return cache.lock(key, unit.toMillis(time));
+		}
+
+		@Override
+		public void unlock() {
+			cache.unlock(key);
+		}
+
+		@Override
+		public Condition newCondition() {
+			throw new UnsupportedOperationException();
+		}
+		
+	}
 	
 	
 	

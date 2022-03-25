@@ -1,6 +1,11 @@
 package org.demo.netty.cluster.manager;
 
+import java.nio.charset.StandardCharsets;
+
+import org.demo.netty.cluster.collection.cache.CacheFactory;
+import org.demo.netty.cluster.collection.set.CustomSetFactory;
 import org.demo.netty.node.NodeID;
+import org.demo.netty.queue.CustomQueueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +51,14 @@ public class ClusterManager {
 		hazelcastInstance.getLifecycleService().addLifecycleListener(clusterListener);
 		cluster.addMembershipListener(clusterListener);
 		
-		cachefactory
+		CacheFactory.startCluster(hazelcastInstance);
+		CustomQueueFactory.startCluster(hazelcastInstance);
+		CustomSetFactory.startCluster(hazelcastInstance);
 		
-		return null;
+		state = State.started;
+		log.info("成功启动Hazelcast集群");
+		
+		return new NodeID(cluster.getLocalMember().getUuid().getBytes(StandardCharsets.UTF_8));
 	}
 	
 	

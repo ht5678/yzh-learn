@@ -1,8 +1,11 @@
 package org.demo.netty.im;
 
+import org.demo.netty.cluster.manager.ClusterManager;
 import org.demo.netty.node.NodeID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.hazelcast.core.HazelcastInstance;
 
 /**
  * 
@@ -20,7 +23,10 @@ public class OCIMServer {
 	private static OCIMServer instance;
 	private static final NodeID DEFAULT_NODE_ID= new NodeID(new byte[0]);
 	
-	private clustermana
+	private ClusterManager clusterManager;
+	private HazelcastInstance hazelcastInstance;
+	
+	private bsser
 	
 	
 }

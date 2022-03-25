@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
-import org.demo.netty.cluster.collection.cache.hazelcast.ClusteredCache;
+import org.demo.netty.cluster.task.ClusterTask;
+import org.demo.netty.domain.RemoteTaskResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,12 @@ public class CacheFactory {
 	
 	public static final int DEFAULT_MAX_CACHE_SIZE = 1024*256;
 	public static final int DEFAULT_MAX_CACHE_LIFETIME = -1;
+	
+	
+	/**
+	 * 存储所有创建的缓存
+	 */
+	private static Map<String, Cache<?, ?>> caches = PlatformDependent.newConcurrentHashMap();
 	
 	private static CacheFactoryStrategy cacheFactoryStrategy;
 	private static CacheFactoryStrategy localCacheFactoryStrategy;
@@ -50,7 +58,8 @@ public class CacheFactory {
 	 */
 	public static synchronized void startCluster(HazelcastInstance hi) {
 		log.info("CacheFactory 开启HazelcastInstance集群模式");
-		clusterCacheFactoryStrategy = new ClusteredCache<K,V>(name, hi, DEFAULT_MAX_CACHE_LIFETIME)
+		clusterCacheFactoryStrategy = new ClusteredCacheFactoryStrategy(hi);
+		cacheFactoryStrategy = clusterCacheFactoryStrategy;
 	}
 	
 	
@@ -72,6 +81,72 @@ public class CacheFactory {
 	
 	
 	
+	@SuppressWarnings("unchecked")
+	public static synchronized <T extends Cache<?, ?>> T createCache(String name) {
+		T cache = (T)caches.get(name);
+		if (null != cache) {
+			return cache;
+		}
+		cache = (T)cacheFactoryStrategy.createCache(name);
+		caches.put(name, cache);
+		return cache;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public static synchronized <T extends Cache<?, ?>> T createCache(String name, long maxLifttime, long maxCacheSize) {
+		T cache = (T)caches.get(name);
+		if (null != cache) {
+			return cache;
+		}
+		cache = (T)cacheFactoryStrategy.createCache(name, maxLifttime, maxCacheSize);
+		caches.put(name, cache);
+		return cache;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public static synchronized <T extends Cache<?, ?>> T createLocalCache(String name) {
+		T cache = (T)caches.get(name);
+		if (null != cache) {
+			return cache;
+		}
+		
+		cache = (T) localCacheFactoryStrategy.createCache(name);
+		caches.put(name, cache);
+		localOnly.add(name);
+		return cache;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static synchronized <T extends Cache<?, ?>> T createLocalCache(String name, long maxLifttime, long maxCacheSize) {
+		T cache = (T)caches.get(name);
+		if (null != cache) {
+			return cache;
+		}
+		
+		cache = (T)localCacheFactoryStrategy.createCache(name, maxLifttime, maxCacheSize);
+		caches.put(name, cache);
+		localOnly.add(name);
+		return cache;
+	}
+	
+	public static boolean doClusterTask(ClusterTask<?> task, byte[] nodeID) {
+		return cacheFactoryStrategy.doClusterTask(task, nodeID);
+	}
+	
+	public static RemoteTaskResult doSynchronousClusterTask(ClusterTask<?> task, byte[] nodeID) {
+		return cacheFactoryStrategy.doSynchronousClusterTask(task, nodeID);
+	}
+	
+	public static synchronized Lock getLock(Object key, Cache<?, ?> cache) {
+		if (localOnly.contains(cache.getName())) {
+			return localCacheFactoryStrategy.getLock(key, cache);
+		} else {
+			return cacheFactoryStrategy.getLock(key, cache);
+		}
+	}
+	
+	public static boolean isMasterMember() {
+		return cacheFactoryStrategy.isMasterClusterMember();
+	}
 }
+
