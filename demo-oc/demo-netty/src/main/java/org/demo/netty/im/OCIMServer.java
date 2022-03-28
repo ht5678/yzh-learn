@@ -2,6 +2,7 @@ package org.demo.netty.im;
 
 import org.demo.netty.cluster.manager.ClusterManager;
 import org.demo.netty.node.NodeID;
+import org.demo.netty.routing.RoutingTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,57 @@ public class OCIMServer {
 	private ClusterManager clusterManager;
 	private HazelcastInstance hazelcastInstance;
 	
+	private RoutingTable routingTable;
+	
+	
+	
 	private bsser
+	
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static OCIMServer getInst() {
+		return instance;
+	}
+	
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	public OCIMServer() throws Exception {
+		this(null);
+	}
+	
+	/**
+	 * 
+	 * @param hazelcastInstance
+	 * @throws Exception
+	 */
+	public OCIMServer(HazelcastInstance hazelcastInstance)throws Exception {
+		if(null != hazelcastInstance) {
+			throw new IllegalStateException("已经存在一个OCServer正在运行中 ... ");
+		}
+		instance = this;
+		this.hazelcastInstance = hazelcastInstance;
+	}
+	
+	
+	
+	
+	public NodeID getNodeID() {
+		return nodeID == null ? DEFAULT_NODE_ID : nodeID;
+	}
+
+	public void setNodeID(NodeID nodeID) {
+		this.nodeID = nodeID;
+	}
+	
+	public RoutingTable getRoutingTable() {
+		return routingTable;
+	}
 	
 	
 }

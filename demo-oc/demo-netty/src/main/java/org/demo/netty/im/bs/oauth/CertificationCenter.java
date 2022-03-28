@@ -1,8 +1,26 @@
 package org.demo.netty.im.bs.oauth;
 
+import org.demo.netty.boot.WaiterProvider;
+import org.demo.netty.domain.AddressFrom;
+import org.demo.netty.domain.BodyType;
+import org.demo.netty.domain.Identity;
+import org.demo.netty.domain.Packet;
+import org.demo.netty.domain.Transport;
+import org.demo.netty.domain.Waiter;
+import org.demo.netty.exception.BSAuthorizeException;
+import org.demo.netty.im.auth.CustomerAuthCoder;
+import org.demo.netty.im.auth.CustomerInfo;
 import org.demo.netty.im.bs.config.Configuration;
+import org.demo.netty.session.LocalWaiterSession;
+import org.demo.netty.session.Session;
+import org.demo.netty.session.WaiterSession;
+import org.demo.netty.util.B64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * 
@@ -22,6 +40,77 @@ public class CertificationCenter {
 	}
 	
 	
-	public void 
+	/**
+	 * 
+	 */
+	public void handlerWebSocket(ChannelHandlerContext ctx , Packet packet , FullHttpRequest req) throws Exception {
+		Channel channel = ctx.channel();
+		AddressFrom from = packet.getFrom();
+		if(packet.getBody().getType() == BodyType.LOGIN) {
+			if(from.getIdy() == Identity.WAITER) {
+				authorizeByWaiter(channel, packet, req);
+			}else if(from.getIdy() == Identity.CUSTOMER) {
+				au
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * 验证用户 , 并创建连接
+	 * @return
+	 */
+	private Session authorizeByWaiter(Channel channel , Packet packet , FullHttpRequest req) throws Exception{
+		WaiterSession session;
+		String content = packet.getBody().getContent();
+		String decoder = B64.decoder(content);
+		String[] infos = decoder.split(" ");
+		String userName = null;
+		String password = null;
+		final String status;
+		
+		if(infos.length == 3) {
+			userName = infos[0];
+			password = infos[1];
+			status = infos[2];
+		}else {
+			log.error("请求缺少参数:{}" , req.uri());
+			throw new BSAuthorizeException("认证信息用户失败 , 缺少请求参数");
+		}
+		
+		Waiter waiter = WaiterProvider.getInst().authentication(userName, password);
+		if(null != waiter) {
+			waiter.setStatus(status);
+			String uid = waiter.getWaiterCode();
+			Transport transport = packet.getTs();
+			session = new LocalWaiterSession(uid, channel, transport, Identity.WAITER, waiter);
+			channel.attr(LocalWaiterSession.CLIENT_SESSION).set(session);
+			//记录客服登录消息
+			WaiterProvider.getInst().insertWaiterLog(waiter, "1", req.headers().get("X-Real-IP"));
+		}else {
+			log.warn("认证失败 , 地址:{} , 头信息: {}" , req.uri() , req.headers());
+			throw new BSAuthorizeException("认证用户信息失败 , 账号或者密码有误");
+		}
+		return session;
+	}
+	
+	
+	
+	/**
+	 * 验证用户 , 并且创建连接
+	 * @param channel
+	 * @param packet
+	 * @param req
+	 * @return
+	 */
+	private Session authorizeByCustomer(Channel channel  , Packet packet , FullHttpRequest req) throws Exception{
+		CustomerInfo customerInfo = CustomerAuthCoder.decode(req.headers());
+		if(null == customerInfo) {
+			throw new BSAuthorizeException("1003认证信息为空");
+		}
+		
+		String skillName = localteam
+	}
 	
 }
