@@ -5,11 +5,21 @@
    <title>菜鸟教程(runoob.com)</title>
     
       <script type="text/javascript">
+      
+      var addCookie = function (name, value, time) {
+	        var exp = new Date();
+	        exp.setTime(exp.getTime() + time * 1);    
+	        //设置cookie的名称、值、失效时间
+	        document.cookie = name + "=" + value + ";expires="+ exp.toGMTString();  
+	    }
+      
          function WebSocketTest()
          {
             if ("WebSocket" in window)
             {
                alert("您的浏览器支持 WebSocket!");
+               
+               addCookie('OCIM-Customer','testuservalue',2000);
                
                // 打开一个 web socket
                var ws = new WebSocket("ws://localhost:6066/ws.io?packet={%22type%22:%22AUTH%22,%22ts%22:%22WEBSOCKET%22,%22from%22:{%22idy%22:%22CUSTOMER%22},%22body%22:{%22type%22:%22LOGIN%22}}&t=1626334268844");
