@@ -11,9 +11,14 @@ import org.demo.netty.exception.BSAuthorizeException;
 import org.demo.netty.im.auth.CustomerAuthCoder;
 import org.demo.netty.im.auth.CustomerInfo;
 import org.demo.netty.im.bs.config.Configuration;
+import org.demo.netty.im.bs.message.PollOkMessage;
+import org.demo.netty.session.Customer;
+import org.demo.netty.session.CustomerSession;
+import org.demo.netty.session.LocalCustomerSession;
 import org.demo.netty.session.LocalWaiterSession;
 import org.demo.netty.session.Session;
 import org.demo.netty.session.WaiterSession;
+import org.demo.netty.store.local.LocalTeamStore;
 import org.demo.netty.util.B64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +55,37 @@ public class CertificationCenter {
 			if(from.getIdy() == Identity.WAITER) {
 				authorizeByWaiter(channel, packet, req);
 			}else if(from.getIdy() == Identity.CUSTOMER) {
-				au
+				authorizeByCustomer(channel, packet, req);
+			}else {
+				throw new IllegalArgumentException("不支持的用户类型");
 			}
+		}else {
+			throw new IllegalArgumentException("认证授权失败");
 		}
+		//upgrade websocket
+		ctx.fireChannelRead(req);
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param ctx
+	 * @param packet
+	 * @param req
+	 * @throws Exception
+	 */
+	public void handlerHttp(ChannelHandlerContext ctx , Packet packet , FullHttpRequest req)throws Exception {
+		Channel channel = ctx.channel();
+		if(packet.getBody().getType() == BodyType.LOGIN) {
+			authorizeByCustomer(channel, packet, req);
+			channel.writeAndFlush(new PollOkMessage());
+		}else {
+			throw new IllegalArgumentException("认证授权失败");
+		}
+		req.release();
+	}
+	
 	
 	
 	
@@ -110,7 +142,19 @@ public class CertificationCenter {
 			throw new BSAuthorizeException("1003认证信息为空");
 		}
 		
-		String skillName = localteam
+		String skillName = LocalTeamStore.getInst().getSkillName(customerInfo.getTtc(), customerInfo.getSkc());
+		String uid = customerInfo.getCc();
+		String name = customerInfo.getCn();
+		Transport transport = packet.getTs();
+		boolean login = "1".equals(customerInfo.getReal()) ? true : false;
+		Customer customer = new Customer(uid, name, login, customerInfo.getTtc(), customerInfo.getTmc(), 
+					customerInfo.getSkc(), skillName, customerInfo.getGc(), customerInfo.getDevice());
+		CustomerSession session = new LocalCustomerSession(channel, transport, Identity.CUSTOMER, customer);
+		if(transport != transport.POLLING) {
+			channel.attr(Session.CLIENT_SESSION).set(session);
+		}
+		session.bindRoute();
+		return session;
 	}
 	
 }

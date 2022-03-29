@@ -1,8 +1,10 @@
 package org.demo.netty.im;
 
 import org.demo.netty.cluster.manager.ClusterManager;
+import org.demo.netty.dispatcher.Dispatcher;
 import org.demo.netty.node.NodeID;
 import org.demo.netty.routing.RoutingTable;
+import org.demo.netty.scheduler.CancelableScheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,9 @@ public class OCIMServer {
 	
 	private RoutingTable routingTable;
 	
+	private Dispatcher dispatcher;
+	
+	private CancelableScheduler scheduler;
 	
 	
 	private bsser
@@ -79,5 +84,12 @@ public class OCIMServer {
 		return routingTable;
 	}
 	
+	public Dispatcher getDispatcher() {
+		return dispatcher;
+	}	
+	
+	public CancelableScheduler getScheduler() {
+		return scheduler;
+	}
 	
 }
