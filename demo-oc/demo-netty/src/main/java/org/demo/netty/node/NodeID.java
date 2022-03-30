@@ -28,7 +28,9 @@ public class NodeID implements Externalizable{
 	
 	
 	
-	
+    public byte[] getBytes() {
+        return nodeID;
+    }
 	
 	
 	

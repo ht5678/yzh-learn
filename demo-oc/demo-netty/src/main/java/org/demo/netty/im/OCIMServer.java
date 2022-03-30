@@ -35,6 +35,8 @@ public class OCIMServer {
 	
 	private CancelableScheduler scheduler;
 	
+	private clustermess
+	
 	
 	private bsser
 	

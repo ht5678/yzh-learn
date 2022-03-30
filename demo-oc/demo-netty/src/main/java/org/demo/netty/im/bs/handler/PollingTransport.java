@@ -79,9 +79,12 @@ public class PollingTransport extends ChannelInboundHandlerAdapter{
 					case PING:
 						pong(channel, packet);
 						break;
-
-					default:
+					case CLOSE:
+						close(channel, packet);
 						break;
+					default:
+						HttpResponses.sendBadRequestError(channel);
+						log.warn("客户发送的消息 , 不符合规范 . packet : {} " , packet);
 					}
 				}catch(Exception e) {
 					log.error("Http deal message error : {}" , e.getMessage());
@@ -97,6 +100,26 @@ public class PollingTransport extends ChannelInboundHandlerAdapter{
 			ctx.fireChannelRead(msg);
 		}
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param channel
+	 * @param packet
+	 */
+	private void close(Channel channel , Packet packet) {
+		AddressFrom from = packet.getFrom();
+		CustomerSession customerSession = OCIMServer.getInst().getRoutingTable().getLocalCustomerSession(from.getUid());
+		if(null == customerSession) {
+			log.info("客户 :{} , 已经离开不需要再次处理" , from.getUid());
+		}else {
+			customerSession.disconnect();
+			channel.close();
+			log.info("客户: {} , Http-close 直接关闭会话" , from.getUid());
+		}
+	}
+	
 	
 	
 	/**

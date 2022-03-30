@@ -2,6 +2,7 @@ package org.demo.netty.im.initializer;
 
 import org.demo.netty.im.bs.config.Configuration;
 import org.demo.netty.im.bs.handler.AuthorizationHandler;
+import org.demo.netty.im.bs.handler.PollingTransport;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -36,7 +37,8 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 	
 	private AuthorizationHandler authorizeHandler;
 	
-	private pollingt
+	private PollingTransport xhrPollingTransport;
+	private websocket
 	
 	
 	
