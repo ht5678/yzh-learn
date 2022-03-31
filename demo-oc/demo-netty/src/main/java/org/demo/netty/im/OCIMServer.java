@@ -1,6 +1,7 @@
 package org.demo.netty.im;
 
 import org.demo.netty.cluster.manager.ClusterManager;
+import org.demo.netty.cluster.task.ClusterMessageRouter;
 import org.demo.netty.dispatcher.Dispatcher;
 import org.demo.netty.node.NodeID;
 import org.demo.netty.routing.RoutingTable;
@@ -35,7 +36,7 @@ public class OCIMServer {
 	
 	private CancelableScheduler scheduler;
 	
-	private clustermess
+	private ClusterMessageRouter clusterMessageRouter;
 	
 	
 	private bsser
@@ -92,6 +93,10 @@ public class OCIMServer {
 	
 	public CancelableScheduler getScheduler() {
 		return scheduler;
+	}
+	
+	public ClusterMessageRouter getClusterMessageRouter() {
+		return clusterMessageRouter;
 	}
 	
 }

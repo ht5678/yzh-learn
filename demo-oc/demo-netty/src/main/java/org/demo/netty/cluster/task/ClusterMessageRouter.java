@@ -1,9 +1,12 @@
 package org.demo.netty.cluster.task;
 
 import org.demo.netty.cluster.collection.cache.CacheFactory;
+import org.demo.netty.cluster.task.hazelcast.EventExecution;
 import org.demo.netty.cluster.task.hazelcast.PacketExecution;
 import org.demo.netty.cluster.task.hazelcast.PacketExecution.RemotePacketType;
 import org.demo.netty.cluster.task.hazelcast.RmCustomerSessionExecution;
+import org.demo.netty.cluster.task.hazelcast.RmWaiterSessionExecution;
+import org.demo.netty.cluster.task.hazelcast.TransferExecution;
 import org.demo.netty.domain.Packet;
 import org.demo.netty.domain.RemoteTaskResult;
 import org.demo.netty.im.OCIMServer;
@@ -66,7 +69,7 @@ public class ClusterMessageRouter implements RemoteMessageRouter{
 		}catch(IllegalStateException e) {
 			log.warn("消息路由到远程节点出错: "+e);
 		}
-		return null;
+		return new RemoteTaskResult(106, "未知错误");
 	}
 
 	
@@ -75,19 +78,59 @@ public class ClusterMessageRouter implements RemoteMessageRouter{
 	 */
 	@Override
 	public RemoteTaskResult routeRemoveWaiterSessin(NodeID nodeID, WaiterRoute waiterRoute) {
-		
-		return null;
+		try {
+			RmWaiterSessionExecution task = new RmWaiterSessionExecution(waiterRoute);
+			log.info("[移除集群中存在的客服信息]-任务 taskId:{} - body:{} - sourceNode:{} - targetNode: {}",
+					task.getTaskId(), waiterRoute,
+					nodeID.toString(),
+					OCIMServer.getInst().getNodeID());
+			
+			return CacheFactory.doSynchronousClusterTask(task, nodeID.getBytes());
+		}catch(IllegalStateException e) {
+			log.warn("消息路由到远程节点出错 : "+e);
+		}
+		return new RemoteTaskResult(106, "未知错误");
 	}
 
-	@Override
-	public RemoteTaskResult routeTransferByWaiter(NodeID nodeID, TransferWaiter transferWaiter) {
-		return null;
-	}
-
+	
+	/**
+	 * 路由注册事件
+	 */
 	@Override
 	public RemoteTaskResult routeEvent(NodeID nodeID, Event event) {
-		return null;
+		try {
+			EventExecution task = new EventExecution(event);
+			log.info("[分发分配事件]-任务 taskId:{} - body:{} - sourceNode:{} - targetNode: {}",
+					task.getTaskId(), event,
+					nodeID.toString(),
+					OCIMServer.getInst().getNodeID());
+			return CacheFactory.doSynchronousClusterTask(task, nodeID.getBytes());
+		}catch(IllegalStateException e) {
+			log.warn("消息路由到远程节点时出错 , {} , 事件 Event : {}" , e , event);
+		}
+		return new RemoteTaskResult(106, "未知错误");
 	}
+	
+	
+	/**
+	 * 路由转接信息
+	 */
+	@Override
+	public RemoteTaskResult routeTransferByWaiter(NodeID nodeID, TransferWaiter transferWaiter) {
+		try {
+			TransferExecution task = new TransferExecution(transferWaiter);
+			log.info("[分发转接事件]-任务 taskId:{} - body:{} - sourceNode:{} - targetNode: {}",
+					task.getTaskId(), transferWaiter,
+					nodeID.toString(),
+					OCIMServer.getInst().getNodeID());
+			return CacheFactory.doSynchronousClusterTask(task, nodeID.getBytes());
+		}catch(IllegalStateException e) {
+			log.warn("消息路由到远程节点报错 : "+e);
+		}
+		return new RemoteTaskResult(106 , "未知错误");
+	}
+
+
 
 	
 	
