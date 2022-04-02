@@ -24,7 +24,7 @@ public enum PacketType {
 	BUILD_CHAT,//创建会话
 	RE_LOGIN,//重新登录
 	CHATTING,//洽谈中
-	CLOSE_WAIT,//关闭会话
+	CLOSE_CHAT,//关闭会话
 	BROADCAST,//广播
 	NON_WORKING_TIME;//非工作时间
 	

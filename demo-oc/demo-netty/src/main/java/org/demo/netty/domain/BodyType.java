@@ -17,8 +17,8 @@ public enum BodyType {
 	GOODS,//商品信息
 	LOGISTICS,//物流信息
 	BUILDING_CHAT,//正在分配客服中
-	TEAM_GREAT,//团队欢迎语
-	WAITER_GREAT,//客服欢迎语
+	TEAM_GREET,//团队欢迎语
+	WAITER_GREET,//客服欢迎语
 	TIMEOUT_TIP,//超时提示
 	TIMEOUT_CLOSE,//超时关闭
 	TRANSFER_WAITER,//按客服转接
