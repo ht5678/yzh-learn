@@ -13,37 +13,37 @@ import org.demo.netty.session.WaiterSession;
  */
 public class RemoteData {
 
-	private RemoteDateType type;
+	private RemoteDataType type;
 
 	private Packet packet;
 	private Identity identity;
 	private CustomerSession customerSession;
 	private WaiterSession waiterSession;
 
-	public RemoteData(RemoteDateType type, Packet packet) {
+	public RemoteData(RemoteDataType type, Packet packet) {
 		this.type = type;
 		this.packet = packet;
 	}
 
-	public RemoteData(RemoteDateType type, Packet packet, WaiterSession session) {
+	public RemoteData(RemoteDataType type, Packet packet, WaiterSession session) {
 		this.type = type;
 		this.packet = packet;
 		this.identity = session.getIdy();
 		this.waiterSession = session;
 	}
 	
-	public RemoteData(RemoteDateType type, Packet packet, CustomerSession session) {
+	public RemoteData(RemoteDataType type, Packet packet, CustomerSession session) {
 		this.type = type;
 		this.packet = packet;
 		this.identity = session.getIdy();
 		this.customerSession = session;
 	}
 
-	public RemoteDateType getType() {
+	public RemoteDataType getType() {
 		return type;
 	}
 
-	public void setType(RemoteDateType type) {
+	public void setType(RemoteDataType type) {
 		this.type = type;
 	}
 

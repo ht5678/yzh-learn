@@ -1,10 +1,19 @@
 package org.demo.netty.im.bs.handler;
 
+import java.util.concurrent.TimeUnit;
+
 import org.demo.netty.domain.Packet;
 import org.demo.netty.domain.PacketType;
 import org.demo.netty.domain.Transport;
+import org.demo.netty.domain.Waiter;
+import org.demo.netty.im.auth.WaiterAuthCoder;
 import org.demo.netty.im.bs.config.Configuration;
+import org.demo.netty.im.chain.CloseChatChain;
+import org.demo.netty.im.chain.ReceptionChain;
+import org.demo.netty.im.chain.TransferChain;
+import org.demo.netty.im.chain.WaiterStatusChain;
 import org.demo.netty.im.cs.heart.HeartDetector;
+import org.demo.netty.im.initializer.BsChannelInitializer;
 import org.demo.netty.session.LocalCustomerSession;
 import org.demo.netty.session.Session;
 import org.demo.netty.session.WaiterSession;
@@ -15,10 +24,23 @@ import org.slf4j.LoggerFactory;
 import com.hazelcast.nio.tcp.PacketEncoder;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.cookie.DefaultCookie;
+import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.ReferenceCountUtil;
 
 /**
@@ -76,10 +98,24 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 		}else if(obj instanceof TextWebSocketFrame) {
 			TextWebSocketFrame frame = (TextWebSocketFrame)obj;
 			try {
-				resolve
+				resolverTextWebSocketFrame(session, channel, frame.text());
 			} finally {
-				
+				frame.release();
 			}
+		}else if(obj instanceof FullHttpRequest) {
+			FullHttpRequest request = (FullHttpRequest)obj;
+			try {
+				if(session.getTransport() == TRANSPORT) {
+					upgradeWebSocket(ctx, session, request);
+				}else {
+					ctx.channel().close();
+					throw new IllegalAccessException("不支持的通讯协议: " + session.getTransport());
+				}
+			}finally {
+				request.release();
+			}
+		}else {
+			ctx.fireChannelRead(obj);
 		}
 	}
 	
@@ -103,8 +139,19 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 				WaiterSession waiterSession = (WaiterSession)session;
 				switch (packet.getType()) {
 				case TRANSFER:
-					
+					TransferChain.transfer(packet);
 					break;
+				case CLOSE_CHAT:
+					CloseChatChain.closeDispatcher(packet);
+					break;
+				case RECEPTION:
+					ReceptionChain.directReception(waiterSession, packet);
+					break;
+				case CHANGE_STATUS:
+					WaiterStatusChain.changeStatus(waiterSession, packet);
+					break;
+				case BIND:
+					
 
 				default:
 					break;
@@ -114,6 +161,68 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 			log.warn("packet : {}  解析数据发生错误" , packet);
 			e.printStackTrace();
 		}
+	}
+	
+	
+	
+	/**
+	 * http升级  web socket
+	 */
+	private void upgradeWebSocket(ChannelHandlerContext ctx , Session session , FullHttpRequest req) {
+		final Channel channel = ctx.channel();
+		WebSocketServerHandshakerFactory factory = new WebSocketServerHandshakerFactory(getWebsocketUrl(req) , null , true , config.getMaxFramePayloadLength());
+		WebSocketServerHandshaker handshake = factory.newHandshaker(req);
+		
+		if(handshake != null) {
+			handshake.handshake(channel, req , getResponseHeaders(session) , ctx.newPromise()).addListener((ChannelFutureListener) future -> {
+					if(future.isSuccess()) {
+						channel.pipeline().addFirst(HEART , new IdleStateHandler(60, 0, 0 , TimeUnit.SECONDS));
+						channel.pipeline().addBefore(BsChannelInitializer.WEB_SOCKET_TRANSPORT, 
+								BsChannelInitializer.WEB_SOCKET_AGGREGATOR, 
+								new WebSocketFrameAggregator(config.getMaxFramePayloadLength()));
+					}else {
+						log.error("uid : {}  握手失败 : {} " , session.getUid() , future.cause());
+					}
+			});
+		}else {
+			WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(channel);
+		}
+		
+	}
+	
+	
+	/**
+	 * 获取协议
+	 * @return
+	 */
+	private String getWebsocketUrl(HttpRequest req) {
+		String protocol = "ws://";
+		if(isSsl) {
+			protocol = "wss://";
+		}
+		return protocol+req.headers().get(HttpHeaderNames.HOST) + req.uri();
+	}
+	
+	
+	
+	/**
+	 * 设置 cookies
+	 * @return
+	 */
+	private HttpHeaders getResponseHeaders(Session session) {
+		if(session instanceof WaiterSession) {
+			WaiterSession waiterSession = (WaiterSession)session;
+			Waiter waiter = waiterSession.getWaiter();
+			String sign = WaiterAuthCoder.encode(waiter);
+			DefaultCookie cookie = new DefaultCookie(WaiterAuthCoder.SERVER_COOKIE_NAME, sign);
+			cookie.setPath("/");
+			cookie.setHttpOnly(false);
+			cookie.setSecure(false);
+			final DefaultHttpHeaders httpHeaders = new DefaultHttpHeaders();
+			httpHeaders.add(HttpHeaderNames.SET_COOKIE , ServerCookieEncoder.LAX.encode(cookie));
+			return httpHeaders;
+		}
+		return new DefaultHttpHeaders();
 	}
 	
 	

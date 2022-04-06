@@ -13,6 +13,8 @@ import org.demo.netty.domain.Packet;
 import org.demo.netty.domain.PacketType;
 import org.demo.netty.domain.Waiter;
 import org.demo.netty.provider.ChatProvider;
+import org.demo.netty.session.Customer;
+import org.demo.netty.session.CustomerSession;
 import org.demo.netty.session.WaiterSession;
 import org.demo.netty.store.remote.packet.listener.KafkaPacketStoreListener;
 import org.demo.netty.store.remote.packet.listener.LocalPacketStoreListener;
@@ -20,8 +22,6 @@ import org.demo.netty.store.remote.packet.listener.PacketStoreListener;
 import org.demo.netty.store.remote.packet.model.RemoteData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import scala.remote;
 
 /**
  * 
@@ -61,9 +61,14 @@ public class PacketStoreManager {
 		if(null != remoteData) {
 			switch (remoteData.getType()) {
 			case NORMAL:
-				remotePacket
+				remotePacket(remoteData);
 				break;
-
+			case OFFLINE:
+				remoteOfflinePacket(remoteData);
+				break;
+			case REVOCATION:
+				revocationPacket(remoteData);
+				break;
 			default:
 				break;
 			}
@@ -116,9 +121,27 @@ public class PacketStoreManager {
 			try {
 				switch (packetType) {
 				case TRANSFER:
-					
+					if(bodyType == BodyType.SUCCESS) {
+						dispatcherBuildChat(remoteData, "1");
+					}
 					break;
-
+				case BUILD_CHAT:
+					if(bodyType == BodyType.SUCCESS) {
+						dispatcherBuildChat(remoteData, "1");
+					}else if(bodyType != BodyType.WAITING && bodyType != BodyType.WAITING_NO) {
+						dispatcherChatRecord(remoteData);
+					}
+					break;
+				case MESSAGE:
+					dispatcherChatRecord(remoteData);
+					if(bodyType == BodyType.TIMEOUT_CLOSE) {
+						remoteData.setIdentity(Identity.SYS);
+						dispatcherEndChat(remoteData);
+					}
+					break;
+				case CLOSE_CHAT:
+					dispatcherEndChat(remoteData);
+					break;
 				default:
 					break;
 				}
@@ -127,6 +150,53 @@ public class PacketStoreManager {
 			}
 		}
 		
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void remoteOfflinePacket(RemoteData remoteData) {
+		Packet packet = remoteData.getPacket();
+		if(null == packet.getCid()) {
+			return;
+		}
+		
+		ChatRecord chatRecord = new ChatRecord();
+		Body body = packet.getBody();
+		String messageType = transMessageType(body.getType());
+		
+		chatRecord.setChatId(packet.getCid());
+		chatRecord.setMessageId(packet.getPid());
+		
+		createChatRecord(packet, chatRecord);
+		
+		String ownerType = transOwnerType(body.getType(), "2");
+		chatRecord.setOwnerType(ownerType);
+		chatRecord.setMessageType(messageType);
+		chatRecord.setOffline("1");
+		chatRecord.setRevocation(1);
+		chatRecord.setMessages(body.getContent());
+		chatRecord.setCreateTime(packet.getDatetime());
+		
+		ChatProvider.getInstance().insertChatRecord(chatRecord);
+	}
+	
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void revocationPacket(RemoteData remoteData) {
+		Packet packet = remoteData.getPacket();
+		ChatRecord record = new ChatRecord();
+		record.setChatId(packet.getCid());
+		record.setMessageId(packet.getPid());
+		record.setRevocation(0);
+		
+		ChatProvider.getInstance().revocationChatRecord(record);
 	}
 	
 	
@@ -189,6 +259,47 @@ public class PacketStoreManager {
 		//同步消息到监听者
 		for(PacketStoreListener remotePacketStoreListener : listeners) {
 			remotePacketStoreListener.remoteChatRecord(chatRecord);
+		}
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void dispatcherBuildChat(RemoteData remoteData , String buildType) {
+		Chat chat = new Chat();
+		Packet packet = remoteData.getPacket();
+		
+		if(remoteData.getIdentity() == Identity.CUSTOMER) {
+			CustomerSession customerSession = remoteData.getCustomerSession();
+			Customer customer = customerSession.getCustomer();
+			String tenantCode = customer.getTenantCode();
+			String teamCode = customer.getTeamCode();
+			String skillCode = customer.getSkillCode();
+			
+			chat.setChatId(packet.getCid());
+			chat.setTenantCode(tenantCode);
+			chat.setTeamCode(teamCode);
+			chat.setSkillCode(skillCode);
+			chat.setGoodsCode(customer.getGoodsCode());
+			
+			chat.setDeviceType(customer.getDevice());
+			chat.setIsLogin(customer.isLogin()?"1" : "0");
+			chat.setIsTransfer(buildType);
+			chat.setCloseType("0");
+			chat.setType("1");
+			chat.setWaitingTime(customer.getWait());
+			chat.setCustomerName(customer.getName());
+			chat.setCustomerCode(customer.getUid());
+			chat.setWaiterName(customerSession.getWaiterName());
+			chat.setWaiterCode(customerSession.getWaiterCode());
+			chat.setCreateTime(packet.getDatetime());
+		}
+		
+		//同步消息到监听者
+		for(PacketStoreListener remotePacketStoreListener : listeners) {
+			remotePacketStoreListener.remoteBuildChat(chat);
 		}
 	}
 	
@@ -351,6 +462,27 @@ public class PacketStoreManager {
 			return body.getType() != BodyType.TIP;
 		}
 		return true;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static PacketStoreManager getInst() {
+		return Single.instance;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @author yuezh2
+	 * @date	  2022年4月6日 下午9:20:23
+	 */
+	private static class Single{
+		private static PacketStoreManager instance = new PacketStoreManager();
 	}
 	
 

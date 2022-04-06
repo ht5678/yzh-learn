@@ -6,7 +6,7 @@ package org.demo.netty.store.remote.packet.model;
  * 存储消息类型
  * @author yuezh2
  */
-public enum RemoteDateType {
+public enum RemoteDataType {
     /**
      * 正常消息
      */

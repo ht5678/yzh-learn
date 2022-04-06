@@ -23,7 +23,7 @@ public enum BodyType {
 	TIMEOUT_CLOSE,//超时关闭
 	TRANSFER_WAITER,//按客服转接
 	TRANSFER_TEAM,//按团队转接
-	WAITTING_NO,//排队编号
+	WAITING_NO,//排队编号
 	WAITING,//排队中
 	WAITER_CLOSE,//客服关闭
 	CUSTOMER_CLOSE,//客户关闭
