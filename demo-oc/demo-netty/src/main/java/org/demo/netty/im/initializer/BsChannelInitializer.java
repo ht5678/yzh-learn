@@ -1,12 +1,35 @@
 package org.demo.netty.im.initializer;
 
+import java.security.KeyStore;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+
+import org.demo.netty.im.OCIMServer;
 import org.demo.netty.im.bs.config.Configuration;
 import org.demo.netty.im.bs.handler.AuthorizationHandler;
+import org.demo.netty.im.bs.handler.EncoderHandler;
 import org.demo.netty.im.bs.handler.PollingTransport;
+import org.demo.netty.im.bs.handler.WebsocketTransport;
+import org.demo.netty.im.bs.handler.WrongUrlHandler;
+import org.demo.netty.im.coder.PacketEncoder;
+import org.demo.netty.util.JsonSupport;
+import org.demo.netty.util.PacketDecoder;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
-import io.netty.handler.ssl.SslContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
+import io.netty.handler.ssl.SslHandler;
 
 /**
  * 
@@ -33,12 +56,63 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 	public static final String SSL_HANDLER = "ssl";
 	
 	private Configuration config;
-	private SslContext sslContext;
+	private SSLContext sslContext;
 	
 	private AuthorizationHandler authorizeHandler;
 	
 	private PollingTransport xhrPollingTransport;
-	private websocket
+	private WebsocketTransport websocketTransport;
+	private WrongUrlHandler wrongUrlHandler;
+	private EncoderHandler encoderHandler;
+	
+	
+	
+	
+	/**
+	 * 
+	 */
+	public BsChannelInitializer(Configuration config) {
+		this.config = config;
+		init();
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void init() {
+		JsonSupport jsonSupport = config.getJsonSupport();
+		PacketEncoder encoder = new PacketEncoder(true, jsonSupport);
+		PacketDecoder decoder = new PacketDecoder(jsonSupport);
+		boolean isSsl = config.getKeyStore() != null;
+		
+		if(isSsl) {
+			try {
+				sslContext = createSslContext(config);
+			} catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+		}
+		
+		//
+		authorizeHandler = new AuthorizationHandler(config, decoder);
+		xhrPollingTransport = new PollingTransport(config);
+		websocketTransport = new WebsocketTransport(config, isSsl, encoder, decoder);
+		encoderHandler = new EncoderHandler(config , encoder);
+		wrongUrlHandler = new WrongUrlHandler();
+		
+	}
+	
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+		super.handlerAdded(ctx);
+		OCIMServer.getInst().getScheduler().update(ctx);
+	}
 	
 	
 	
@@ -47,9 +121,81 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 	 */
 	@Override
 	protected void initChannel(Channel ch) throws Exception {
-		
+		ChannelPipeline pipeline = ch.pipeline();
+		addSslHandler(pipeline);
+		addSocketIoHandler(pipeline);
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void addSocketIoHandler(ChannelPipeline pipeline) {
+		pipeline.addLast(HTTP_REQUEST_DECODER , new HttpRequestDecoder());
+		pipeline.addLast(HTTP_AGGREGATOR , new HttpObjectAggregator(config.getMaxFramePayloadLength()) {
+			@Override
+			protected Object newContinueResponse(HttpMessage start, int maxContentLength, ChannelPipeline pipeline) {
+				return null;
+			}
+		});
+		//
+		pipeline.addLast(HTTP_ENCODER , new HttpResponseEncoder());
+		if(config.isHttpCompression()) {
+			pipeline.addLast(HTTP_COMPRESSION , new HttpContentCompressor());
+		}
+		//
+		pipeline.addLast(AUTHORIZE_HANDLER , authorizeHandler);
+		pipeline.addLast(XHR_POLLING_TRANSPORT , xhrPollingTransport);
+		if(config.isWebsocketCompression()) {
+			pipeline.addLast(WEB_SOCKET_TRANSPORT_COMPRESSION , new WebSocketServerCompressionHandler());
+		}
+		pipeline.addLast(WEB_SOCKET_TRANSPORT , websocketTransport);
+		pipeline.addLast(SOCKET_TO_ENCODER , encoderHandler);
+		pipeline.addLast(WRONG_URL_HANDLER , wrongUrlHandler);
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	private void addSslHandler(ChannelPipeline pipeline) {
+		if(sslContext != null) {
+			SSLEngine engine = sslContext.createSSLEngine();
+			engine.setUseClientMode(false);
+			pipeline.addLast(SSL_HANDLER , new SslHandler(engine));
+		}
 	}
 
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	private SSLContext createSslContext(Configuration config) throws Exception {
+		TrustManager[] managers = null;
+		if(config.getTrustStore() != null) {
+			KeyStore ts = KeyStore.getInstance(config.getTrustStoreFormat());
+			ts.load(config.getTrustStore() , config.getTrustStorePassword().toCharArray());
+			TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+			tmf.init(ts);
+			managers = tmf.getTrustManagers();
+		}
+		
+		KeyStore ks = KeyStore.getInstance(config.getKeyStoreFormat());
+		ks.load(config.getKeyStore() , config.getKeyStorePassword().toCharArray());
+		KeyManagerFactory kmf = KeyManagerFactory.getInstance(config.getKeyManagerFactoryAlgorithm());
+		kmf.init(ks , config.getKeyStorePassword().toCharArray());
+		
+		SSLContext serverContext = SSLContext.getInstance(config.getSslProtocol());
+		serverContext.init(kmf.getKeyManagers(), managers, null);
+		return serverContext;
+	}
 	
 	
 	

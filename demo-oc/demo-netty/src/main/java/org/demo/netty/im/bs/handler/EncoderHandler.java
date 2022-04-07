@@ -14,9 +14,9 @@ import org.demo.netty.im.bs.message.OutPacketMessage;
 import org.demo.netty.im.bs.message.PollErrorMessage;
 import org.demo.netty.im.bs.message.PollOkMessage;
 import org.demo.netty.im.bs.message.PongPacketMessage;
+import org.demo.netty.im.coder.PacketEncoder;
 import org.demo.netty.session.Session;
 import org.demo.netty.session.TransportStore;
-import org.demo.netty.util.PacketEncoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;

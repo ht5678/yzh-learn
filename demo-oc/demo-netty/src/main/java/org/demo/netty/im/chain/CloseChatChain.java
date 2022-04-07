@@ -35,7 +35,7 @@ public class CloseChatChain {
 	 * 客户关闭会话 , 通知客服
 	 */
 	public static void closeChatToWaiter(CustomerSession customerSession , String content) {
-		buildCloseChat(customerSession, content, PacketType.CLOSE_WAIT);
+		buildCloseChat(customerSession, content, PacketType.CLOSE_CHAT);
 	}
 	
 	

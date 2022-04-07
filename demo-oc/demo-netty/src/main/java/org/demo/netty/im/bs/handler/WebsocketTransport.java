@@ -8,12 +8,17 @@ import org.demo.netty.domain.Transport;
 import org.demo.netty.domain.Waiter;
 import org.demo.netty.im.auth.WaiterAuthCoder;
 import org.demo.netty.im.bs.config.Configuration;
+import org.demo.netty.im.chain.BindChain;
 import org.demo.netty.im.chain.CloseChatChain;
 import org.demo.netty.im.chain.ReceptionChain;
+import org.demo.netty.im.chain.RevocationChain;
 import org.demo.netty.im.chain.TransferChain;
 import org.demo.netty.im.chain.WaiterStatusChain;
+import org.demo.netty.im.coder.PacketEncoder;
+import org.demo.netty.im.cs.chain.PacketChain;
 import org.demo.netty.im.cs.heart.HeartDetector;
 import org.demo.netty.im.initializer.BsChannelInitializer;
+import org.demo.netty.session.CustomerSession;
 import org.demo.netty.session.LocalCustomerSession;
 import org.demo.netty.session.Session;
 import org.demo.netty.session.WaiterSession;
@@ -21,15 +26,12 @@ import org.demo.netty.util.PacketDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hazelcast.nio.tcp.PacketEncoder;
-
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
@@ -151,11 +153,21 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 					WaiterStatusChain.changeStatus(waiterSession, packet);
 					break;
 				case BIND:
-					
-
+					BindChain.waiterBind(waiterSession, channel, encoder);
+					break;
+				case REVOCATION:
+					RevocationChain.revocation(waiterSession, packet);
+					break;
 				default:
+					PacketChain.dispatcherWaiterPacket(waiterSession, packet);
 					break;
 				}
+			}else if(session instanceof CustomerSession) {
+				log.info("客户消息 packet : {}" , packet);
+				CustomerSession customerSession = (CustomerSession)session;
+				PacketChain.dispatcherCustomerPacket(customerSession, packet);
+			}else {
+				log.error("无法分发的消息 : {}" , packet);
 			}
 		}catch(Exception e) {
 			log.warn("packet : {}  解析数据发生错误" , packet);
