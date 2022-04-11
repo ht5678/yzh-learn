@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.demo.netty.dispatcher.register.EventRegister;
 import org.demo.netty.dispatcher.room.CustomerRoom;
+import org.demo.netty.dispatcher.room.CustomerRoomImpl;
 import org.demo.netty.dispatcher.room.WaiterRoom;
+import org.demo.netty.dispatcher.room.WaiterRoomImpl;
+import org.demo.netty.dispatcher.scheduler.EventScheduler;
 import org.demo.netty.domain.Waiter;
 import org.demo.netty.register.Event;
 import org.demo.netty.session.Customer;
@@ -32,56 +35,65 @@ public class AllotDispatcher implements Dispatcher{
 	private EventRegister eventRegister;
 	private WaiterRoom waiterRoom;
 	private CustomerRoom customerTable;
-	private eventsche
+	private EventScheduler eventScheduler;
+	
+	
+	
+	/**
+	 * 
+	 */
+	public AllotDispatcher() {
+		nameFactory = new NameFactory();
+		eventRegister = new EventRegister(nameFactory);
+		waiterRoom = new WaiterRoomImpl(nameFactory, eventRegister);
+		customerTable = new CustomerRoomImpl(nameFactory);
+		eventScheduler = new EventScheduler(this, eventRegister);
+		eventScheduler.start();
+	}
 	
 	
 	
 	
 	@Override
 	public void login(Waiter waiter) {
-		// TODO Auto-generated method stub
-		
+		waiterRoom.login(waiter);
 	}
 
 	@Override
 	public void logout(WaiterSession session) {
-		// TODO Auto-generated method stub
-		
+		if(null != session) {
+			waiterRoom.logout(session.getWaiter().getTeamCode(), session.getUid());
+		}
 	}
 
 	@Override
 	public boolean changeWaiterStatus(String teamCode, String waiterCode, String status) {
-		// TODO Auto-generated method stub
-		return false;
+		return waiterRoom.changeStatus(teamCode, waiterCode, status);
 	}
 
 	@Override
 	public Collection<Waiter> getWaiters(String teamCode) {
-		// TODO Auto-generated method stub
-		return null;
+		return waiterRoom.getWaiters(teamCode);
 	}
 
 	@Override
 	public Waiter acquireWaiter(String teamCode) {
-		// TODO Auto-generated method stub
-		return null;
+		return waiterRoom.acquire(teamCode);
 	}
 
 	@Override
 	public Waiter acquireWaiter(String teamCode, String waiterCode) {
-		// TODO Auto-generated method stub
-		return null;
+		return waiterRoom.acquire(teamCode , waiterCode);
 	}
 
 	@Override
-	public Customer acquireCustomer(String code) {
-		// TODO Auto-generated method stub
-		return null;
+	public Customer acquireCustomer(String teamCode) {
+		return customerTable.acquire(teamCode);
 	}
 
 	@Override
 	public int addQueueWait(Customer customer) {
-		// TODO Auto-generated method stub
+		dd
 		return 0;
 	}
 
