@@ -1,20 +1,23 @@
 package org.demo.netty.im.server;
 
-import java.util.concurrent.Future;
 
-import org.apache.logging.log4j.core.lookup.EventLookup;
 import org.demo.netty.im.bs.config.Configuration;
+import org.demo.netty.im.config.SocketConfig;
 import org.demo.netty.im.initializer.BsChannelInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
 
 /**
  * 
@@ -57,7 +60,7 @@ public class BSServer implements Server{
 	 */
 	@Override
 	public void start() {
-		start
+		startAsync().syncUninterruptibly();
 	}
 	
 	
@@ -81,8 +84,20 @@ public class BSServer implements Server{
 			.channel(channelClass)
 			.childHandler(channelInitializer);
 		
-		apply
-		
+		applyConnectionOptions(boot);
+		//
+		return boot.bind(config.getPort()).addListener(new FutureListener<Void>() {
+
+			@Override
+			public void operationComplete(io.netty.util.concurrent.Future<Void> future) throws Exception {
+				if(future.isSuccess()) {
+				    log.info("B/S 服务启动成功  监听端口: {}", config.getPort());
+                } else {
+                    log.error("B/S 服务启动失败  监听端口: {}!", config.getPort());
+                }
+			}
+			
+		});
 	}
 	
 	
@@ -101,20 +116,47 @@ public class BSServer implements Server{
 	}
 	
 	
-
+	/**
+	 * 设置应用连接选项
+	 */
+	protected void applyConnectionOptions(ServerBootstrap bootstrap) {
+		SocketConfig socketConfig = config.getSocketConfig();
+		bootstrap.childOption(ChannelOption.TCP_NODELAY, socketConfig.isTcpNoDelay());
+		//
+		if(socketConfig.getTcpSendBufferSize() != -1) {
+			bootstrap.childOption(ChannelOption.SO_SNDBUF, socketConfig.getTcpSendBufferSize());
+		}
+		//
+		if(socketConfig.getTcpReceiveBufferSize() != -1) {
+			bootstrap.childOption(ChannelOption.SO_RCVBUF, socketConfig.getTcpReceiveBufferSize());
+			bootstrap.childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(socketConfig.getTcpReceiveBufferSize()));
+		}
+		bootstrap.childOption(ChannelOption.SO_KEEPALIVE, socketConfig.isTcpKeepAlive());
+		bootstrap.childOption(ChannelOption.SO_LINGER, socketConfig.getSoLinger());
+		//
+		bootstrap.childOption(ChannelOption.SO_REUSEADDR, socketConfig.isReuseAddress());
+		bootstrap.childOption(ChannelOption.SO_BACKLOG, socketConfig.getAcceptBackLog());
+	}
+	
+	
+	/**
+	 * 停止B/S
+	 */
 	@Override
 	public void stop() {
-		
+		bossGroup.shutdownGracefully().syncUninterruptibly();
+		workerGroup.shutdownGracefully().syncUninterruptibly();
+		log.info("B/S is stopped");
 	}
 
 	@Override
 	public int getPort() {
-		return 0;
+		return config.getPort();
 	}
 
 	@Override
 	public String getHostName() {
-		return null;
+		return config.getHostname();
 	}
 
 	

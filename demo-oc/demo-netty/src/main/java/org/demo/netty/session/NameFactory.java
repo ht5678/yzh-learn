@@ -1,5 +1,7 @@
 package org.demo.netty.session;
 
+import org.demo.netty.cluster.collection.cache.Cache;
+import org.demo.netty.cluster.collection.cache.CacheFactory;
 import org.demo.netty.queue.CustomQueueFactory;
 
 /**
@@ -17,6 +19,29 @@ public class NameFactory {
 			prefix = prefix  + SEPARATOR +id;
 		}
 		return prefix;
+	}
+	
+	
+	/**
+	 * 
+	 * @param <T>
+	 * @return
+	 */
+	public <T extends Cache<?, ?>> T getCache(String prefix , String... ids ) {
+		String cacheName = fitName(prefix, ids);
+		Cache<?, ?> createCache = CacheFactory.createCache(cacheName , -1 , -1);
+		return (T)createCache;
+	}
+	
+	
+	/**
+	 * 
+	 * @param <T>
+	 * @return
+	 */
+	public <T extends Cache<?, ?>> T getCache(String name) {
+		Cache<?, ?> createCache = CacheFactory.createCache(name, -1, -1);
+		return (T)createCache;
 	}
 	
 	

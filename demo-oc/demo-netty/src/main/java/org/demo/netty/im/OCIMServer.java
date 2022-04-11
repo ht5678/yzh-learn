@@ -3,9 +3,14 @@ package org.demo.netty.im;
 import org.demo.netty.cluster.manager.ClusterManager;
 import org.demo.netty.cluster.task.ClusterMessageRouter;
 import org.demo.netty.dispatcher.Dispatcher;
+import org.demo.netty.im.server.BSServer;
 import org.demo.netty.node.NodeID;
 import org.demo.netty.routing.RoutingTable;
+import org.demo.netty.routing.RoutingTableImpl;
 import org.demo.netty.scheduler.CancelableScheduler;
+import org.demo.netty.util.ClusterExternalizableUtil;
+import org.demo.netty.util.DummyExternalizableUtil;
+import org.demo.netty.util.ExternalizableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +44,7 @@ public class OCIMServer {
 	private ClusterMessageRouter clusterMessageRouter;
 	
 	
-	private bsser
+	private BSServer bsServer;
 	
 	
 	
@@ -70,6 +75,27 @@ public class OCIMServer {
 		}
 		instance = this;
 		this.hazelcastInstance = hazelcastInstance;
+	}
+	
+	
+	
+	/**
+	 * 
+	 */
+	public void startCluster(boolean isCluster)throws Exception {
+		if(isCluster && null != hazelcastInstance) {
+			ExternalizableUtil.getInstance().setStrategy(new ClusterExternalizableUtil());
+			clusterManager = new ClusterManager(hazelcastInstance);
+			nodeID =  clusterManager.startCluster();
+		}else {
+			ExternalizableUtil.getInstance().setStrategy(new DummyExternalizableUtil());
+		}
+		
+		//
+		this.routingTable = new RoutingTableImpl();
+		this.dispatcher = new allot
+		
+		
 	}
 	
 	
