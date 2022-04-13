@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * 
@@ -48,6 +49,8 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 	public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
 		
 		System.out.println("WebsocketTransport"+obj);
+		ReferenceCountUtil.release(obj);
+		ctx.fireChannelRead(obj);
 		
 //		Channel channel = ctx.channel();
 //		Session session = getChannelSession(channel);

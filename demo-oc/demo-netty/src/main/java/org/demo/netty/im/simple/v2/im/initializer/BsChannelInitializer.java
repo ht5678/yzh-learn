@@ -12,6 +12,7 @@ import org.demo.netty.im.fake.im.bs.config.Configuration;
 import org.demo.netty.im.fake.im.coder.PacketEncoder;
 import org.demo.netty.im.fake.util.JsonSupport;
 import org.demo.netty.im.fake.util.PacketDecoder;
+import org.demo.netty.im.simple.v2.im.bs.handler.AuthorizationHandler;
 import org.demo.netty.im.simple.v2.im.handler.PollingTransport;
 import org.demo.netty.im.simple.v2.im.handler.WebsocketTransport;
 
@@ -54,7 +55,7 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 	private Configuration config;
 	private SSLContext sslContext;
 	
-//	private AuthorizationHandler authorizeHandler;
+	private AuthorizationHandler authorizeHandler;
 //	
 	private PollingTransport xhrPollingTransport;
 	private WebsocketTransport websocketTransport;
@@ -92,7 +93,7 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 		}
 		
 		//
-//		authorizeHandler = new AuthorizationHandler(config, decoder);
+		authorizeHandler = new AuthorizationHandler(config, decoder);
 		xhrPollingTransport = new PollingTransport(config);
 		websocketTransport = new WebsocketTransport(config, isSsl, encoder, decoder);
 //		encoderHandler = new EncoderHandler(config , encoder);
@@ -144,7 +145,7 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 			pipeline.addLast(HTTP_COMPRESSION , new HttpContentCompressor());
 		}
 		//
-//		pipeline.addLast(AUTHORIZE_HANDLER , authorizeHandler);
+		pipeline.addLast(AUTHORIZE_HANDLER , authorizeHandler);
 		pipeline.addLast(XHR_POLLING_TRANSPORT , xhrPollingTransport);
 		if(config.isWebsocketCompression()) {
 			pipeline.addLast(WEB_SOCKET_TRANSPORT_COMPRESSION , new WebSocketServerCompressionHandler());

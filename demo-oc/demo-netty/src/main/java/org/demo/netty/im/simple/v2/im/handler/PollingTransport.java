@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 
 //import java.util.concurrent.TimeUnit;
 //
@@ -71,6 +72,9 @@ public class PollingTransport extends ChannelInboundHandlerAdapter{
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		System.out.println("PollingTransport"+msg);
+		ReferenceCountUtil.release(msg);
+		ctx.fireChannelRead(msg);
+		
 //		Channel channel = ctx.channel();
 //		if(msg instanceof Packet) {
 //			Packet packet = (Packet)msg;
