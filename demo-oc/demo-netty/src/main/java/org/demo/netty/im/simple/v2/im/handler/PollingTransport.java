@@ -1,4 +1,4 @@
-package org.demo.netty.im.simple.v1.im.handler;
+package org.demo.netty.im.simple.v2.im.handler;
 
 import org.demo.netty.im.fake.domain.Transport;
 import org.demo.netty.im.fake.im.bs.config.Configuration;
@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 
 //import java.util.concurrent.TimeUnit;
 //
@@ -71,9 +70,7 @@ public class PollingTransport extends ChannelInboundHandlerAdapter{
 	 */
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		System.out.println(msg);
-		ReferenceCountUtil.release(msg);
-		ctx.fireChannelRead(msg);
+		System.out.println("PollingTransport"+msg);
 //		Channel channel = ctx.channel();
 //		if(msg instanceof Packet) {
 //			Packet packet = (Packet)msg;

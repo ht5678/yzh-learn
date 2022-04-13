@@ -1,4 +1,4 @@
-package org.demo.netty.im.simple.v1.im.initializer;
+package org.demo.netty.im.simple.v2.im.initializer;
 
 import java.security.KeyStore;
 
@@ -12,8 +12,8 @@ import org.demo.netty.im.fake.im.bs.config.Configuration;
 import org.demo.netty.im.fake.im.coder.PacketEncoder;
 import org.demo.netty.im.fake.util.JsonSupport;
 import org.demo.netty.im.fake.util.PacketDecoder;
-import org.demo.netty.im.simple.v1.im.handler.PollingTransport;
-import org.demo.netty.im.simple.v1.im.handler.WebsocketTransport;
+import org.demo.netty.im.simple.v2.im.handler.PollingTransport;
+import org.demo.netty.im.simple.v2.im.handler.WebsocketTransport;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
