@@ -1,9 +1,9 @@
 package org.demo.netty;
 
-import org.demo.netty.domain.Body;
-import org.demo.netty.domain.BodyType;
-import org.demo.netty.util.ClusterExternalizableUtil;
-import org.demo.netty.util.ExternalizableUtil;
+import org.demo.netty.im.fake.domain.Body;
+import org.demo.netty.im.fake.domain.BodyType;
+import org.demo.netty.im.fake.util.ClusterExternalizableUtil;
+import org.demo.netty.im.fake.util.ExternalizableUtil;
 
 /**
  * 
