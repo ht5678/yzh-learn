@@ -119,7 +119,7 @@ public final class CustomerRoomImpl implements CustomerRoom{
 	
 	private void broadcastWaiter(String teamCode, Integer queueCount) {
 		Collection<Waiter> waiters = OCIMServer.getInst().getDispatcher().getWaiters(teamCode);
-		Body body = new Body(BodyType.WAITTING_NO, queueCount.toString());
+		Body body = new Body(BodyType.WAITING_NO, queueCount.toString());
 		Packet packet = new Packet(PacketType.BROADCAST, body);
 		AddressTo to = null;
 		for (Waiter waiter : waiters) {
@@ -168,7 +168,7 @@ public final class CustomerRoomImpl implements CustomerRoom{
 			int i = 0;
 			for (Customer customer : queue) {
 				Packet packet = new Packet(PacketType.BROADCAST);
-				packet.setBody(new Body(BodyType.WAITTING_NO, String.valueOf(++i)));
+				packet.setBody(new Body(BodyType.WAITING_NO, String.valueOf(++i)));
 				packet.setFrom(from);
 				packet.setTo(new AddressTo(customer.getUid(), customer.getName(), Identity.CUSTOMER));
 				OCIMServer.getInst().getRoutingTable().routePacket(packet);

@@ -2,9 +2,14 @@ package org.demo.netty.im.cs.handler;
 
 import org.demo.netty.domain.Packet;
 import org.demo.netty.exception.ExceptionListener;
+import org.demo.netty.im.OCIMServer;
+import org.demo.netty.im.chain.ReceptionChain;
+import org.demo.netty.im.chain.TransferChain;
+import org.demo.netty.im.chain.WaiterStatusChain;
 import org.demo.netty.im.cs.chain.PacketChain;
 import org.demo.netty.im.cs.heart.HeartDetector;
 import org.demo.netty.session.Session;
+import org.demo.netty.session.WaiterSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,18 +43,30 @@ public class SocketHandler extends SimpleChannelInboundHandler<Packet>{
 		try {
 			Session session = null;
 			switch (packet.getType()) {
-			case PING:
-				HeartDetector.pongCs(ctx.channel());
-				break;
-			case MESSAGE:
-				session = ctx.channel().attr(Session.CLIENT_SESSION).get();
-				PacketChain.dispatcher
-				break;
-
-			default:
-				break;
+				case PING:
+					HeartDetector.pongCs(ctx.channel());
+					break;
+				case MESSAGE:
+					session = ctx.channel().attr(Session.CLIENT_SESSION).get();
+					PacketChain.dispatcherWaiterPacket((WaiterSession)session, packet);
+					break;
+				case TRANSFER:
+					TransferChain.transfer(packet);
+					break;
+				case RECEPTION:
+					session = ctx.channel().attr(Session.CLIENT_SESSION).get();
+					ReceptionChain.directReception((WaiterSession)session, packet);
+					break;
+				case CHANGE_STATUS:
+					WaiterStatusChain.changeStatus((WaiterSession)session, packet);
+					break;
+				case CLOSE_CHAT:
+					dealPacketTypeByClose(packet);
+					break;
+				default:
+					break;
 			}
-		}finally {
+		} finally {
 			ReferenceCountUtil.release(packet);
 		}
 	}
@@ -63,5 +80,9 @@ public class SocketHandler extends SimpleChannelInboundHandler<Packet>{
 	}
 
 	
+	
+	private void dealPacketTypeByClose(Packet packet) {
+		OCIMServer.getInst().getRoutingTable().routeChatClose(packet);
+	}
 	
 }

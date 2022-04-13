@@ -2,12 +2,15 @@ package org.demo.netty.im;
 
 import org.demo.netty.cluster.manager.ClusterManager;
 import org.demo.netty.cluster.task.ClusterMessageRouter;
+import org.demo.netty.dispatcher.AllotDispatcher;
 import org.demo.netty.dispatcher.Dispatcher;
 import org.demo.netty.im.server.BSServer;
+import org.demo.netty.im.server.Server;
 import org.demo.netty.node.NodeID;
 import org.demo.netty.routing.RoutingTable;
 import org.demo.netty.routing.RoutingTableImpl;
 import org.demo.netty.scheduler.CancelableScheduler;
+import org.demo.netty.scheduler.HashedWheelTimeoutScheduler;
 import org.demo.netty.util.ClusterExternalizableUtil;
 import org.demo.netty.util.DummyExternalizableUtil;
 import org.demo.netty.util.ExternalizableUtil;
@@ -46,7 +49,8 @@ public class OCIMServer {
 	
 	private BSServer bsServer;
 	
-	
+//	private Thread csThread;
+	private Thread bsThread;
 	
 	/**
 	 * 
@@ -93,8 +97,22 @@ public class OCIMServer {
 		
 		//
 		this.routingTable = new RoutingTableImpl();
-		this.dispatcher = new allot
+		this.dispatcher = new AllotDispatcher();
+		this.scheduler = new HashedWheelTimeoutScheduler();
+		this.clusterMessageRouter = new ClusterMessageRouter();
 		
+		//
+		try {
+			bsServer = new BSServer();
+		} catch (Exception e) {
+			log.error("创建B/S 应用失败.");
+			throw new Exception("创建B/S 应用失败", e);
+		}
+		
+		bsThread = new Thread(new ServerStart(bsServer));
+		bsThread.setName(BS_THREAD_NAME);
+		
+		bsThread.start();
 		
 	}
 	
@@ -124,5 +142,22 @@ public class OCIMServer {
 	public ClusterMessageRouter getClusterMessageRouter() {
 		return clusterMessageRouter;
 	}
+	
+	
+	/**
+	 * 后台启动
+	 */
+	private class ServerStart implements Runnable {
+		private final Server server;
+
+		public ServerStart(Server server) {
+			this.server = server;
+		}
+
+		@Override
+		public void run() {
+			server.start();
+		}
+	}	
 	
 }

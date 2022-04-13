@@ -1,7 +1,9 @@
 package org.demo.netty.dispatcher;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Queue;
 
 import org.demo.netty.dispatcher.register.EventRegister;
 import org.demo.netty.dispatcher.room.CustomerRoom;
@@ -20,6 +22,7 @@ import org.demo.netty.domain.PacketType;
 import org.demo.netty.domain.Team;
 import org.demo.netty.domain.Waiter;
 import org.demo.netty.im.OCIMServer;
+import org.demo.netty.im.factory.PacketTransferFactory;
 import org.demo.netty.provider.redis.IDProvider;
 import org.demo.netty.provider.redis.NearServiceProvider;
 import org.demo.netty.register.Event;
@@ -29,6 +32,7 @@ import org.demo.netty.session.CustomerSession;
 import org.demo.netty.session.NameFactory;
 import org.demo.netty.session.WaiterSession;
 import org.demo.netty.store.local.LocalTeamStore;
+import org.demo.netty.store.local.LocalWaiterStore;
 import org.demo.netty.transfer.TransferTeam;
 import org.demo.netty.transfer.TransferWaiter;
 import org.demo.netty.util.JsonUtils;
@@ -176,11 +180,171 @@ public class AllotDispatcher implements Dispatcher{
 		if(null!=event){
 			switch (event.getType()) {
 			case CUSTOMER_REQ:
-				dealcustomer
+				dealCustomerRequestEvent(event);
 				break;
-
+			case READY_DONE:
+				dealReadyDoneEvent(event);
+				break;
+			case WAITER_MANUAL_REQ:
+				dealWaiterManualReq(event);
+				break;
+			case TRANSFER_TEAM:
+				dealTransferTeam(event);
+				break;
 			default:
-				break;
+				throw new IllegalArgumentException("不支持的分配事件类型");
+			}
+		} else {
+			throw new IllegalArgumentException("解析的分配事件为空");
+		}
+	}
+	
+	
+	/**
+	 * 处理按团队转接客户
+	 * @param event
+	 */
+	private void dealTransferTeam(Event event) {
+		TransferTeam transferTeam = null;
+		try {
+			transferTeam = JsonUtils.getJson().readClass(event.getContent(), TransferTeam.class);
+		} catch (IOException e) {
+			log.error("转接团队反序列化失败， TransferTeam: {}", event.getContent());
+			return;
+		}
+		CustomerSession customerSession = OCIMServer.getInst().getRoutingTable().getLocalCustomerSession(event.getUid());
+		if (null != customerSession) {
+			if (null != transferTeam) {
+				customerSession.setStatus(CustomerAssignStatus.ASSIGNING);
+				customerSession.setWaiter(null, null);
+
+				PacketTransferFactory.getInst().transferByTeamSuccess(customerSession.getCid(),
+						transferTeam, "提示，转入客户成功。");
+
+				// 转接成功释放连接
+				directReleaseRelation(transferTeam.getFromWc());
+
+				Customer customer = customerSession.getCustomer();
+				customer.setTenantCode(transferTeam.getTtc());
+				customer.setTeamCode(transferTeam.getTmc());
+				customer.setSkillCode(transferTeam.getSkc());
+				customer.setSkillName(transferTeam.getSkn());
+				// 获取客服
+				Waiter waiter = allotTransferTeam(customerSession);
+				Packet transferTeamPacket = null;
+				String content;
+				AddressTo to;
+				// 处于排队情况，需要通知客户正在排队
+				if (null == waiter) {
+					content = "非常抱歉，为您转接的服务队列客服人员繁忙，已加入服务队列等待列表，还请您耐心等待...";
+					transferTeamPacket = createCacheTransferPacket(customerSession, transferTeam, content);
+					to = new AddressTo(customer.getUid(), customerSession.getName(), Identity.CUSTOMER);
+
+					content = "提示，客户来自工号【" + transferTeam.getFromWc() + "】转入， 备注信息：" + transferTeam.getReason();
+					Packet cacheTransferTeamPacket = createCacheTransferPacket(customerSession, transferTeam, content);
+					customerSession.cachePacket(cacheTransferTeamPacket);
+				} else {
+					content = "客户来自工号【" + transferTeam.getFromWc() + "】的转接， 备注信息：" + transferTeam.getReason();
+					transferTeamPacket = createCacheTransferPacket(customerSession, transferTeam, content);
+					to = new AddressTo(waiter.getWaiterCode(), waiter.getWaiterName(), Identity.WAITER);
+				}
+				transferTeamPacket.setTo(to);
+				OCIMServer.getInst().getRoutingTable().routePacket(transferTeamPacket);
+			}
+		} else {
+			PacketTransferFactory.getInst().transferByTeamSuccess(customerSession.getCid(),
+					transferTeam, "提示，客户状态有误， 拒绝转入。");
+		}
+	}
+	
+	
+	/**
+	 * 分配转接团队
+	 * @param customerSession
+	 * @return
+	 */
+	private Waiter allotTransferTeam(CustomerSession customerSession) {
+		Customer customer = customerSession.getCustomer();
+		// 判断排队队列是否有排队客户，如果存在直接进行排队
+		if (isWaiting(customer)) {
+			return null;
+		}
+		synchronized (customerSession) {
+			Waiter waiter = cyclicAllot(customer);
+			// 分配客服
+			if (null != waiter) {
+				customerSession.setWaiter(waiter.getWaiterCode(), waiter.getWaiterName());
+				buildChat(customerSession, waiter);
+				return waiter;
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * 当按团队转接时，未直接获取客服，则缓存转接备注信息
+	 * @param customerSession
+	 * @param transferTeam
+	 * @param content
+	 * @return
+	 */
+	private Packet createCacheTransferPacket(CustomerSession customerSession, TransferTeam transferTeam, String content) {
+		Packet packet = new Packet(PacketType.MESSAGE);
+		Body body = new Body(BodyType.TIP, content);
+		AddressFrom from = new AddressFrom(transferTeam.getUid(), transferTeam.getName(), Identity.CUSTOMER);
+		packet.setPid(UUIDUtils.createPid(911));
+		packet.setTtc(customerSession.getTenantCode());
+		packet.setTmc(customerSession.getTeamCode());
+		packet.setFrom(from);
+		packet.setBody(body);
+		return packet;
+	}
+	
+	
+	/**
+	 * 处理客服手动接入
+	 * @param event
+	 */
+	private void dealWaiterManualReq(Event event) {
+		CustomerSession customerSession = OCIMServer.getInst().getRoutingTable().getLocalCustomerSession(event.getUid());
+		if (null != customerSession) {
+			synchronized (customerSession) {
+				Waiter waiter = waiterRoom.directAcquire(event.getTeamCode(), event.getWaiterCode());
+				if (null != waiter) {
+					this.calcCustomerWaitTime(customerSession.getCustomer());
+					customerSession.setWaiter(waiter.getWaiterCode(), waiter.getWaiterName());
+					buildChat(customerSession, waiter);
+				}
+			}
+		} else {
+			log.info("客服自动接入过程中，客户自动离开，停止为当前客户分配客服");
+		}
+	}
+	
+	
+	/**
+	 * 执行最后分配任务
+	 * @param event
+	 */
+	private void dealReadyDoneEvent(Event event) {
+		String waiterName = event.getWaiterName();
+		String waiterCode = event.getWaiterCode();
+		CustomerSession customerSession = OCIMServer.getInst().getRoutingTable().getLocalCustomerSession(event.getUid());
+		if (null == customerSession) {
+			directReleaseRelation(event.getWaiterCode());
+			event.setType(EventType.WAITER_IDLE);
+			// 分配失败 重新注册客服空闲事件
+			registerAllotEvent(event);
+			log.warn("客户分配客服过程离开，无需处理 READY_DONE", event.getUid());
+		} else {
+			synchronized (customerSession) {
+				if (customerSession.getStatus() != CustomerAssignStatus.ASSIGNED) {
+					this.calcCustomerWaitTime(customerSession.getCustomer());
+					Waiter waiter = waiterRoom.getWaiter(event.getTeamCode(), waiterCode);
+					customerSession.setWaiter(waiterCode, waiterName);
+					buildChat(customerSession, waiter);
+				}
 			}
 		}
 	}
@@ -192,8 +356,10 @@ public class AllotDispatcher implements Dispatcher{
 	private void dealCustomerRequestEvent(Event event) {
 		CustomerSession customerSession = OCIMServer.getInst().getRoutingTable().getLocalCustomerSession(event.getUid());
 		if(null!=customerSession) {
-			allot
-		}
+			allotWaiterForCustomer(customerSession);
+		} else {
+            log.warn("处理客户请求分配事件，无法找到会话Session, Event: {}", event);
+        }
 	}
 	
 	
@@ -219,10 +385,12 @@ public class AllotDispatcher implements Dispatcher{
 				//分配客服
 				if(null != waiter){
 					customerSession.setWaiter(waiter.getWaiterCode(), waiter.getWaiterName());
-					build
+					buildChat(customerSession, waiter);
+					return waiter;
 				}
 			}
 		}
+		return null;
 	}
 	
 	
@@ -291,8 +459,44 @@ public class AllotDispatcher implements Dispatcher{
 		String chatId = IDProvider.getInstance().getChatId();
 		customerSession.setCid(chatId);
 		//分配客服成功, 给用户发消息
-		notice
+		noticeBuildChatToCustomer(customerSession);
+		//发送团队自动回复语
+		teamAutoReply(customerSession);
+		//发送客服自动回复语
+		waiterAutoReply(customerSession);
+		//通知客服与客户创建连接成功
+		noticeBuildChatToWaiter(customerSession);
+		//缓存的消息
+		sendCustomerPacketCache(customerSession);
+		//缓存最近接待客服
+		cacheNearCustomer(customerSession.getCustomer(), waiter.getWaiterCode());
 	}
+	
+	
+	/**
+	 * 通知客服 客户分配进线
+	 * @param customerSession
+	 */
+	private void noticeBuildChatToWaiter(CustomerSession customerSession) {
+		String uid = customerSession.getUid();
+		String waiterCode = customerSession.getWaiterCode();
+		Customer customer = customerSession.getCustomer();
+		String chatId = customerSession.getCid();
+		String content = createBuildChat(customerSession);
+
+		Packet buildChatPacket = new Packet(PacketType.BUILD_CHAT);
+		Body body = new Body(BodyType.SUCCESS, content);
+		buildChatPacket.setPid(UUIDUtils.createPid(904));
+		buildChatPacket.setTtc(customerSession.getTenantCode());
+		buildChatPacket.setTmc(customerSession.getTeamCode());
+		AddressTo to = new AddressTo(waiterCode, Identity.WAITER);
+		AddressFrom from = new AddressFrom(uid, customer.getName(), customerSession.getIdy());
+		buildChatPacket.setCid(chatId);
+		buildChatPacket.setTo(to);
+		buildChatPacket.setFrom(from);
+		buildChatPacket.setBody(body);
+		OCIMServer.getInst().getRoutingTable().routePacket(buildChatPacket);
+	} 
 	
 	
 	/**
@@ -308,7 +512,29 @@ public class AllotDispatcher implements Dispatcher{
 		AddressTo to = new AddressTo(uid, customerSession.getIdy());
 		AddressFrom from = new AddressFrom(waiterCode, Identity.SYS);
 		buildChatPacket.setPid(UUIDUtils.createPid(901));
+		buildChatPacket.setCid(customerSession.getCid());
+		buildChatPacket.setTo(to);
+		buildChatPacket.setFrom(from);
+		buildChatPacket.setBody(body);
 		
+		OCIMServer.getInst().getRoutingTable().routePacket(buildChatPacket);
+	}
+	
+	
+	/**
+	 * 发送客户未分配客服前缓存的消息
+	 * @param customerSession
+	 */
+	private void sendCustomerPacketCache(CustomerSession customerSession) {
+		String waiterCode = customerSession.getWaiterCode();
+		Queue<Packet> packets = customerSession.transportStore().getFuturePackets();
+		Packet pt = packets.poll();
+		while (pt != null) {
+			pt.setCid(customerSession.getCid());
+			pt.setTo(new AddressTo(waiterCode, Identity.WAITER));
+			OCIMServer.getInst().getRoutingTable().routePacket(pt);
+			pt = packets.poll();
+		}
 	}
 	
 	
@@ -335,32 +561,119 @@ public class AllotDispatcher implements Dispatcher{
 	
 	
 	/**
+	 * 团队自动回复语
+	 */
+	private void teamAutoReply(CustomerSession customerSession) {
+		String replyMsg = LocalTeamStore.getInst().getTeamReply(customerSession.getTeamCode());
+		if(null != replyMsg) {
+			sendAutoReplyMsg(customerSession, replyMsg, 909, BodyType.TEAM_GREET);
+		}
+	}
+	
+	
+	/**
+	 * 判断客服是否设置自动回复 , 如果设置则发送
+	 */
+	private void waiterAutoReply(CustomerSession customerSession) {
+		String waiterCode = customerSession.getWaiterCode();
+		//
+		LocalWaiterStore.Result result = LocalWaiterStore.getInst().getWaiterReply(waiterCode);
+		if(result.getRc() ==0) {
+			sendAutoReplyMsg(customerSession, result.getMsg(), 902, BodyType.WAITER_GREET);
+		}
+	}
+	
+	
+	/**
+	 * 发送自动回复语
+	 */
+	private void sendAutoReplyMsg(CustomerSession customerSession , String replyMsg , int prePid , BodyType bodyType) {
+		String uid = customerSession.getUid();
+		String waiterCode = customerSession.getWaiterCode();
+		Body body = new Body(bodyType, replyMsg);
+		
+		//
+		Packet greetPacketCustomer = new Packet(PacketType.BUILD_CHAT);
+		greetPacketCustomer.setPid(UUIDUtils.createPid(prePid));
+		greetPacketCustomer.setCid(customerSession.getCid());
+		greetPacketCustomer.setTtc(customerSession.getTenantCode());
+		greetPacketCustomer.setTmc(customerSession.getTeamCode());
+		greetPacketCustomer.setTo(new AddressTo(uid, customerSession.getName(), customerSession.getIdy()));
+		greetPacketCustomer.setFrom(new AddressFrom(waiterCode, Identity.SYS));
+		greetPacketCustomer.setBody(body);
+		OCIMServer.getInst().getRoutingTable().routePacket(greetPacketCustomer);
+
+		// TODO SYS
+		Packet greetPacketWaiter = new Packet(PacketType.BUILD_CHAT);
+		greetPacketWaiter.setPid(UUIDUtils.createPid(prePid));
+		greetPacketWaiter.setCid(customerSession.getCid());
+		greetPacketWaiter.setTtc(customerSession.getTenantCode());
+		greetPacketWaiter.setTmc(customerSession.getTeamCode());
+		greetPacketWaiter.setTo(new AddressTo(waiterCode, Identity.SYS));
+		greetPacketWaiter.setFrom(new AddressFrom(uid, customerSession.getName(), customerSession.getIdy()));
+		greetPacketWaiter.setBody(body);
+		OCIMServer.getInst().getRoutingTable().routePacket(greetPacketWaiter);
+	}
+	
+	
+	/**
+	 * 缓存客户最近咨询客服ID
+	 * @param customer
+	 * @param waiterCode
+	 */
+	private void cacheNearCustomer(Customer customer, String waiterCode) {
+		String assignRule = LocalTeamStore.getInst().getTeamAssignRule(customer.getTeamCode());
+		if ("0".equals(assignRule)) {
+			// 缓存最近咨询客服工号
+			NearServiceProvider.getInst().cacheNearWaiter(customer.getTeamCode(), customer.getUid(), waiterCode);
+		}
+	}
+	
+	
+	/**
 	 * 
 	 */
 	@Override
 	public void directReleaseRelation(String waiterCode) {
-		// TODO Auto-generated method stub
-		
+		String teamCode = LocalWaiterStore.getInst().getTeamCode(waiterCode);
+		waiterRoom.release(teamCode, waiterCode);
+	}
+
+	@Override
+	public synchronized void closeChat(CustomerSession session) {
+		if (session.getStatus() == CustomerAssignStatus.ASSIGNED) {
+			waiterRoom.release(session.getTeamCode(), session.getWaiterCode());
+			session.setStatus(CustomerAssignStatus.UNASSIGNED);
+			session.setWaiter(null, null);
+		}
 	}
 
 	@Override
 	public boolean transferByWaiter(TransferWaiter transferWaiter) {
-		// TODO Auto-generated method stub
-		return false;
+		return waiterRoom.tryTransferByWaiter(transferWaiter);
 	}
 
 	@Override
 	public boolean transferByTeam(TransferTeam transferTeam) {
-		// TODO Auto-generated method stub
+		Event event = new Event(EventType.TRANSFER_TEAM, transferTeam.getUid(),
+				transferTeam.getTtc(), transferTeam.getTmc());
+		try {
+			event.setContent(JsonUtils.getJson().writeString(transferTeam));
+		} catch (IOException e) {
+			log.error("序列化团队转接信息失败 TransferTeam：{}", transferTeam);
+		}
+		eventRegister.register(event);
 		return false;
 	}
 
-	@Override
-	public void closeChat(CustomerSession session) {
-		// TODO Auto-generated method stub
-		
-	}
 
-	
+	/**
+	 * 计算排队等待时间
+	 * @param customer
+	 */
+	private void calcCustomerWaitTime(Customer customer) {
+		Long waitTime = (System.currentTimeMillis() - customer.getTime()) / 1000;
+		customer.setWait(Math.toIntExact(waitTime));
+	}
 	
 }
