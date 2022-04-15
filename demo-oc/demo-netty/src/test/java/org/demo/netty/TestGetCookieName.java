@@ -24,8 +24,11 @@ public class TestGetCookieName {
 	 * @throws BSAuthorizeException 
 	 */
 	public static void main(String[] args) throws BSAuthorizeException {
+		
+		
+		
 		HttpHeaders headers = new DefaultHttpHeaders();
-		headers.add("Cookie", CUSTOMER_COOKIE_NAME+":tes2;tt:22");
+		headers.add("Cookie", CUSTOMER_COOKIE_NAME+"=tes2;tt:22");
 		
 		String result = getCustomerCookieValue(headers);
 		System.out.println(result);

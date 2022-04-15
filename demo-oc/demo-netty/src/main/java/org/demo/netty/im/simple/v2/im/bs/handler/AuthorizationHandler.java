@@ -2,7 +2,6 @@ package org.demo.netty.im.simple.v2.im.bs.handler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.demo.netty.im.fake.domain.Packet;
 import org.demo.netty.im.fake.domain.PacketType;
@@ -10,13 +9,12 @@ import org.demo.netty.im.fake.domain.Transport;
 import org.demo.netty.im.fake.exception.BSAuthorizeException;
 import org.demo.netty.im.fake.im.bs.config.Configuration;
 import org.demo.netty.im.fake.im.bs.handler.EncoderHandler;
-import org.demo.netty.im.fake.im.bs.oauth.CertificationCenter;
 import org.demo.netty.im.fake.scheduler.SchedulerKey;
 import org.demo.netty.im.fake.scheduler.SchedulerKey.SchedulerType;
 import org.demo.netty.im.fake.util.HttpRequests;
 import org.demo.netty.im.fake.util.HttpResponses;
 import org.demo.netty.im.fake.util.PacketDecoder;
-import org.demo.netty.im.simple.v2.im.OCIMServer;
+import org.demo.netty.im.simple.v2.im.bs.oauth.CertificationCenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

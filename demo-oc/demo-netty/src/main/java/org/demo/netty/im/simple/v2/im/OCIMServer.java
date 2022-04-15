@@ -1,6 +1,8 @@
 package org.demo.netty.im.simple.v2.im;
 
 import org.demo.netty.im.fake.boot.Server;
+import org.demo.netty.im.fake.routing.RoutingTable;
+import org.demo.netty.im.fake.routing.RoutingTableImpl;
 import org.demo.netty.im.simple.v2.im.server.BSServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,7 @@ public class OCIMServer {
 	
 	private static String BS_THREAD_NAME = "OCIM-BS-Thread-V1";
 	
-	
+	private RoutingTable routingTable;
 	
 	
 	/**
@@ -62,6 +64,8 @@ public class OCIMServer {
 	 * 
 	 */
 	public void startCluster(boolean isCluster)throws Exception {
+		
+		this.routingTable = new RoutingTableImpl();
 		
 		try {
 			bsServer = new BSServer();
