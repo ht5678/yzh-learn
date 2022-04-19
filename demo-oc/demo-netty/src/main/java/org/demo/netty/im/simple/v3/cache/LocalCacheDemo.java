@@ -24,7 +24,7 @@ public class LocalCacheDemo {
 
 	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		
 		Config config = new Config();
 //		HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance(config);
@@ -41,10 +41,20 @@ public class LocalCacheDemo {
 		packetCache.put("22", new Body(BodyType.LOGIN,"content test"));
 		
 //		System.out.println("cache is master member : "+CacheFactory.isMasterMember());
+		
+		//size指的是value对象的长度
 		System.out.println("cache name xxx max size : "+CacheFactory.getMaxCacheSize("test"));
 		System.out.println("cache max life time : "+CacheFactory.getMaxLifeTime("test"));
 		
 		System.out.println(packetCache.size());
+		
+		
+		
+		//lock demo , timeout没有实际作用 ,  lock , unlock实际是ReentrantLock的方法调用
+		boolean result = packetCache.lock("123", -1);
+		System.out.println(result);
+		boolean flag =  packetCache.unlock("123");
+		System.out.println(flag);
 	}
 	
 }
