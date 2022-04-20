@@ -74,7 +74,7 @@ public class OCIMServer {
 	 * @throws Exception
 	 */
 	public OCIMServer(HazelcastInstance hazelcastInstance)throws Exception {
-		if(null != hazelcastInstance) {
+		if(null != instance) {
 			throw new IllegalStateException("已经存在一个OCServer正在运行中 ... ");
 		}
 		instance = this;
@@ -93,13 +93,17 @@ public class OCIMServer {
 			//hazelcast添加 cluster listener , lifecycle listener , member listener 
 			//配置cache , queue , set
 			//
-			nodeID =  clusterManager.startCluster();
 		}else {
+			nodeID =  clusterManager.startCluster();
 			ExternalizableUtil.getInstance().setStrategy(new DummyExternalizableUtil());
 		}
 		
-		//
+		//init
+		//waiter cache routes, customer cache routes ,  (cluster cache imap)
+		//waiter session(存到LocalRoutingTable.concurrentMap里) , customer session(存到LocalRoutingTable.concurrentMap里) 
 		this.routingTable = new RoutingTableImpl();
+		
+		//
 		this.dispatcher = new AllotDispatcher();
 		this.scheduler = new HashedWheelTimeoutScheduler();
 		this.clusterMessageRouter = new ClusterMessageRouter();

@@ -63,8 +63,11 @@ public class AllotDispatcher implements Dispatcher{
 	 * 
 	 */
 	public AllotDispatcher() {
+		//cluster map cache ; local map cache
 		nameFactory = new NameFactory();
+		//local custom queue ,底层是 linked blocking queue 
 		eventRegister = new EventRegister(nameFactory);
+		//
 		waiterRoom = new WaiterRoomImpl(nameFactory, eventRegister);
 		customerTable = new CustomerRoomImpl(nameFactory);
 		eventScheduler = new EventScheduler(this, eventRegister);
