@@ -90,6 +90,9 @@ public class OCIMServer {
 		if(isCluster && null != hazelcastInstance) {
 			ExternalizableUtil.getInstance().setStrategy(new ClusterExternalizableUtil());
 			clusterManager = new ClusterManager(hazelcastInstance);
+			//hazelcast添加 cluster listener , lifecycle listener , member listener 
+			//配置cache , queue , set
+			//
 			nodeID =  clusterManager.startCluster();
 		}else {
 			ExternalizableUtil.getInstance().setStrategy(new DummyExternalizableUtil());

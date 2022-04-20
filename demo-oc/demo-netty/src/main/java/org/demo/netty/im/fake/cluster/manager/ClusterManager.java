@@ -51,10 +51,17 @@ public class ClusterManager {
 		hazelcastInstance.getLifecycleService().addLifecycleListener(clusterListener);
 		cluster.addMembershipListener(clusterListener);
 		
+		//local cache底层使用concurrent hash map
+		//配置cache使用 hazelcast cluster cache策略 , 底层IMap
 		CacheFactory.startCluster(hazelcastInstance);
+		//local queue策略底层是linked blocking queue
+		//cluster queue策略底层是hazelcast的 IQueue
 		CustomQueueFactory.startCluster(hazelcastInstance);
+		//local set策略底层是hashset
+		//cluster set策略底层是hazelcast的ISet
 		CustomSetFactory.startCluster(hazelcastInstance);
 		
+		//变更服务状态
 		state = State.started;
 		log.info("成功启动Hazelcast集群");
 		
