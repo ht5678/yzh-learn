@@ -39,7 +39,7 @@
        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
        <!-- <springframework.version>4.3.18.RELEASE</springframework.version> -->
-       <springframework.version>4.3.25.RELEASE</springframework.version>
+       <springframework.version>5.3.19</springframework.version>
        <JAVA_HOME>C:\Program Files\Java\jdk1.8.0_51</JAVA_HOME>
        <slf4j.version>1.7.5</slf4j.version>
        <shiro.version>1.2.3</shiro.version>
