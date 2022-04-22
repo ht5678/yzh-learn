@@ -26,8 +26,16 @@
                 
                ws.onopen = function()
                {
-                  // Web Socket 已连接上，使用 send() 方法发送数据
-                  ws.send("send");
+               
+               
+                  // Web Socket 已连接上，使用 send() 方法发送数据 ,  text message
+                  //ws.send('{"cid":"cid","type":"MESSAGE","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650616912574,"datetime":"2022-04-22 16:41:52","ver":"1.0"}');
+                  
+               	  //test ping
+               	  ws.send('{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');   
+                  
+                  
+                  //
                   alert("数据发送中...");
                };
                 
