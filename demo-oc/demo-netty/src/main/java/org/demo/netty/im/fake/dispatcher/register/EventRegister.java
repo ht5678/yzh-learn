@@ -2,8 +2,8 @@ package org.demo.netty.im.fake.dispatcher.register;
 
 import java.util.concurrent.TimeUnit;
 
-import org.demo.netty.im.fake.collection.CustomQueue;
 import org.demo.netty.im.fake.register.Event;
+import org.demo.netty.im.fake.session.CustomQueue;
 import org.demo.netty.im.fake.session.NameFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,6 +4,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.nio.charset.StandardCharsets;
 
 import org.demo.netty.im.fake.im.OCIMServer;
 import org.demo.netty.im.fake.node.NodeID;
@@ -28,7 +29,9 @@ public class CustomerRoute implements Externalizable, Route{
 	public CustomerRoute(CustomerSession session) {
 		this.uid = session.getUid();
 		this.version = session.getVersion();
-		this.nodeID = OCIMServer.getInst().getNodeID();
+		if(OCIMServer.getInst()!=null) {
+			this.nodeID = OCIMServer.getInst().getNodeID();
+		}
 	}
 	
 	@Override

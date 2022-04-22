@@ -1,8 +1,12 @@
 package org.demo.netty.im.simple.v2.im;
 
 import org.demo.netty.im.fake.boot.Server;
+import org.demo.netty.im.fake.dispatcher.AllotDispatcher;
+import org.demo.netty.im.fake.dispatcher.Dispatcher;
 import org.demo.netty.im.fake.routing.RoutingTable;
 import org.demo.netty.im.fake.routing.RoutingTableImpl;
+import org.demo.netty.im.fake.util.ClusterExternalizableUtil;
+import org.demo.netty.im.fake.util.ExternalizableUtil;
 import org.demo.netty.im.simple.v2.im.server.BSServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +32,8 @@ public class OCIMServer {
 	private static String BS_THREAD_NAME = "OCIM-BS-Thread-V1";
 	
 	private RoutingTable routingTable;
+	
+	private Dispatcher dispatcher;
 	
 	
 	/**
@@ -65,7 +71,11 @@ public class OCIMServer {
 	 */
 	public void startCluster(boolean isCluster)throws Exception {
 		
+		ExternalizableUtil.getInstance().setStrategy(new ClusterExternalizableUtil());
+		
 		this.routingTable = new RoutingTableImpl();
+		
+		this.dispatcher = new AllotDispatcher();
 		
 		try {
 			bsServer = new BSServer();
@@ -80,6 +90,23 @@ public class OCIMServer {
 		bsThread.start();
 	}
 	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public RoutingTable getRoutingTable() {
+		return instance.routingTable;
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public Dispatcher getDispatcher() {
+		return instance.dispatcher;
+	}
 	
 	
 	
