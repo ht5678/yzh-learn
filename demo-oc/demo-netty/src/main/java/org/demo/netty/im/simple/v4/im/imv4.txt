@@ -13,4 +13,7 @@ v3 : LocalCacheDemo :  本地缓存测试 concurrent hash map
 	   
 	   
 	   
-v4 : 
+v4 : DefaultCustomQueue (CustomQueue) 底层结构是 LinkedBlockingQueue 
+	   LocalTransportStore 底层结构是 CustomQueue
+	   
+	   

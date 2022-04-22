@@ -13,7 +13,7 @@ import org.demo.netty.im.fake.session.LocalTransportStore;
 import org.demo.netty.im.fake.session.TransportStore;
 import org.demo.netty.im.fake.session.monitor.HttpPollCycleMonitor;
 import org.demo.netty.im.fake.util.UUIDUtils;
-import org.demo.netty.im.simple.v4.im.OCIMServer;
+import org.demo.netty.im.simple.v4.im.OCIMServerV4;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -125,7 +125,7 @@ public class LocalCustomerSession implements CustomerSession{
 
 	@Override
 	public void bindRoute() {
-		OCIMServer.getInst().getRoutingTable().registerLocalCustomerSession(this);
+		OCIMServerV4.getInst().getRoutingTable().registerLocalCustomerSession(this);
 	}
 
 	@Override
@@ -186,11 +186,11 @@ public class LocalCustomerSession implements CustomerSession{
 			return;
 		}
 		closed = true;
-		OCIMServer.getInst().getDispatcher().removeQueueWait(customer);
+		OCIMServerV4.getInst().getDispatcher().removeQueueWait(customer);
 		if (this.getStatus() == CustomerAssignStatus.ASSIGNED) {
 			CloseChatChain.closeChatToWaiter(this, Constants.DISCONNECT_MESSAGE);
 		}
-		OCIMServer.getInst().getRoutingTable().removeLocalCustomerSession(this);
+		OCIMServerV4.getInst().getRoutingTable().removeLocalCustomerSession(this);
 	}
 
 	@Override
@@ -199,7 +199,7 @@ public class LocalCustomerSession implements CustomerSession{
 			return;
 		}
 		closed = true;
-		OCIMServer.getInst().getDispatcher().closeChat(this);
+		OCIMServerV4.getInst().getDispatcher().closeChat(this);
 		if (null != this.channel) {
 			this.channel.close();
 		}

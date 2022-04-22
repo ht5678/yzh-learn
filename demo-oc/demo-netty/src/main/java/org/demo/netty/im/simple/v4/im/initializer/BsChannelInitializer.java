@@ -9,6 +9,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.demo.netty.im.fake.im.bs.config.Configuration;
+import org.demo.netty.im.fake.im.bs.handler.EncoderHandler;
+import org.demo.netty.im.fake.im.bs.handler.WrongUrlHandler;
 import org.demo.netty.im.fake.im.coder.PacketEncoder;
 import org.demo.netty.im.fake.util.JsonSupport;
 import org.demo.netty.im.fake.util.PacketDecoder;
@@ -59,8 +61,8 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 //	
 	private PollingTransport xhrPollingTransport;
 	private WebsocketTransport websocketTransport;
-//	private WrongUrlHandler wrongUrlHandler;
-//	private EncoderHandler encoderHandler;
+	private WrongUrlHandler wrongUrlHandler;
+	private EncoderHandler encoderHandler;
 	
 	
 	
@@ -96,8 +98,8 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 		authorizeHandler = new AuthorizationHandler(config, decoder);
 		xhrPollingTransport = new PollingTransport(config);
 		websocketTransport = new WebsocketTransport(config, isSsl, encoder, decoder);
-//		encoderHandler = new EncoderHandler(config , encoder);
-//		wrongUrlHandler = new WrongUrlHandler();
+		encoderHandler = new EncoderHandler(config , encoder);
+		wrongUrlHandler = new WrongUrlHandler();
 		
 	}
 	
@@ -151,8 +153,8 @@ public class BsChannelInitializer extends ChannelInitializer<Channel>{
 			pipeline.addLast(WEB_SOCKET_TRANSPORT_COMPRESSION , new WebSocketServerCompressionHandler());
 		}
 		pipeline.addLast(WEB_SOCKET_TRANSPORT , websocketTransport);
-//		pipeline.addLast(SOCKET_TO_ENCODER , encoderHandler);
-//		pipeline.addLast(WRONG_URL_HANDLER , wrongUrlHandler);
+		pipeline.addLast(SOCKET_TO_ENCODER , encoderHandler);
+		pipeline.addLast(WRONG_URL_HANDLER , wrongUrlHandler);
 	}
 	
 	

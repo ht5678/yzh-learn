@@ -183,13 +183,36 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 	
 	
 	/**
+	 * 
+	 * 唯一的一次http请求。
+	 * 该方法用于处理websocket握手请求
+	 * 
+	 * 
+	 * *1*
+	 * netty的websocket协议是在HTTP协议基础之上完成的，要使用WebSocket协议，需要将HTTP请求头中添加Upgrade:WebSocket
+	 * 
+	 * *2*
+	 * WebSocket相关的编解码是在handshaker.handshake(ctx.channel(), req);中添加进去的。handshaker是WebSocketServerHandshaker的对象。
+	 * handshake方法中建握手响应消息返回给客户端。同时将WebSocket相关编解码类添加到ChannelPipeline中。
+	 * 
+	 * 
 	 * http升级  web socket
 	 */
 	private void upgradeWebSocket(ChannelHandlerContext ctx , Session session , FullHttpRequest req) {
+		//如果HTTP解码失败，返回异常。要求Upgrade为websocket，过滤掉get/Post
+		log.info("web socket upgrade header : "+req.headers().get("Upgrade"));
+		System.out.println("web socket upgrade header : "+req.headers().get("Upgrade"));
 		final Channel channel = ctx.channel();
+		// 构造握手响应返回，本机测试
 		WebSocketServerHandshakerFactory factory = new WebSocketServerHandshakerFactory(getWebsocketUrl(req) , null , true , config.getMaxFramePayloadLength());
+		//通过工厂来创建WebSocketServerHandshaker实例
 		WebSocketServerHandshaker handshake = factory.newHandshaker(req);
 		
+		
+		 /*
+        通过WebSocketServerHandshaker来构建握手响应消息返回给客户端。
+        同时将WebSocket相关编解码类添加到ChannelPipeline中，该功能需要阅读handshake的源码。
+         */
 		if(handshake != null) {
 			handshake.handshake(channel, req , getResponseHeaders(session) , ctx.newPromise()).addListener((ChannelFutureListener) future -> {
 					if(future.isSuccess()) {
@@ -201,7 +224,7 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 						log.error("uid : {}  握手失败 : {} " , session.getUid() , future.cause());
 					}
 			});
-		}else {
+		}else {//若header upgrade不是websocket方式，则创建BAD_REQUEST（400）的req，返回给客户端
 			WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(channel);
 		}
 		

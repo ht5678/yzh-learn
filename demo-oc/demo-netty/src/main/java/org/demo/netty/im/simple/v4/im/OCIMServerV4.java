@@ -19,10 +19,10 @@ import com.hazelcast.core.HazelcastInstance;
  * @author yuezh2
  * @date	  2022年4月13日 下午5:41:06
  */
-public class OCIMServer {
-	private static Logger log = LoggerFactory.getLogger(OCIMServer.class);
+public class OCIMServerV4 {
+	private static Logger log = LoggerFactory.getLogger(OCIMServerV4.class);
 	
-	private static OCIMServer instance;
+	private static OCIMServerV4 instance;
 	
 	private HazelcastInstance hazelcastInstance;
 	
@@ -40,7 +40,7 @@ public class OCIMServer {
 	 * 
 	 * @return
 	 */
-	public static OCIMServer getInst() {
+	public static OCIMServerV4 getInst() {
 		return instance;
 	}
 	
@@ -48,7 +48,7 @@ public class OCIMServer {
 	 * 
 	 * @throws Exception
 	 */
-	public OCIMServer() throws Exception {
+	public OCIMServerV4() throws Exception {
 		this(null);
 	}
 	
@@ -57,7 +57,7 @@ public class OCIMServer {
 	 * @param hazelcastInstance
 	 * @throws Exception
 	 */
-	public OCIMServer(HazelcastInstance hazelcastInstance)throws Exception {
+	public OCIMServerV4(HazelcastInstance hazelcastInstance)throws Exception {
 		if(null != hazelcastInstance) {
 			throw new IllegalStateException("已经存在一个OCServer正在运行中 ... ");
 		}
@@ -146,7 +146,7 @@ public class OCIMServer {
 		
 		HazelcastInstance hazelcastInstance = null;
 		
-		OCIMServer ocimServer = new OCIMServer(hazelcastInstance);
+		OCIMServerV4 ocimServer = new OCIMServerV4(hazelcastInstance);
 		ocimServer.startCluster(true);
 	}
 	
