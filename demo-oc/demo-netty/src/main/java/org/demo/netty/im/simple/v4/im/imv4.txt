@@ -11,9 +11,47 @@ v3 : LocalCacheDemo :  本地缓存测试 concurrent hash map
 	   NodeIdDemo     :  生成nodeid测试
 	   RoutingTableDemo : 测试用户session和route存在哪里 , session存在local cache ; route信息存在hazelcast imap里
 	   
-	   
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	   
 	   
 v4 : DefaultCustomQueue (CustomQueue) 底层结构是 LinkedBlockingQueue 
 	   LocalTransportStore 底层结构是 CustomQueue
+	   *****org.demo.netty.im.fake.im.bs.handler.PollingTransport.channelRead(ChannelHandlerContext, Object)是切入点*****
+	   
+	   
+	   CustomerAssignStatus.ASSIGNED;		//customer是否被分配客服	   
+	   OCIMServer.getInst().getRoutingTable().routePacket(packet);		//分发packet , 根据packet中的AddressTo.to.uid , 根据uid从routeQueue里获取netty  session ,  分发给customer或者waiter
+	   		//如果没有分配客服 ,
+	   			// 
+	   			
+	   org.demo.netty.im.simple.v4.im.session.LocalCustomerSession.sendPacket(Packet)
+		//如果是socket连接 ,  channel.writeAndFlush(packet);  发送消息
+		//如果不是socket连接(客户端连接)
+		//add到LocalTransportStore的DefaultCustomQueue里 , linkedBlockingQueue
+		//把packet封装成OutPacketMessage 发送出去 ,  channel.writeAndFlush(new OutPacketMessage(this));
+		
+		
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		
+		
+		org.demo.netty.im.fake.routing.RoutingTableImpl.dealOfflineWaiterPacket(Packet)
+		org.demo.netty.im.fake.store.remote.packet.PacketStoreManager.addRemoteData(RemoteData)
+		//OFFLINE : insert到db存起来 ,
+		//REVOCATION : 修改message的revocation = 1;
+		// 
+		
+		
+		//存储消息
+		org.demo.netty.im.fake.store.remote.packet.PacketStoreManager.remotePacket(RemoteData)
+		PacketStoreListener包括local和kafka两种listener , 都会发消息 , 但只有local实现类 , local会把message存到db ; kafka listener不做任何处理
+		
+		
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+	   PacketChain.dispatcherCustomerPacket(customerSession, packet);
+	   customerSession.cachePacket(packet);//把message存储到LocalTransportStore的DefaultCustomQueue里 , linkedBlockingQueue
+	   
+	   //注册分配事件到localCustomQueue , 等着客服配对
+	   org.demo.netty.im.fake.im.cs.chain.PacketChain.registerAssignEvent(CustomerSession)
+	   OCIMServer.getInst().getDispatcher().registerAllotEvent(event);
+	   org.demo.netty.im.fake.dispatcher.AllotDispatcher.registerAllotEvent(Event)
 	   
 	   

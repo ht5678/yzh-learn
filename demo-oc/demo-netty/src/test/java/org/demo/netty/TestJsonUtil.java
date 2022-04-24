@@ -5,6 +5,7 @@ import org.demo.netty.im.fake.domain.BodyType;
 import org.demo.netty.im.fake.domain.Packet;
 import org.demo.netty.im.fake.domain.PacketType;
 import org.demo.netty.im.fake.domain.Transport;
+import org.demo.netty.im.fake.im.constants.Constants;
 import org.demo.netty.im.fake.util.JsonUtils;
 import org.junit.Test;
 
@@ -18,6 +19,27 @@ public class TestJsonUtil {
 	
 	
 	
+	/**
+	 * build chat - packet , 
+	 */
+	@Test
+	public void test2() throws Exception{
+		
+		Body body = new Body(BodyType.BUILDING_CHAT, Constants.ASSIGNING_MESSAGE);
+		
+		Packet packet = new Packet(PacketType.BUILD_CHAT, body);
+		packet.setTs(Transport.WEBSOCKET);
+		packet.setCid("cid");
+
+		System.out.println(JsonUtils.getJson().writeString(packet));
+	}
+	
+	
+	
+	/**
+	 * ping - packet
+	 * @throws Exception
+	 */
 	@Test
 	public void test() throws Exception{
 		Packet packet = new Packet();
@@ -25,6 +47,7 @@ public class TestJsonUtil {
 		packet.setTs(Transport.WEBSOCKET);
 		packet.setCid("cid");
 //		packet.setType(PacketType.MESSAGE);
+		
 		
 		packet.setType(PacketType.PING);
 		
