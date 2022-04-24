@@ -12,11 +12,11 @@ import org.demo.netty.im.fake.im.bs.config.Configuration;
 import org.demo.netty.im.fake.im.bs.message.OutPacketMessage;
 import org.demo.netty.im.fake.im.bs.message.PollOkMessage;
 import org.demo.netty.im.fake.im.bs.message.PongPacketMessage;
-import org.demo.netty.im.fake.im.cs.chain.PacketChain;
 import org.demo.netty.im.fake.scheduler.SchedulerKey;
 import org.demo.netty.im.fake.scheduler.SchedulerKey.SchedulerType;
 import org.demo.netty.im.fake.session.CustomerSession;
 import org.demo.netty.im.fake.util.HttpResponses;
+import org.demo.netty.im.simple.v4.im.cs.chain.PacketChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

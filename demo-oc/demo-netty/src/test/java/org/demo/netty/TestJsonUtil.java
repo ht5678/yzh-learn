@@ -17,6 +17,21 @@ import org.junit.Test;
 public class TestJsonUtil {
 	
 	
+	/**
+	 * message - packet , 
+	 */
+	@Test
+	public void test3() throws Exception{
+		
+		Body body = new Body(BodyType.BUILDING_CHAT, Constants.ASSIGNING_MESSAGE);
+		
+		Packet packet = new Packet(PacketType.MESSAGE, body);
+		packet.setTs(Transport.WEBSOCKET);
+		packet.setCid("cid");
+
+		System.out.println(JsonUtils.getJson().writeString(packet));
+	}
+	
 	
 	
 	/**

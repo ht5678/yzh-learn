@@ -21,7 +21,11 @@
         socket = new WebSocket("ws://localhost:6066/ws.io?packet={%22type%22:%22AUTH%22,%22ts%22:%22WEBSOCKET%22,%22from%22:{%22idy%22:%22CUSTOMER%22},%22body%22:{%22type%22:%22LOGIN%22}}&t=1626334268844");
         socket.onopen = function (evt) {
             console.log("Connection open ...");
-            socket.send('{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
+            //ping
+            //socket.send('{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
+            
+            //message - build chat type
+            socket.send('{"cid":"cid","type":"MESSAGE","body":{"type":"BUILDING_CHAT","content":"正在分配客服"},"ts":"WEBSOCKET","timestamp":1650805410338,"datetime":"2022-04-24 21:03:30","ver":"1.0"}');
         }
 
         socket.onmessage = function (evt) {
