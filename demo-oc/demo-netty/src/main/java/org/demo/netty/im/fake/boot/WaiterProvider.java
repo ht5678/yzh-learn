@@ -32,6 +32,7 @@ public class WaiterProvider {
 		Waiter waiter = new Waiter();
 		waiter.setId(1L);
 		waiter.setTeamCode("test");
+		waiter.setWaiterCode("waiterCodeUidZhangSan");
 		
 		if(null != waiter) {
 			return waiter;

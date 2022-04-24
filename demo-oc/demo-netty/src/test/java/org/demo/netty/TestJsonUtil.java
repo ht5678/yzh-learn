@@ -2,10 +2,13 @@ package org.demo.netty;
 
 import org.demo.netty.im.fake.domain.Body;
 import org.demo.netty.im.fake.domain.BodyType;
+import org.demo.netty.im.fake.domain.Identity;
 import org.demo.netty.im.fake.domain.Packet;
 import org.demo.netty.im.fake.domain.PacketType;
 import org.demo.netty.im.fake.domain.Transport;
+import org.demo.netty.im.fake.domain.WaiterStatus;
 import org.demo.netty.im.fake.im.constants.Constants;
+import org.demo.netty.im.fake.util.B64;
 import org.demo.netty.im.fake.util.JsonUtils;
 import org.junit.Test;
 
@@ -15,6 +18,28 @@ import org.junit.Test;
  * @date	  2022年4月22日 下午4:21:21
  */
 public class TestJsonUtil {
+	
+	
+	/**
+	 * waiter - auth login
+	 * @throws Exception
+	 */
+	@Test
+	public void test4() throws Exception{
+		//customer - auth login
+		String json = "{\"type\":\"AUTH\",\"ts\":\"WEBSOCKET\",\"from\":{\"idy\":\"CUSTOMER\"},\"body\":{\"type\":\"LOGIN\"}}";
+		
+		Packet packet = JsonUtils.getJson().readClass(json, Packet.class);
+		packet.getFrom().setIdy(Identity.WAITER);
+		
+		Body body = packet.getBody();
+		body.setContent("zhangsan password "+WaiterStatus.ONLINE.getValue());
+		body.setContent(B64.encoder(body.getContent()));
+		
+		System.out.println(JsonUtils.getJson().writeString(packet));
+		System.out.println(B64.encoder(JsonUtils.getJson().writeString(packet)));
+	}
+	
 	
 	
 	/**

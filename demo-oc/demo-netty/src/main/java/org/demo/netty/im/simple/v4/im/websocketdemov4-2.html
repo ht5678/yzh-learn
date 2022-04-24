@@ -17,8 +17,16 @@
     if(window.WebSocket){
         var msgBoxs = document.getElementById("msgBoxs")
         var msgBox = document.getElementById("msg")
-
-        socket = new WebSocket("ws://localhost:6066/ws.io?packet={%22type%22:%22AUTH%22,%22ts%22:%22WEBSOCKET%22,%22from%22:{%22idy%22:%22CUSTOMER%22},%22body%22:{%22type%22:%22LOGIN%22}}&t=1626334268844");
+		
+		
+		
+		//customer - auth login
+       // socket = new WebSocket("ws://localhost:6066/ws.io?packet={%22type%22:%22AUTH%22,%22ts%22:%22WEBSOCKET%22,%22from%22:{%22idy%22:%22CUSTOMER%22},%22body%22:{%22type%22:%22LOGIN%22}}&t=1626334268844");
+        
+        //waiter - auth login
+        socket = new WebSocket("ws://localhost:6066/ws.io?packet=%7B%22type%22:%22AUTH%22,%22from%22:%7B%22idy%22:%22WAITER%22%7D,%22body%22:%7B%22type%22:%22LOGIN%22,%22content%22:%22emhhbmdzYW4gcGFzc3dvcmQgMQ==%22%7D,%22ts%22:%22WEBSOCKET%22,%22timestamp%22:1650808477557,%22datetime%22:%222022-04-24%2021:54:37%22,%22ver%22:%221.0%22%7D&t=1626334268844");
+        
+        
         socket.onopen = function (evt) {
             console.log("Connection open ...");
             //ping
