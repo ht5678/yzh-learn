@@ -15,6 +15,7 @@ import org.demo.netty.im.fake.domain.RemoteTaskResult;
 import org.demo.netty.im.fake.im.OCIMServer;
 import org.demo.netty.im.fake.im.chain.CloseChatChain;
 import org.demo.netty.im.fake.im.constants.Constants;
+import org.demo.netty.im.fake.im.factory.PacketTransferFactory;
 import org.demo.netty.im.fake.session.CustomerAssignStatus;
 import org.demo.netty.im.fake.session.CustomerSession;
 import org.demo.netty.im.fake.session.WaiterSession;
@@ -316,7 +317,40 @@ public class RoutingTableImpl implements RoutingTable{
 	 */
 	@Override
 	public void routeTransferByWaiter(TransferWaiter transferWaiter) {
-		
+		// 说明：客服(A) 转接   客户(C) -> 客服(B)
+		String uid = transferWaiter.getUid();
+		CustomerSession customerSession = getLocalCustomerSession(uid);
+		if (null != customerSession) {
+			String cid = customerSession.getCid();
+			String currWaiterCode = customerSession.getWaiterCode();
+			String fromWc = transferWaiter.getFromWc();
+			// 判断客户和客服绑定关系 A
+			if (!fromWc.equals(currWaiterCode)) {
+				PacketTransferFactory.getInst().transferByWaiterFailed(cid, transferWaiter, "提示，客户已经离开，状态有误，拒绝转入");
+				return;
+			}
+			// 获取转接客服 B
+			boolean isTransfer = OCIMServer.getInst().getDispatcher().transferByWaiter(transferWaiter);
+			if (!isTransfer) {
+				PacketTransferFactory.getInst().transferByWaiterFailed(cid, transferWaiter, "提示，当前客服处于忙碌状态或者已经离线，拒绝转入");
+				return;
+			}
+			// 释放资源 A
+			OCIMServer.getInst().getDispatcher().directReleaseRelation(transferWaiter.getFromWc());
+			// 给转接客服发送转接成功信息  A
+			PacketTransferFactory.getInst().transferByWaiterASuccess(cid, transferWaiter);
+			// 给接收转接客服发送转入消息 B
+			PacketTransferFactory.getInst().transferByWaiterBSuccess(customerSession, transferWaiter);
+			// 给客户发送转接成功消息 C
+			PacketTransferFactory.getInst().transferByWaiterCSuccess(customerSession, cid, transferWaiter);
+		} else {
+			CustomerRoute customerRoute = customerRoutes.get(uid);
+			if (null != customerRoute && !isLocalRoute(customerRoute)) {
+				OCIMServer.getInst().getClusterMessageRouter().routeTransferByWaiter(customerRoute.getNodeID(), transferWaiter);
+			} else {
+				PacketTransferFactory.getInst().transferByWaiterFailed(null, transferWaiter, "提示，客户已经离开，拒绝转入");
+			}
+		}
 	}
 
 	/**

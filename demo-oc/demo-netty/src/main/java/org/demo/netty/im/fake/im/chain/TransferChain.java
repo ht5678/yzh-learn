@@ -9,6 +9,7 @@ import org.demo.netty.im.fake.domain.BodyType;
 import org.demo.netty.im.fake.domain.Identity;
 import org.demo.netty.im.fake.domain.Packet;
 import org.demo.netty.im.fake.im.OCIMServer;
+import org.demo.netty.im.fake.transfer.TransferTeam;
 import org.demo.netty.im.fake.transfer.TransferWaiter;
 import org.demo.netty.im.fake.util.JsonUtils;
 import org.slf4j.Logger;
@@ -31,10 +32,13 @@ public class TransferChain {
 		Body body = packet.getBody();
 		switch (body.getType()) {
 			case TRANSFER_WAITER:
-				
+				transferByWaiter(packet);
 				break;
-	
+			case TRANSFER_TEAM:
+				transferByTeam(packet);
+				break;
 			default:
+				log.error("不支持的转接类型，packet{}", packet);
 				break;
 		}
 	}
@@ -57,6 +61,24 @@ public class TransferChain {
 			errorParam(packet);
 		}else {
 			OCIMServer.getInst().getRoutingTable().routeTransferByWaiter(transferWaiter);
+		}
+	}
+	
+	
+	
+	
+	private static void transferByTeam(Packet packet) {
+		String transferJsonStr = packet.getBody().getContent();
+		TransferTeam transferTeam = null;
+		try {
+			transferTeam = JsonUtils.getJson().readClass(transferJsonStr, TransferTeam.class);
+		} catch (IOException e) {
+			log.error("转接序列化失败， packet： {}", packet);
+		}
+		if (null == transferTeam) {
+			errorParam(packet);
+		} else {
+			OCIMServer.getInst().getRoutingTable().routeTransferByTeam(transferTeam);
 		}
 	}
 	

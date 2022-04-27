@@ -62,3 +62,10 @@ v4 : DefaultCustomQueue (CustomQueue) 底层结构是 LinkedBlockingQueue
 		POLLING(http)走PollingTransport handler
 		
 		
+	
+	//用户登录绑定
+	org.demo.netty.im.fake.domain.PacketType.BIND
+		
+		
+		
+	org.demo.netty.im.fake.dispatcher.register.EventRegister		底层结构是CustomQueue , 底层结构是 LinkedBlockingQueue 
