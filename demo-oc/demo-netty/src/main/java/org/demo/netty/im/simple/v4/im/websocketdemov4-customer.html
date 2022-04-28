@@ -8,6 +8,7 @@
 <textarea id="msgBoxs"></textarea><br>
 待发送消息`：<input type="text" id="msg">
 <input type="button" id="sendBtn" onclick="send()" value="发送">
+<input type="button" id="closeBtn" onclick="closeChat()" value="关闭">
 <script type="application/javascript">
     var socket ;
     if(!window.WebSocket){
@@ -33,7 +34,11 @@
             //socket.send('{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
             
             //message - build chat type
-            socket.send('{"cid":"cid","type":"MESSAGE","body":{"type":"BUILDING_CHAT","content":"正在分配客服"},"ts":"WEBSOCKET","timestamp":1650805410338,"datetime":"2022-04-24 21:03:30","ver":"1.0"}');
+            //socket.send('{"cid":"cid","type":"MESSAGE","body":{"type":"BUILDING_CHAT","content":""},"ts":"WEBSOCKET","timestamp":1650805410338,"datetime":"2022-04-24 21:03:30","ver":"1.0"}');
+            
+            //org.demo.netty.im.fake.im.bs.handler.EncoderHandler.handleWebsocket(OutPacketMessage, ChannelHandlerContext, ChannelPromise) 测试 , 会在这里把message输出给client
+            socket.send('{"cid":"cid","type":"MESSAGE","body":{"type":"BUILDING_CHAT","content":""},"ts":"WEBSOCKET","timestamp":1650805410338,"datetime":"2022-04-24 21:03:30","ver":"1.0"}');
+            
         }
 
         socket.onmessage = function (evt) {
@@ -54,6 +59,75 @@
         //msgBox.value = ""
         socket.send('{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
     }
+    
+    
+    function closeChat() {
+    
+      var closePacket = {
+        type: 'CLOSE',
+        ts: 'POLLING',
+        
+        //ttc: customer.ttc,
+        //skc: customer.skc,
+        //skn: customer.skn,
+        //gc: customer.gc,
+        
+       
+        
+        to: {
+          idy: 'WAITER'
+        },
+        from: {
+          //uid: customer.cc,
+          //name: customer.cn,
+          
+          
+          //和org.demo.netty.im.simple.v4.im.bs.oauth.CertificationCenter.authorizeByCustomer(Channel, Packet, FullHttpRequest) 保持一致
+          uid: 'zhangsanUidCc',
+          name: 'zhangsanNameCn',
+          
+          idy: "CUSTOMER"
+        }
+      };
+      
+      
+      
+      doSend(closePacket, function (res) {
+        console.log("关闭!");
+      });
+        
+        //socket.send('{"cid":"cid","type":"CLOSE","body":{"type":"TEXT","content":""},"ts":"POLLING","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
+    }
+    
+    
+      function doSend(packet) {
+	    if (packet) {
+	    	console.info(socket.readyState);
+	      if (socket.readyState === 1) {
+	        //packet.pid = Common.getPid();
+	        
+	        packet.pid = 'testpid';
+	        packet.to = {
+	          idy: 'WAITER'
+	        };
+	        console.info(JSON.stringify(packet));
+	        socket.send(JSON.stringify(packet));
+	      } else if (socket.readyState === 3) {
+	        reconnect();
+	      }
+	    }
+	
+	    return false;
+	  }
+	  
+	  
+	  function reconnect() {
+	    if (socket.readyState === 3) {
+	      clearInterval(wsPING);
+	      setTimeout(connect, 5000);
+	      auth();
+	    }
+	  }	  
 
 </script>
 </body>

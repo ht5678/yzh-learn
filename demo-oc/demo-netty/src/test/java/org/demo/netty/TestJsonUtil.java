@@ -21,6 +21,19 @@ public class TestJsonUtil {
 	
 	
 	/**
+	 * customer - close chat transport
+	 */
+	@Test
+	public void test5() throws Exception{
+		String json = "{\"cid\":\"cid\",\"type\":\"CLOSE\",\"body\":{\"type\":\"TEXT\",\"content\":\"close customer chat body content\"},\"ts\":\"TRANSPORT\",\"timestamp\":1650617030335,\"datetime\":\"2022-04-22 16:43:50\",\"ver\":\"1.0\"}";
+		
+		Packet packet = JsonUtils.getJson().readClass(json, Packet.class);
+		System.out.println(JsonUtils.getJson().writeString(packet));
+	}
+	
+	
+	
+	/**
 	 * waiter - auth login
 	 * @throws Exception
 	 */

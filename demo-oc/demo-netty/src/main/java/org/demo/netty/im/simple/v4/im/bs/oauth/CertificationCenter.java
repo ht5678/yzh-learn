@@ -144,8 +144,8 @@ public class CertificationCenter {
 		customerInfo.setSkn("skn");
 		customerInfo.setBuc("buc");
 		customerInfo.setReal("1");//login
-		customerInfo.setCc("uid");//uid
-		customerInfo.setCn("cn");//name
+		customerInfo.setCc("zhangsanUidCc");//uid
+		customerInfo.setCn("zhangsanNameCn");//name
 		
 //		if(null == customerInfo) {
 //			throw new BSAuthorizeException("1003认证信息为空");
