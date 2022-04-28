@@ -70,8 +70,13 @@ v4 : DefaultCustomQueue (CustomQueue) 底层结构是 LinkedBlockingQueue
 		org.demo.netty.im.fake.dispatcher.scheduler.EventScheduler.EventExecutor.run()	
 			org.demo.netty.im.fake.dispatcher.scheduler.EventScheduler.EventExecutor.allot(Event)
 				org.demo.netty.im.fake.dispatcher.AllotDispatcher.buildRelation(Event)
-					
-		
+					org.demo.netty.im.fake.dispatcher.AllotDispatcher.buildChat(CustomerSession, Waiter)
+						*****customerSession.setWaiter(waiter.getWaiterCode(), waiter.getWaiterName());
+						*****//生成chat id
+								String chatId = IDProvider.getInstance().getChatId();
+								customerSession.setCid(chatId);
+								
+								
 	org.demo.netty.im.fake.dispatcher.register.EventRegister		底层结构是CustomQueue , 底层结构是 LinkedBlockingQueue 
 	
 	
