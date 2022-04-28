@@ -77,6 +77,20 @@ v4 : DefaultCustomQueue (CustomQueue) 底层结构是 LinkedBlockingQueue
 								customerSession.setCid(chatId);
 								
 								
+	//waiter <-> customer 通信
+	org.demo.netty.im.simple.v4.im.handler.PollingTransport.channelRead(ChannelHandlerContext, Object)
+	PacketChain.dispatcherCustomerPacket(customerSession, packet);
+	OCIMServerV4.getInst().getRoutingTable().routePacket(packet);
+								
+								
 	org.demo.netty.im.fake.dispatcher.register.EventRegister		底层结构是CustomQueue , 底层结构是 LinkedBlockingQueue 
 	
+	
+	
+	
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+	//waiter登录校验
+	org.demo.netty.im.simple.v4.im.bs.oauth.CertificationCenter.authorizeByWaiter(Channel, Packet, FullHttpRequest)	
 	

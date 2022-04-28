@@ -32,7 +32,20 @@ public class WaiterProvider {
 		Waiter waiter = new Waiter();
 		waiter.setId(1L);
 		waiter.setTeamCode("test");
-		waiter.setWaiterCode("waiterCodeUidZhangSan");
+		waiter.setWaiterCode("10200259");
+		waiter.setWaiterName("10200259");
+		waiter.setCurReception(0);//当前接待数
+		waiter.setMaxReception(2);//最大接待数
+		waiter.setAutoReply("0");
+		waiter.setReplyMsg("您好,我是xx客服A01044,很高兴为您服务!");
+		waiter.setRealName("zhangsan");
+		
+		
+		//waiter code		waiter name
+		//chenxin22			1036
+		//A04577			A04577
+		//10200259			10200259
+		//hec12					灿灿
 		
 		if(null != waiter) {
 			return waiter;

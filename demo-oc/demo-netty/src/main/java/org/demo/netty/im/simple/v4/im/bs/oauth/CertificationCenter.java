@@ -13,12 +13,12 @@ import org.demo.netty.im.fake.im.bs.config.Configuration;
 import org.demo.netty.im.fake.im.bs.message.PollOkMessage;
 import org.demo.netty.im.fake.session.Customer;
 import org.demo.netty.im.fake.session.CustomerSession;
-import org.demo.netty.im.fake.session.LocalWaiterSession;
 import org.demo.netty.im.fake.session.Session;
 import org.demo.netty.im.fake.session.WaiterSession;
 import org.demo.netty.im.fake.store.local.LocalTeamStore;
 import org.demo.netty.im.fake.util.B64;
 import org.demo.netty.im.simple.v4.im.session.LocalCustomerSession;
+import org.demo.netty.im.simple.v4.im.session.LocalWaiterSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

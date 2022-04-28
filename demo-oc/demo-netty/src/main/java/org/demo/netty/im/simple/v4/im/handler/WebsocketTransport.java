@@ -8,7 +8,6 @@ import org.demo.netty.im.fake.domain.Transport;
 import org.demo.netty.im.fake.domain.Waiter;
 import org.demo.netty.im.fake.im.auth.WaiterAuthCoder;
 import org.demo.netty.im.fake.im.bs.config.Configuration;
-import org.demo.netty.im.fake.im.chain.BindChain;
 import org.demo.netty.im.fake.im.chain.CloseChatChain;
 import org.demo.netty.im.fake.im.chain.ReceptionChain;
 import org.demo.netty.im.fake.im.chain.RevocationChain;
@@ -20,6 +19,7 @@ import org.demo.netty.im.fake.session.CustomerSession;
 import org.demo.netty.im.fake.session.Session;
 import org.demo.netty.im.fake.session.WaiterSession;
 import org.demo.netty.im.fake.util.PacketDecoder;
+import org.demo.netty.im.simple.v4.im.cs.chain.BindChain;
 import org.demo.netty.im.simple.v4.im.cs.chain.PacketChain;
 import org.demo.netty.im.simple.v4.im.initializer.BsChannelInitializer;
 import org.demo.netty.im.simple.v4.im.session.LocalCustomerSession;
@@ -151,13 +151,13 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 				case CLOSE_CHAT:
 					CloseChatChain.closeDispatcher(packet);
 					break;
-				case RECEPTION:
+				case RECEPTION://接待客户
 					ReceptionChain.directReception(waiterSession, packet);
 					break;
 				case CHANGE_STATUS:
 					WaiterStatusChain.changeStatus(waiterSession, packet);
 					break;
-				case BIND:
+				case BIND://login
 					BindChain.waiterBind(waiterSession, channel, encoder);
 					break;
 				case REVOCATION:

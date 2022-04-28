@@ -9,6 +9,7 @@ import org.demo.netty.im.fake.im.OCIMServer;
 import org.demo.netty.im.fake.node.NodeID;
 import org.demo.netty.im.fake.session.WaiterSession;
 import org.demo.netty.im.fake.util.ExternalizableUtil;
+import org.demo.netty.im.fake.util.UUIDUtils;
 
 /**
  * 
@@ -27,7 +28,11 @@ public class WaiterRoute implements Externalizable, Route {
 	
 	public WaiterRoute(WaiterSession session) {
 		this.uid = session.getUid();
-		this.nodeID = OCIMServer.getInst().getNodeID();
+		if(OCIMServer.getInst()==null) {
+			this.nodeID = new NodeID(UUIDUtils.getUID().getBytes());
+		}else {
+			this.nodeID = OCIMServer.getInst().getNodeID();
+		}
 		this.version = session.getVersion();
 	}
 	
