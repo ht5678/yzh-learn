@@ -54,7 +54,14 @@
     }
 
     function send() {
-        var msg = msgBox.value
+    	var msg = msgBox.value;
+    
+    	if(socket && socket.readyState == 3){//reconnect
+    		socket = new WebSocket("ws://localhost:6066/ws.io?packet={%22type%22:%22AUTH%22,%22ts%22:%22WEBSOCKET%22,%22from%22:{%22idy%22:%22CUSTOMER%22},%22body%22:{%22type%22:%22LOGIN%22}}&t="+new Date().getTime(););
+    	}
+    
+    
+        
         //socket.send(msg)
         //msgBox.value = ""
         socket.send('{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"WEBSOCKET","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
