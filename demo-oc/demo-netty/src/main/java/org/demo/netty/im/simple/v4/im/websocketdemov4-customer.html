@@ -63,6 +63,8 @@
     
     function closeChat() {
     
+    	socket.close();
+    
       var closePacket = {
         type: 'CLOSE',
         ts: 'POLLING',
@@ -92,9 +94,9 @@
       
       
       
-      doSend(closePacket, function (res) {
-        console.log("关闭!");
-      });
+      //doSend(closePacket, function (res) {
+      //  console.log("关闭!");
+      //});
         
         //socket.send('{"cid":"cid","type":"CLOSE","body":{"type":"TEXT","content":""},"ts":"POLLING","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}');
     }
