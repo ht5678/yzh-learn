@@ -103,7 +103,7 @@
       function doSend(packet) {
 	    if (packet) {
 	    	console.info(socket.readyState);
-	      if (socket.readyState === 1) {
+	      if (socket.readyState == 1) {
 	        //packet.pid = Common.getPid();
 	        
 	        packet.pid = 'testpid';

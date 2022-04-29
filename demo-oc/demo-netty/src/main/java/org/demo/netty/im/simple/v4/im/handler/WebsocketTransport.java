@@ -82,7 +82,7 @@ public class WebsocketTransport extends ChannelInboundHandlerAdapter{
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object obj) throws Exception {
 		
-		System.out.println("WebsocketTransport"+obj);
+		System.out.println("WebsocketTransport	:	"+obj);
 //		ReferenceCountUtil.release(obj);
 //		ctx.fireChannelRead(obj);
 		

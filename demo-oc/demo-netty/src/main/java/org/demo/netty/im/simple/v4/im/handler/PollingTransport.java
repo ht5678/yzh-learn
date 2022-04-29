@@ -62,7 +62,7 @@ public class PollingTransport extends ChannelInboundHandlerAdapter{
 	 */
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		System.out.println("PollingTransport"+msg);
+		System.out.println("PollingTransport	:	"+msg);
 //		ReferenceCountUtil.release(msg);
 //		ctx.fireChannelRead(msg);
 		
