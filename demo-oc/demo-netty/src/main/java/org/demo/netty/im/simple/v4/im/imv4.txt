@@ -94,3 +94,97 @@ v4 : DefaultCustomQueue (CustomQueue) 底层结构是 LinkedBlockingQueue
 	//waiter登录校验
 	org.demo.netty.im.simple.v4.im.bs.oauth.CertificationCenter.authorizeByWaiter(Channel, Packet, FullHttpRequest)	
 	
+	
+	
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//向后台长轮询消息
+    function longPolling(){
+        $.ajax({
+            async : true,//异步
+            url : 'longPollingAction!getMessages.action', 
+            type : 'post',
+            dataType : 'json',
+            data :{},
+            timeout : 30000,//超时时间设定30秒
+            error : function(xhr, textStatus, thrownError) {
+                longPolling();//发生异常错误后再次发起请求
+            },
+            success : function(response) {
+                message = response.data.message;
+                if(message!="timeout"){
+                    broadcast();//收到消息后发布消息
+                }
+                longPolling();
+            }
+        });
+    }
+    
+    
+    
+    
+public class LongPollingAction extends BaseAction {
+    private static final long serialVersionUID = 1L;
+    private LongPollingService longPollingService;
+    private static final long TIMEOUT = 20000;// 超时时间设置为20秒
+ 
+    public String getMessages() {
+        long requestTime = System.currentTimeMillis();
+        result.clear();
+        try {
+            String msg = null;
+ 
+            while ((System.currentTimeMillis() - requestTime) < TIMEOUT) {
+                msg = longPollingService.getMessages();
+                if (msg != null) {
+                    break; // 跳出循环，返回数据
+                } else {
+                    Thread.sleep(1000);// 休眠1秒
+                }
+            }
+            if (msg == null) {
+                result.addData("message", "timeout");// 超时
+            } else {
+                result.addData("message", msg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+ 
+        return SUCCESS;
+    }
+    
+    public LongPollingService getLongPollingService() {
+        return longPollingService;
+    }
+ 
+    public void setLongPollingService(LongPollingService longPollingService) {
+        this.longPollingService = longPollingService;
+    }
+ 
+}
+
+
+
+
+长轮询：客户端向服务器发送Ajax请求，服务器接到请求后hold住连接，直到有新消息才返回响应信息并关闭连接，客户端处理完响应信息后再向服务器发送新的请求。
+优点：在无消息的情况下不会频繁的请求，耗费资源小。
+缺点：服务器hold连接会消耗资源，返回数据顺序无保证，难于管理维护。
+实例：WebQQ、Hi网页版、Facebook IM。
+
+
+
+
+轮询的终止
+轮询可能在以下3种情况时终止：
+3.1. 有新数据推送
+当循环过程中服务器向浏览器推送信息后，应该主动结束程序运行从而让连接断开，这样浏览器才能及时收到数据。
+3.2. 没有新数据推送
+循环不能一直持续下去，应该设定一个最长时限，避免WEB服务器超时（Timeout），若一直没有新信息，服务器应主动向浏览器发送本次轮询无新信息的正常响应，并断开连接，这也被称为“心跳”信息。
+3.3. 网络故障或异常
+由于网络故障等因素造成的请求超时或出错也可能导致轮询的意外中断，此时浏览器将收到错误信息。
+轮询的重建
+浏览器收到回复并进行相应处理后，应马上重新发起请求，开始一个新的轮询周期。	
+
+	
