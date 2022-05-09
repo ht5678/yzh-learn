@@ -216,7 +216,9 @@ public class EncoderHandler extends ChannelOutboundHandlerAdapter{
 	private HttpResponse bulidHttpResponse(HttpResponseStatus status) {
 		return new DefaultHttpResponse(HttpVersion.HTTP_1_1, status);
 	}
-
+	
+	
+	//将指定的监听器添加到此Future，future完成时，会通知此监听器，如果添加监听器时future已经完成，则立即通知此监听器
 	private class CustomChannelFutureListener implements GenericFutureListener<Future<Void>> {
 
 		private List<ChannelFuture> futureList = new ArrayList<>();
@@ -234,6 +236,7 @@ public class EncoderHandler extends ChannelOutboundHandlerAdapter{
 			for (ChannelFuture cf : futureList) {
 				if (cf.isDone()) {
 					if (!cf.isSuccess()) {
+						//cause() 如果i/o操作失败，返回其失败原因。如果成功完成或者还未完成，返回null
 						promise.tryFailure(cf.cause());
 						clearup();
 						return;
