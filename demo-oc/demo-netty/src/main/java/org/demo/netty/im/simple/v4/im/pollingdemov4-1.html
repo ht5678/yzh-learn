@@ -410,7 +410,7 @@
 	      type: "GET",
 	      url: 'http://localhost:6066/poll.io',
 	      data: {
-	        packet: '{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body"},"ts":"TRANSPORT","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}',
+	        packet: '{"cid":"cid","type":"PING","body":{"type":"TEXT","content":"test body polling"},"ts":"POLLING","timestamp":1650617030335,"datetime":"2022-04-22 16:43:50","ver":"1.0"}',
 	        t: new Date().getTime()
 	      },
 	      dataType: 'json',
@@ -418,15 +418,17 @@
 	        withCredentials: true
 	      },
 	      success: function success(res) {
+	      	console.info(res);
+	      	msgBoxs.value =  msgBoxs.value + "\n" + res.data;
 	        if (res && res instanceof Array) {
 	          for (var i = 0; i < res.length; i++) {
 	            ChatResolver.render(ChatResolver.type.inMessage, res[i]);
 	          }
 	        }
 	
-	        if (opts.active) {
+	        //if (opts.active) {
 	          setTimeout(send(), 1000);
-	        }
+	        //}
 	      },
 	      error: function error(res) {
 	        console.log("请求失败： " + res);
