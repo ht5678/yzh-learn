@@ -419,15 +419,16 @@
 	      },
 	      success: function success(res) {
 	      	console.info(res);
-	      	msgBoxs.value =  msgBoxs.value + "\n" + res.data;
-	        if (res && res instanceof Array) {
-	          for (var i = 0; i < res.length; i++) {
-	            ChatResolver.render(ChatResolver.type.inMessage, res[i]);
-	          }
-	        }
+	      	console.info(res.type);
+	      	msgBoxs.value =  msgBoxs.value + "\n" + res.type;
+	        //if (res && res instanceof Array) {
+	         // for (var i = 0; i < res.length; i++) {
+	        //    ChatResolver.render(ChatResolver.type.inMessage, res[i]);
+	          //}
+	       // }
 	
 	        //if (opts.active) {
-	          setTimeout(send(), 1000);
+	         // setTimeout(send(), 1000);
 	        //}
 	      },
 	      error: function error(res) {
