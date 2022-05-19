@@ -213,6 +213,21 @@ public class EncoderHandler extends ChannelOutboundHandlerAdapter{
         }
     }
 	
+	/**
+	 * 
+	 * 
+	 * 由于本身使用http请求都是，请求-应答这种方式，一直觉得http是短连接的。每次通讯后，其连接断开。javascript
+
+		其实否则，http1.1开始。客户端的请求头带上html
+		
+		Connection: keep-alive
+		即是维持长连接。固然这个须要服务器的支持。
+	 *		
+	 *		
+	 *		
+	 * @param status
+	 * @return
+	 */
 	private HttpResponse bulidHttpResponse(HttpResponseStatus status) {
 		return new DefaultHttpResponse(HttpVersion.HTTP_1_1, status);
 	}
