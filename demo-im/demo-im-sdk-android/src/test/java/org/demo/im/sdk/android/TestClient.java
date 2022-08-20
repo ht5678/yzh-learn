@@ -12,7 +12,10 @@ public class TestClient {
 		//在这里应该是IM系统的ip list服务 , 随机获取一台机器的ip
 		ImClient imClient = new ImClient();
 		imClient.connect("127.0.0.1", 8080);
+		
+		imClient.authenticate("test002", "test002_token");
 		imClient.send("test002", "test002_token");
+		
 		
 		while(true){
 			Thread.sleep(1000);

@@ -11,6 +11,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 
 /**
@@ -48,6 +49,10 @@ public class ImClient {
 
 				@Override
 				protected void initChannel(SocketChannel socketChannel) throws Exception {
+					
+					ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
+					socketChannel.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, delimiter));
+					
 					socketChannel.pipeline().addLast(new StringDecoder());
 					socketChannel.pipeline().addLast(new ImClientHandler());
 				}
@@ -90,6 +95,21 @@ public class ImClient {
 		socketChannel.writeAndFlush(messageBuffer);
 		
 		System.out.println("向TCP接入系统发送第一条消息 , 推送给test002用户");
+	}
+	
+	
+	
+	/**
+	 * 发起token认证
+	 */
+	public void authenticate(String userId , String token) throws Exception{
+		byte[] messageBytes = ("发起用户认证|"+userId +"|"+token +"$_").getBytes();
+		
+		ByteBuf messageBuffer = Unpooled.buffer(messageBytes.length);
+		messageBuffer.writeBytes(messageBytes);
+		socketChannel.writeAndFlush(messageBuffer);
+		
+		System.out.println("向TCP系统发起用户认证请求");
 	}
 	
 	
