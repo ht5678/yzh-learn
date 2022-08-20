@@ -40,8 +40,13 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter{
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 		
-		ByteBuf messagebuffer = (ByteBuf)msg;
-		System.out.println("接收到一条消息: "+messagebuffer.toString(CharsetUtil.UTF_8));
+		//使用了StringDecoder后就废弃了
+//		ByteBuf messagebuffer = (ByteBuf)msg;
+//		System.out.println("接收到一条消息: "+messagebuffer.toString(CharsetUtil.UTF_8));
+		
+		
+		String message = (String)msg;
+		System.out.println("接收到一条消息: "+message);
 		
 		
 //		String message = (String)msg;
