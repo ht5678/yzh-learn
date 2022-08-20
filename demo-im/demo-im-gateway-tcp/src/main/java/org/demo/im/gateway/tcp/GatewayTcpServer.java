@@ -25,6 +25,10 @@ public class GatewayTcpServer {
 	
 	public static void main(String[] args) {
 		
+		//push
+		PushManager pushManager = new PushManager();
+		pushManager.start();
+		
 		EventLoopGroup connectionThreadGroup = new NioEventLoopGroup();
 		EventLoopGroup ioThreadGroup = new NioEventLoopGroup();
 		
