@@ -2,6 +2,9 @@ package org.demo.dispatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
+import io.netty.channel.socket.SocketChannel;
 
 /**
  * 接入系统的网络连接管理组件
@@ -18,17 +21,47 @@ public class GatewayManager {
 //		gatewayInstances.add(new GatewayInstance("localhost", "127.0.0.1", 8080));
 //	}
 	
+	
+	private GatewayManager(){
+		
+	}
+	
+	
+	static class Singleton {
+		private static GatewayManager instance = new GatewayManager();
+	}
+	
+	
 	/**
-	 * 初始化组件
+	 * 获取单例
+	 * @return
 	 */
-	public void init() {
-		//我们到底是让接入系统主动跟分发系统建立连接?
-		//还是让分发系统主动跟接入系统建立连接?
-		//按照层和层的关系来说 , 应该是接入系统主动分发系统去建立连接
-		//应该是让分发系统使用的是netty服务端的代码,监听一个端口 , 等待人家跟他建立连接
-		//但凡建立连接之后 , 可以吧接入系统的长链接缓存在这个组件里
-		
-		
+	public static GatewayManager getInstance(){
+		return Singleton.instance;
+	}
+	
+	
+	/*
+	 * 储存接入系统的实例列表
+	 */
+	private ConcurrentHashMap<String, SocketChannel> gatewayInstances = new ConcurrentHashMap<>();
+	
+	
+	/**
+	 * 添加一个接入系统实例
+	 * @param channelId	 	网络连接id
+	 * @param channel			网络连接
+	 */
+	public void addGatewayInstance(String channelId , SocketChannel channel) {
+		gatewayInstances.put(channelId, channel);
+	}
+	
+	/**
+	 * 
+	 * @param channelId
+	 */
+	public void removeGatewayInstance(String channelId){
+		gatewayInstances.remove(channelId);
 	}
 
 }
