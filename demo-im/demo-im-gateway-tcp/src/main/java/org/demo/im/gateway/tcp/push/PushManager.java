@@ -1,4 +1,6 @@
-package org.demo.im.gateway.tcp;
+package org.demo.im.gateway.tcp.push;
+
+import org.demo.im.gateway.tcp.NettyChannelManager;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
