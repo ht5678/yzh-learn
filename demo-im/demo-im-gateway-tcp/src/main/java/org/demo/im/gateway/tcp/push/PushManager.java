@@ -1,6 +1,6 @@
 package org.demo.im.gateway.tcp.push;
 
-import org.demo.im.gateway.tcp.NettyChannelManager;
+import org.demo.im.gateway.tcp.ClientManager;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,8 +35,9 @@ public class PushManager {
 				
 				String testUserId = "test002";
 				
-				NettyChannelManager nettyChannelManager = NettyChannelManager.getInstance();
-				SocketChannel socketChannel = nettyChannelManager.getChannel(testUserId);
+				ClientManager clientManager = ClientManager.getInstance();
+//				SocketChannel socketChannel = clientManager.getChannel(testUserId);
+				SocketChannel socketChannel = clientManager.getClient(testUserId);
 				
 				if(socketChannel != null){
 					byte[] messageBytes = "test001发送过来的消息 $_".getBytes();

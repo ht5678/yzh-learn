@@ -35,8 +35,8 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter{
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		SocketChannel socketChannel = (SocketChannel)ctx.channel();
 		
-		NettyChannelManager nettyChannelManager = NettyChannelManager.getInstance();
-		nettyChannelManager.removeChannel(socketChannel);
+		ClientManager clientManager = ClientManager.getInstance();
+		clientManager.removeChannel(socketChannel);
 		
 		System.out.println("检测到客户端的连接断开 , 删除其连接缓存 : "+socketChannel.remoteAddress().toString());
 	}
@@ -50,7 +50,7 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter{
 		//一旦token认证完毕后 , 就应该把这个客户端的socketchannel给缓存起来
 		//后面如果有需要对这个客户端推到一条消息过去 , 直接从缓存里面找到这个SocketChannel , 进行推送就可以了
 		//此时服务端就可以主动把消息发送到客户端了
-		NettyChannelManager nettyChannelManager = NettyChannelManager.getInstance();
+		ClientManager clientManager = ClientManager.getInstance();
 		
 		//使用了StringDecoder后就废弃了
 //		ByteBuf messagebuffer = (ByteBuf)msg;
@@ -66,13 +66,14 @@ public class GatewayTcpHandler extends ChannelInboundHandlerAdapter{
 			
 			//如果认证成功的话 , 就可以把这个链接缓存起来了
 			String userId = message.split("\\|")[1];
-			nettyChannelManager.addChannel(userId, (SocketChannel)ctx.channel());
+			clientManager.addChannel(userId, (SocketChannel)ctx.channel());
 			
 			System.out.println("对用户发起的认证确认完毕 , 缓存客户端长链接 , userId =" + userId);
 		}else{
 			String userId = message.split("\\|")[1];
 			
-			if(!nettyChannelManager.existChannel(userId)){
+//			if(!clientManager.existChannel(userId)){
+			if(!clientManager.isCientConnection(userId)){
 				System.out.println("未认证用户 , 不能处理请求 . ");
 				
 				byte[] responseBytes = "未认证用户 , 不能处理请求 $_".getBytes();
